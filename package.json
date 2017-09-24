@@ -1,0 +1,26 @@
+{
+  "name": "pint",
+  "version": "0.0.1",
+  "description": "PINT is a drawing software",
+  "main": "index.js",
+  "scripts": {
+    "test": "grunt test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VengeurK/PINT.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VengeurK/PINT/issues"
+  },
+  "homepage": "https://github.com/VengeurK/PINT#readme",
+  "dependencies": {
+    "materialize-css": "^0.100.2",
+    "requirejs": "^2.3.5",
+    "grunt-contrib-jshint": "~0.10.0",
+    "grunt-contrib-nodeunit": "~0.4.1",
+    "grunt-contrib-uglify": "~0.5.0"
+  }
+}
