@@ -4,4 +4,5 @@ install:
     - npm install -g grunt-cli
     - npm install
 script:
-    grunt
+    - grunt release
+    - grunt jasmine

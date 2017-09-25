@@ -1,3 +1,9 @@
+# Custom
+.travis.yml
+build/
+doc/
+.idea/
+
 # Logs
 logs
 *.log
