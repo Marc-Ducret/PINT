@@ -5,7 +5,8 @@ module.exports = function(grunt) {
             js: {
                 src: ["node_modules/jquery/dist/jquery.js",
                     "node_modules/materialize-css/dist/js/materialize.js",
-                    "src/js/PINT.js"],
+                    "src/js/PINT.js",
+                    "src/js/ui.js"],
                 dest: "build/main.js"
             },
             css: {
@@ -52,7 +53,7 @@ module.exports = function(grunt) {
         },
         jasmine: {
             main: {
-                src: ["src/js/*.js"],
+                src: ["build/main.js", "node_modules/jasmine-jquery/lib/jasmine-jquery.js"],
                 options: {
                     specs: "test/*.js"
                 }
@@ -95,5 +96,5 @@ module.exports = function(grunt) {
     grunt.registerTask('default', ['concat_dev', 'htmlmin']);
     grunt.registerTask('release', ['concat', 'uglify', 'htmlmin', 'cssmin', 'inline', 'clean']);
     grunt.registerTask('doc',['jsdoc']);
-    grunt.registerTask('test',['jasmine']);
+    grunt.registerTask('test',['concat_dev', 'jasmine']);
 }
