@@ -1,4 +1,4 @@
-var toolRegistry = {}
+var toolRegistry = {};
 
 /**
  * Register a tool into the tool registry
@@ -25,7 +25,7 @@ function Tool(name) {
 
   var unimpl = function() {
     throw this.name + " doesn't implements this function";
-  }
+  };
 
 /**
 * Called with a position when a tool starts being used
@@ -73,7 +73,8 @@ function TestTool() {
   };
 
   this.drawPreview = function(ctx) {
-    for (pos of this.positions) {
+    for (var i = 0; i < this.positions.length; i++) {
+      var pos = this.positions[i];
       ctx.beginPath();
       ctx.arc(pos.x, pos.y, 5, 0, 2 * Math.PI, false);
       ctx.fillStyle = 'yellow';
