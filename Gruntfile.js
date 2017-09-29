@@ -95,5 +95,5 @@ module.exports = function(grunt) {
     grunt.registerTask('default', ['concat_dev', 'htmlmin']);
     grunt.registerTask('release', ['concat', 'uglify', 'htmlmin', 'cssmin', 'inline', 'clean']);
     grunt.registerTask('doc',['jsdoc']);
-    grunt.registerTask('test',['concat_dev', 'jasmine']);
+    grunt.registerTask('test',['concat_dev', 'htmlmin', 'jasmine']);
 }
