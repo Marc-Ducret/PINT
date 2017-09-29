@@ -14,7 +14,7 @@ function UIController() {
 
     this.onToolboxClicked = function() {
         if (this.innerHTML === "brush") {
-
+            self.project.changeTool(getToolByName("TestTool"));
         } else {
             console.warn("Unimplemented tool.");
         }

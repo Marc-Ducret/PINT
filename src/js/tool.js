@@ -16,7 +16,7 @@ function registerTool(tool) {
  */
 function getToolByName(name) {
   if(toolRegistry[name] == undefined)
-    throw "No such tool "+name
+    throw "No such tool "+name;
   return toolRegistry[name];
 }
 
