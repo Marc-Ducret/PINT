@@ -23,7 +23,7 @@ function Project(name) {
      */
     this.mouseClick = function(vect){
         if (this.currentTool != undefined){
-            this.currentTool.startUse(vect);
+            this.currentTool.startUse(null, vect);
         }
     };
 
@@ -34,6 +34,8 @@ function Project(name) {
     this.mouseMove = function (vect){
         if (this.currentTool != undefined){
             this.currentTool.continueUse(vect);
+            this.layerList[0].reset();
+            this.currentTool.drawPreview(this.layerList[0].getContext());
         }
     };
 
