@@ -5,6 +5,7 @@ module.exports = function(grunt) {
             js: {
                 src: ["node_modules/jquery/dist/jquery.js",
                     "node_modules/materialize-css/dist/js/materialize.js",
+                    "node_modules/vec2/vec2.js",
                     "src/js/*.js"],
                 dest: "build/main.js"
             },
@@ -18,7 +19,8 @@ module.exports = function(grunt) {
             js: {
                 src: ["node_modules/jquery/dist/jquery.min.js",
                     "node_modules/materialize-css/dist/js/materialize.min.js",
-                    "src/js/PINT.js"],
+                    "node_modules/vec2/vec2.min.js",
+                    "src/js/*.js"],
                 dest: "build/main.js"
             },
             css: {

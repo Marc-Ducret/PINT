@@ -1,17 +1,64 @@
+window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
+    window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 
-function initializeWebapplication() {
-    var canvas = document.getElementById('layer1');
-    var context = canvas.getContext('2d');
-    var width = canvas.scrollWidth;
-    var height = canvas.scrollHeight;
+/**
+ * @todo Handle mouse leaving the canvas.
+ */
+
+function UIController() {
+    var self = this;
+    this.mouseMoving = false;
+    this.lastPosition = null;
+
+    this.project = new Project("Untitled");
+
+    this.onToolboxClicked = function() {
+        if (this.innerHTML === "brush") {
+
+        } else {
+            console.warn("Unimplemented tool.");
+        }
+    };
+
+    this.onMouseDown = function(event) {
+        self.lastPosition = new Vec2(event.offsetX, event.offsetY);
+        self.mouseMoving = true;
+
+        self.project.mouseClick(self.lastPosition);
+        window.requestAnimationFrame(self.step);
+    };
+
+    this.onMouseUp = function(event) {
+        self.lastPosition = new Vec2(event.offsetX, event.offsetY);
+        self.mouseMoving = false;
+        self.project.mouseRelease(self.lastPosition);
+    };
+
+    this.onMouseMove = function(event) {
+        self.lastPosition = new Vec2(event.offsetX, event.offsetY);
+    };
 
 
-    context.fillStyle = "#ffffff";
-    context.strokeStyle = "#ffffff";
-    context.fillRect(0,0,width,height);
+    this.step = function(timestamp) {
+        self.project.mouseMove(self.lastPosition);
+        if (self.mouseMoving) {
+            window.requestAnimationFrame(self.step);
+        }
+    }
+
+
+
+
 }
 
 
+var controller;
 
+$(document).ready(function() {
+    controller = new UIController();
 
-$(document).ready(initializeWebapplication);
+    $("#toolbox-container").children().click(controller.onToolboxClicked);
+    $("#base").mousedown(controller.onMouseDown);
+    $("#base").mouseup(controller.onMouseUp);
+    $("#base").mousemove(controller.onMouseMove);
+});
