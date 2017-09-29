@@ -52,7 +52,7 @@ module.exports = function(grunt) {
         },
         jasmine: {
             main: {
-                src: ["build/main.js", "node_modules/jasmine-jquery/lib/jasmine-jquery.js"],
+                src: ["build/main.js", "node_modules/jquery/dist/jquery.min.js", "node_modules/jasmine-jquery/lib/jasmine-jquery.js"],
                 options: {
                     specs: "test/*.js"
                 }
