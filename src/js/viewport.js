@@ -17,21 +17,15 @@ function Viewport(canvas, layerDimensions) {
 
     this.setLayerList = function(newLayerList) {
         this.layerList = newLayerList;
-    }
+    };
 
     this.renderLayers = function() {
         // Reset canvas
         self.resetCanvas();
 
         // Set appropriate scale and translation.
-        console.log(self.layerDimensions);
-        console.log(self.viewportDimensions);
-
         self.context.translate(self.currentTranslation.x, self.currentTranslation.y);
         self.context.scale(self.currentScale, self.currentScale);
-
-        self.context.fillStyle = "#ffffff";
-        self.context.fillRect(0,0,100,100);
 
         // Render elements.
         for (var i in self.layerList) {
