@@ -32,6 +32,7 @@ function UIController() {
  * @description Event handler triggered when one of the toolbox buttons is clicked.
  * @param event Event object (see JQuery documentation).
  * @this UIController
+ * @memberOf UIController
  */
 UIController.prototype.onToolboxClicked = function(event) {
     if (event.target.innerHTML === "brush") {
@@ -46,6 +47,7 @@ UIController.prototype.onToolboxClicked = function(event) {
  * @description Event handler triggered on mouse down.
  * @param event Event object (see JQuery documentation).
  * @this UIController
+ * @memberOf UIController
  */
 UIController.prototype.onMouseDown = function(event) {
     this.lastPosition = this.viewport.globalToLocalPosition(new Vec2(event.offsetX, event.offsetY));
@@ -71,6 +73,7 @@ UIController.prototype.onMouseUp = function(event) {
  * @function onMouseMove
  * @description Event handler triggered on mouse move.
  * @param event Event object (see JQuery documentation).
+ * @memberOf UIController
  * @this UIController
  */
 UIController.prototype.onMouseMove = function(event) {
@@ -82,6 +85,7 @@ UIController.prototype.onMouseMove = function(event) {
  * @description Handles a paint step by transmitting the position of the mouse to the project handler, and then rendering the document.
  * @param timestamp Time when the event was triggered.
  * @this UIController
+ * @memberOf UIController
  */
 UIController.prototype.onStep = function(timestamp) {
     if(this.project.mouseMove(this.lastPosition)) {
@@ -97,6 +101,7 @@ UIController.prototype.onStep = function(timestamp) {
  * @description Catches the resize event and transmits it to the on-canvas renderer.
  * @param newSize Vec2 containing the new size of the window.
  * @this UIController
+ * @memberOf UIController
  */
 UIController.prototype.onWindowResize = function (newSize) {
     this.viewport.viewportDimensionsChanged();
