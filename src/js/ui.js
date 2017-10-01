@@ -11,6 +11,10 @@ function UIController() {
     this.lastPosition = null;
 
     this.project = new Project("Untitled");
+    this.viewport = new Viewport($("#viewport"), this.project.dimensions);
+    this.project.layerList[0].reset();
+    this.viewport.setLayerList(this.project.layerList);
+    this.viewport.viewportDimensionsChanged();
 
     this.onToolboxClicked = function() {
         if (this.innerHTML === "brush") {
@@ -40,13 +44,17 @@ function UIController() {
 
 
     this.step = function(timestamp) {
-        self.project.mouseMove(self.lastPosition);
-        if (self.mouseMoving) {
-            window.requestAnimationFrame(self.step);
+        if(self.project.mouseMove(self.lastPosition)) {
+            self.viewport.renderLayers();
+            if (self.mouseMoving) {
+                window.requestAnimationFrame(self.step);
+            }
         }
     }
 
-
+    this.windowResized = function (newSize) {
+        self.viewport.viewportDimensionsChanged();
+    }
 
 
 }
@@ -58,7 +66,12 @@ $(document).ready(function() {
     controller = new UIController();
 
     $("#toolbox-container").children().click(controller.onToolboxClicked);
-    $("#base").mousedown(controller.onMouseDown);
-    $("#base").mouseup(controller.onMouseUp);
-    $("#base").mousemove(controller.onMouseMove);
+    $("#viewport").mousedown(controller.onMouseDown);
+    $("#viewport").mouseup(controller.onMouseUp);
+    $("#viewport").mousemove(controller.onMouseMove);
+
+    $(window).on('resize', function(e) {
+        console.log("Window resized: " + $(this).width() + "x" + $(this).height());
+        controller.windowResized(Vec2($(this).width(), $(this).height()));
+    });
 });

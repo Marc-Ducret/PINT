@@ -5,9 +5,9 @@
 
 function Project(name) {
     this.name = name;
-    this.layerList = [new Layer(0)];
-    this.layerList[0].insertAfter($("#base")); //insert canvas after html base
-    this.currentTool = undefined;
+    this.dimensions = new Vec2(800,600);
+    this.layerList = [new Layer(this.dimensions)];
+    this.currentTool = null;
 
     /**
      *@brief: Specifies witch tool to use
@@ -18,33 +18,37 @@ function Project(name) {
     };
 
     /**
-     *@brief: Specifies witch tool to begin using
-     *@param {Vect2}: coordinates in the canvas
+     *@brief Specifies witch tool to begin using
+     *@param {Vec2} vect coordinates in the canvas
      */
     this.mouseClick = function(vect){
-        if (this.currentTool != undefined){
+        if (this.currentTool !== null){
             this.currentTool.startUse(null, vect);
         }
     };
 
     /**
-     *@brief: Specifies witch tool to use
-     *@param {Vect2}: coordinates in the canvas
+     * @brief Specifies witch tool to use
+     * @param {Vec2} vect coordinates in the canvas
+     * @returns true if the function updated one of the layers, else returns false. 
      */
     this.mouseMove = function (vect){
-        if (this.currentTool != undefined){
+        if (this.currentTool !== null){
             this.currentTool.continueUse(vect);
             this.layerList[0].reset();
             this.currentTool.drawPreview(this.layerList[0].getContext());
+            return true;
+        } else {
+            return false;
         }
     };
 
     /**
-     *@brief: Specifies witch tool to use
-     *@param {Vect2}: coordinates in the canvas
+     * @brief Specifies witch tool to use
+     * @param {Vec2} vect coordinates in the canvas
      */
     this.mouseRelease = function (vect){
-        if (this.currentTool != undefined){
+        if (this.currentTool !== null){
             this.currentTool.endUse(vect);
         }
     };
