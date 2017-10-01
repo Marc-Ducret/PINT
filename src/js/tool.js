@@ -78,16 +78,18 @@ function TestTool() {
   };
 
   this.drawPreview = function(ctx) {
+    ctx.beginPath();
     for (var i = 0; i < this.positions.length; i++) {
       var pos = this.positions[i];
-      ctx.beginPath();
-      ctx.arc(pos.x, pos.y, 5, 0, 2 * Math.PI, false);
-      ctx.fillStyle = 'yellow';
-      ctx.fill();
-      ctx.lineWidth = .5;
-      ctx.strokeStyle = '#333300';
-      ctx.stroke();
+      if(i == 0) {
+        ctx.moveTo(pos.x, pos.y);
+      } else {
+        ctx.lineTo(pos.x, pos.y);
+      }
     }
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = '#A05020';
+    ctx.stroke();
   };
 }
 
