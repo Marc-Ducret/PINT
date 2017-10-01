@@ -7,3 +7,11 @@ install:
 script:
     - grunt release
     - grunt test
+deploy:
+    name: PINT WebApp
+    provider: pages
+    local_dir: build
+    skip_cleanup: true
+    github_token: $GITHUB_TOKEN
+    on:
+        branch: master
