@@ -25,7 +25,7 @@ function UIController() {
     };
 
     this.onMouseDown = function(event) {
-        self.lastPosition = new Vec2(event.offsetX, event.offsetY);
+        self.lastPosition = self.viewport.globalToLocalPosition(new Vec2(event.offsetX, event.offsetY));
         self.mouseMoving = true;
 
         self.project.mouseClick(self.lastPosition);
@@ -33,13 +33,13 @@ function UIController() {
     };
 
     this.onMouseUp = function(event) {
-        self.lastPosition = new Vec2(event.offsetX, event.offsetY);
+        self.lastPosition = self.viewport.globalToLocalPosition(new Vec2(event.offsetX, event.offsetY));
         self.mouseMoving = false;
         self.project.mouseRelease(self.lastPosition);
     };
 
     this.onMouseMove = function(event) {
-        self.lastPosition = new Vec2(event.offsetX, event.offsetY);
+        self.lastPosition = self.viewport.globalToLocalPosition(new Vec2(event.offsetX, event.offsetY));
     };
 
 
