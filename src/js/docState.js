@@ -6,7 +6,9 @@
 function Project(name) {
     this.name = name;
     this.dimensions = new Vec2(800,600);
-    this.layerList = [new Layer(this.dimensions)];
+    this.preview = new Layer(this.dimensions);
+    this.currentLayer = new Layer(this.dimensions);
+    this.layerList = [this.preview, this.currentLayer];
     this.currentTool = null;
 
     /**
@@ -25,7 +27,6 @@ function Project(name) {
         if (this.currentTool !== null){
             this.currentTool.startUse(null, vect);
         }
-
     };
 
     /**
@@ -36,8 +37,8 @@ function Project(name) {
     this.mouseMove = function (vect){
         if (this.currentTool !== null){
             this.currentTool.continueUse(vect);
-            this.layerList[0].reset();
-            this.currentTool.drawPreview(this.layerList[0].getContext());
+            this.preview.reset();
+            this.currentTool.drawPreview(this.preview.getContext());
             return true;
         } else {
             return false;
@@ -50,7 +51,10 @@ function Project(name) {
      */
     this.mouseRelease = function (vect){
         if (this.currentTool !== null){
-            this.currentTool.endUse(vect);
+            if(this.currentTool.endUse(vect) == null) {
+              this.currentLayer.getContext()
+                .drawImage(this.preview.getHTMLElement(),0,0);
+            };
         }
     };
 

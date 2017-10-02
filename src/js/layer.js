@@ -17,6 +17,6 @@ function Layer(dimensions) {
     this.reset = function() {
         this.context.fillStyle = "#ffffff";
         this.context.strokeStyle = "#ffffff";
-        this.context.fillRect(0,0,this.width,this.height);
+        this.context.clearRect(0,0,this.width,this.height);
     }
 }

@@ -5,7 +5,7 @@ var toolRegistry = {};
  * @param{Tool} tool the tool to register
  */
 function registerTool(tool) {
-  toolRegistry[tool.name] = tool;
+    toolRegistry[tool.name] = tool;
 }
 
 /**
@@ -15,9 +15,9 @@ function registerTool(tool) {
  * @return the found tool
  */
 function getToolByName(name) {
-  if(toolRegistry[name] == undefined)
-    throw "No such tool "+name;
-  return toolRegistry[name];
+    if(toolRegistry[name] == undefined)
+        throw "No such tool "+name;
+    return toolRegistry[name];
 }
 
 function Tool(name) {
@@ -60,37 +60,40 @@ TestTool.prototype = new Tool("TestTool");
  * A Test Tool
  */
 function TestTool() {
-  this.positions = [];
+    this.positions = [];
 
-  this.startUse = function(img, pos) {
-    this.image = img;
-    this.continueUse(pos);
-  };
+    this.startUse = function(img, pos) {
+        this.image = img;
+        this.used = true;
+        this.continueUse(pos);
+    };
 
-  this.endUse = function(pos) {
-    this.continueUse(pos);
+    this.endUse = function(pos) {
+        this.used = false;
+        this.positions = [];
+        return null;
+    };
 
-    return this.drawPreview;
-  };
+    this.continueUse = function(pos) {
+        if(this.used) {
+            this.positions.push(pos);
+        }
+    };
 
-  this.continueUse = function(pos) {
-    this.positions.push(pos);
-  };
-
-  this.drawPreview = function(ctx) {
+    this.drawPreview = function(ctx) {
     ctx.beginPath();
     for (var i = 0; i < this.positions.length; i++) {
-      var pos = this.positions[i];
-      if(i == 0) {
-        ctx.moveTo(pos.x, pos.y);
-      } else {
-        ctx.lineTo(pos.x, pos.y);
-      }
+        var pos = this.positions[i];
+        if(i == 0) {
+            ctx.moveTo(pos.x, pos.y);
+        } else {
+            ctx.lineTo(pos.x, pos.y);
+        }
     }
     ctx.lineWidth = 2;
     ctx.strokeStyle = '#B01020';
     ctx.stroke();
-  };
+    };
 }
 
 registerTool(new TestTool());
