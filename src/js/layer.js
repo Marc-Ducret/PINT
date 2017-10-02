@@ -15,8 +15,12 @@ function Layer(dimensions) {
     };
 
     this.reset = function() {
+        this.context.clearRect(0,0,this.width,this.height);
+    }
+
+    this.fill = function() {
         this.context.fillStyle = "#ffffff";
         this.context.strokeStyle = "#ffffff";
-        this.context.clearRect(0,0,this.width,this.height);
+        this.context.fillRect(0,0,this.width,this.height);
     }
 }

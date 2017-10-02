@@ -6,10 +6,12 @@
 function Project(name) {
     this.name = name;
     this.dimensions = new Vec2(800,600);
-    this.preview = new Layer(this.dimensions);
+    this.previewLayer = new Layer(this.dimensions);
     this.currentLayer = new Layer(this.dimensions);
-    this.layerList = [this.preview, this.currentLayer];
+    this.layerList = [this.currentLayer, this.previewLayer]; // The renderer draw layers in order.
     this.currentTool = null;
+
+    this.currentLayer.fill();
 
     /**
      *@brief: Specifies witch tool to use
@@ -37,8 +39,8 @@ function Project(name) {
     this.mouseMove = function (vect){
         if (this.currentTool !== null){
             this.currentTool.continueUse(vect);
-            this.preview.reset();
-            this.currentTool.drawPreview(this.preview.getContext());
+            this.previewLayer.reset();
+            this.currentTool.drawPreview(this.previewLayer.getContext());
             return true;
         } else {
             return false;
@@ -51,9 +53,9 @@ function Project(name) {
      */
     this.mouseRelease = function (vect){
         if (this.currentTool !== null){
-            if(this.currentTool.endUse(vect) == null) {
+            if(this.currentTool.endUse(vect) === null) {
               this.currentLayer.getContext()
-                .drawImage(this.preview.getHTMLElement(),0,0);
+                .drawImage(this.previewLayer.getHTMLElement(),0,0);
             };
         }
     };
@@ -62,7 +64,7 @@ function Project(name) {
      *@brief Add a Layer at the end of the layerList
      */
     this.addLayer = function(){
-	    this.layerList.append(Layer(layerList.length));
+	    this.layerList.append(Layer(this.layerList.length));
     };
 
     /**
@@ -71,7 +73,7 @@ function Project(name) {
      * @param {number} j Second layer to switch, index starting from 0
      */
     this.exchangeLayers = function(i,j){
-        if (i >= this.layerList.lenght || j >= this.layerList.lenght){
+        if (i >= this.layerList.length || j >= this.layerList.length){
             throw "try to exchange a layer that doesn't exist with another one"
             ;
         }
@@ -79,10 +81,6 @@ function Project(name) {
             var temp = this.layerList[i];
             this.layerList[i] = this.layerList[j];
             this.layerList[j] = temp;
-
-            // update html canvas positions
-            this.layerList[i].setZIndex(i);
-            this.layerList[j].setZIndex(j);
         }
     };
 
