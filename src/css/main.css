@@ -51,12 +51,11 @@ body {
     line-height: 100px;
 }
 
-#base {
-    z-index: 1000;
+#viewport {
+    width: 100%;
+    height: calc(100vh - 156px);
 }
 
-canvas, #base {
-    width: calc(70% + 4px);
-    height: calc(100% - 150px);
-    position: absolute;
+#viewport-container {
+    padding: 0;
 }

@@ -1,18 +1,10 @@
-function Layer(zIndex) {
+function Layer(dimensions) {
     this.canvasElement = $("<canvas></canvas>");
-    this.canvasElement.css('z-index', zIndex);
     this.context = this.canvasElement[0].getContext('2d');
-
-    this.insertAfter = function(position) {
-        position.after(this.canvasElement);
-        this.width = this.canvasElement[0].scrollWidth;
-        this.height = this.canvasElement[0].scrollHeight;
-        this.canvasElement[0].height = this.height;
-        this.canvasElement[0].width = this.width;
-        console.log("Inserted canvas element. ("+this.width+";"+this.height+")");
-        this.reset();
-
-    };
+    this.canvasElement[0].width = dimensions.x;
+    this.canvasElement[0].height = dimensions.y;
+    this.width = dimensions.x;
+    this.height = dimensions.y;
 
     this.getHTMLElement = function() {
         return this.canvasElement[0];
@@ -20,10 +12,6 @@ function Layer(zIndex) {
 
     this.getContext = function() {
         return this.context;
-    };
-
-    this.setZIndex = function(zIndex) {
-        this.canvasElement.css('z-index', zIndex);
     };
 
     this.reset = function() {

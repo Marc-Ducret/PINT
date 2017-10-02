@@ -3,6 +3,8 @@
 
 PINT is a revolutionary painting Web-app rocking on JavaScript and HTML5 canvas.
 
+The latest build is [available online](https://vengeurk.github.io/PINT/).
+
 ## Installation 
 Requirements:
 * a keyboard
