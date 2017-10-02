@@ -22,7 +22,7 @@ function UIController() {
 
     this.project = new Project("Untitled");
     this.viewport = new Viewport($("#viewport"), this.project.dimensions);
-    this.project.layerList[0].reset();
+
     this.viewport.setLayerList(this.project.layerList);
     this.viewport.viewportDimensionsChanged();
 }
