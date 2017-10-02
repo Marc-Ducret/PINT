@@ -35,8 +35,15 @@ function UIController() {
  * @memberOf UIController
  */
 UIController.prototype.onToolboxClicked = function(event) {
-    if (event.target.innerHTML === "brush") {
+    var action = event.target.innerHTML;
+    if (action === "brush") {
         this.project.changeTool(getToolByName("TestTool"));
+    } else if (action === "check_box_outline_blank") {
+        this.project.changeTool(getToolByName("SquareTool"));
+    } else if (action === "radio_button_unchecked") {
+        this.project.changeTool(getToolByName("CircleTool"));
+    } else if (action === "pie_chart") {
+        this.project.changeTool(getToolByName("EllipseTool"));
     } else {
         console.warn("Unimplemented tool.");
     }
