@@ -88,7 +88,7 @@ function TestTool() {
       }
     }
     ctx.lineWidth = 2;
-    ctx.strokeStyle = '#A05020';
+    ctx.strokeStyle = '#B01020';
     ctx.stroke();
   };
 }
