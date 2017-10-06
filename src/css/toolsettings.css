@@ -1,0 +1,54 @@
+#toolsettings_container {
+    font-size: 42px;
+    background-color: #303030;
+    margin-bottom:0;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+#toolsettings_container div {
+    display: inline-block;
+    margin-left: 15px;
+    vertical-align: top;
+    text-align: center;
+    padding-right: 15px;
+}
+
+#toolsettings_container div {
+    border-right: white solid 1px;
+}
+
+#toolsettings_container label {
+    font-size: 24px;
+    color: white;
+}
+
+#toolsettings_container label::after {
+    content: " ";
+}
+
+#toolsettings_container input[type="color"] {
+    border: none;
+    padding: 0;
+    background-color: transparent;
+}
+
+#toolsettings_container input[type="number"] {
+    width: 90px;
+}
+
+#toolsettings_container select {
+    width: inherit;
+    color: black;
+    display: inline;
+    vertical-align: middle;
+    height: 60px;
+}
+
+#toolsettings_container input {
+    color: black;
+    vertical-align: middle;
+
+    min-width: 60px;
+    min-height: 60px;
+}
