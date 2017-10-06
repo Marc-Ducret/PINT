@@ -25,6 +25,9 @@ function UIController() {
 
     this.viewport.setLayerList(this.project.layerList);
     this.viewport.viewportDimensionsChanged();
+
+    this.settingsUI = new SettingsInterface($("#toolsettings_container"));
+
 }
 
 /**
@@ -39,6 +42,7 @@ UIController.prototype.onToolboxClicked = function(event) {
     if(toolname !== null) {
         var tool = getToolByName(toolname);
         if(tool !== null) {
+            this.settingsUI.setupToolSettings(tool);
             this.project.changeTool(tool);
         } else {
             console.warn("No such tool "+toolname);
@@ -110,6 +114,8 @@ UIController.prototype.onStep = function(timestamp) {
  * @memberOf UIController
  */
 UIController.prototype.onWindowResize = function (newSize) {
+    var offset = $("#viewport").offset();
+    $("#viewport").height(newSize.y - offset.top);
     this.viewport.viewportDimensionsChanged();
 };
 
@@ -130,4 +136,6 @@ $(document).ready(function() {
     $(window).on('resize', (function(e) {
         controller.onWindowResize(Vec2($(window).width(), $(window).height()));
     }).bind(controller));
+
+    controller.onWindowResize(Vec2($(window).width(), $(window).height()));
 });

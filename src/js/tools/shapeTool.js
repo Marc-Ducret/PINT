@@ -1,13 +1,13 @@
 ShapeTool.prototype = new Tool("ShapeTool");
 function ShapeTool() {
     this.settings = new SettingsRequester();
-    this.settings.add({name: "strokeColor", descName: "Primary color", inputType: "color", defaultValue: "#ffffff"});
-    this.settings.add({name: "fillColor", descName: "Secondary color", inputType: "color", defaultValue: "#000000"});
+    this.settings.add({name: "strokeColor", descName: "Stroke color", inputType: "color", defaultValue: "#ffffff"});
+    this.settings.add({name: "fillColor", descName: "Fill color", inputType: "color", defaultValue: "#000000"});
     this.settings.add({name: "lineWidth", descName: "Line width", inputType: "number", defaultValue: "5"});
-    this.settings.add({name: "shape", descName: "Shape", inputType: "options", defaultValue: "square",
-                        values: {square: "Square",
-                                 circle: "Circle",
-                                 ellipse: "Ellipse"}});
+    this.settings.add({name: "shape", descName: "Shape", inputType: "select", defaultValue: "square",
+                        values: [{name: "square", desc: "Square"},
+                                 {name: "circle", desc: "Circle"},
+                                 {name: "ellipse", desc: "Ellipse"}]});
 
 
     this.startUse = function(img, pos) {

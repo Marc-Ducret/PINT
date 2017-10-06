@@ -11,7 +11,7 @@ module.exports = function(grunt) {
             },
             css: {
                 src: ["node_modules/materialize-css/dist/css/materialize.css",
-                    "src/css/main.css"],
+                    "src/css/*.css"],
                 dest: "build/main.css"
             }
         },
@@ -25,7 +25,7 @@ module.exports = function(grunt) {
             },
             css: {
                 src: ["node_modules/materialize-css/dist/css/materialize.min.css",
-                    "src/css/main.css"],
+                    "src/css/*.css"],
                 dest: "build/main.css"
             }
         },
