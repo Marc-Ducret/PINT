@@ -35,7 +35,6 @@ function UIController() {
  * @memberOf UIController
  */
 UIController.prototype.onToolboxClicked = function(event) {
-    var action = event.target.innerHTML;
     var toolname = event.target.getAttribute("data-tool");
     if(toolname !== null) {
         var tool = getToolByName(toolname);

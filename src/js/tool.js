@@ -52,6 +52,9 @@ function Tool(name) {
      * Params: Objet Canvas
      */
     this.drawPreview = unimpl;
+
+
+    this.settings = new SettingsRequester(this);
 }
 
 TestTool.prototype = new Tool("TestTool");
@@ -61,6 +64,9 @@ TestTool.prototype = new Tool("TestTool");
  */
 function TestTool() {
     this.positions = [];
+    this.settings = new SettingsRequester();
+    this.settings.add({name: "strokeColor", descName: "Stroke color", inputType: "color", defaultValue: "#000000"});
+    this.settings.add({name: "lineWidth", descName: "Stroke width", inputType: "number", defaultValue: "5"});
 
     this.startUse = function(img, pos) {
         this.image = img;
@@ -90,8 +96,8 @@ function TestTool() {
             ctx.lineTo(pos.x, pos.y);
         }
     }
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = '#B01020';
+    ctx.lineWidth = this.settings.lineWidth;
+    ctx.strokeStyle = this.settings.strokeColor;
     ctx.stroke();
     };
 }
