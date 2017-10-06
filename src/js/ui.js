@@ -36,14 +36,14 @@ function UIController() {
  */
 UIController.prototype.onToolboxClicked = function(event) {
     var action = event.target.innerHTML;
-    if (action === "brush") {
-        this.project.changeTool(getToolByName("TestTool"));
-    } else if (action === "check_box_outline_blank") {
-        this.project.changeTool(getToolByName("SquareTool"));
-    } else if (action === "radio_button_unchecked") {
-        this.project.changeTool(getToolByName("CircleTool"));
-    } else if (action === "pie_chart") {
-        this.project.changeTool(getToolByName("EllipseTool"));
+    var toolname = event.target.getAttribute("tool");
+    if(toolname != null) {
+        var tool = getToolByName(toolname);
+        if(tool != null) {
+            this.project.changeTool(tool);
+        } else {
+            console.warn("No such tool "+toolname);
+        }
     } else {
         console.warn("Unimplemented tool.");
     }
