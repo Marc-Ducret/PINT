@@ -45,7 +45,12 @@ UIController.prototype.onToolboxClicked = function(event) {
             console.warn("No such tool "+toolname);
         }
     } else {
-        console.warn("Unimplemented tool.");
+        var func = event.target.getAttribute("data-function");
+        if(func !== null) {
+            eval(func);
+        } else {
+            console.warn("Unimplemented tool.");
+        }
     }
 };
 

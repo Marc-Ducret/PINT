@@ -91,4 +91,14 @@ function Project(name) {
     this.removeLayer = function(i){
         this.layerList.splice(i,1); // remove 1 element in position i
     }
+
+    /**
+     * Saves the current project as a download of the resulting image
+     * for the user
+     */
+    this.saveProject = function() {
+        this.currentLayer.getHTMLElement().toBlob((blob) => {
+            saveAs(blob, "project.jpg");
+        });
+    }
 }
