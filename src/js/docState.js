@@ -97,8 +97,8 @@ function Project(name) {
      * for the user
      */
     this.saveProject = function() {
-        this.currentLayer.getHTMLElement().toBlob((blob) => {
-            saveAs(blob, "project.jpg");
+        this.currentLayer.getHTMLElement().toBlob(function(blob) {
+            saveAs(blob, "project.png");
         });
     }
 }
