@@ -36,10 +36,10 @@ function UIController() {
  */
 UIController.prototype.onToolboxClicked = function(event) {
     var action = event.target.innerHTML;
-    var toolname = event.target.getAttribute("tool");
-    if(toolname != null) {
+    var toolname = event.target.getAttribute("data-tool");
+    if(toolname !== null) {
         var tool = getToolByName(toolname);
-        if(tool != null) {
+        if(tool !== null) {
             this.project.changeTool(tool);
         } else {
             console.warn("No such tool "+toolname);
