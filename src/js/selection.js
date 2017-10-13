@@ -22,23 +22,23 @@ function Selection(w, h) {
 
     /**
      *@brief add pixels to the selection
-     *@param {Vec2, number} coordinates, intensity (between 0 and 255)
+     *@param {Vec2, number} coordinates, intensity (between 0 and 1)
      */
     this.add = function(v2, intensity){
-	this.values[v2[0]*this.width, // @todo check syntaxe
-		    v2[1]*this.height] += intensity;
-	if (this.values[v2[0]*this.width, v2[1]*this.height] > 255)
-	    this.values[v2[0]*this.width, v2[1]*this.height] = 255;
+	this.values[v2.x*this.width,
+		    v2.y*this.height] += intensity;
+	if (this.values[v2.x*this.width, v2.y*this.height] > 1)
+	    this.values[v2.x*this.width, v2.y*this.height] = 1;
     };
 
     /**
      *@brief retrieve pixels from the selection
-     *@param {Vec2, number} coordinates, intensity (between 0 and 255)
+     *@param {Vec2, number} coordinates, intensity (between 0 and 1)
      */
     this.retrieve = function(v2, intensity){
-	this.values[v2[0]*this.width, // @todo check syntaxe
-		    v2[1]*this.height] -= intensity;
-	if (this.values[v2[0]*this.width, v2[1]*this.height] < 0)
-	    this.values[v2[0]*this.width, v2[1]*this.height] = 0;
+	this.values[v2.x*this.width, // @todo check syntaxe
+		    v2.y*this.height] -= intensity;
+	if (this.values[v2.x*this.width, v2.y*this.height] < 0)
+	    this.values[v2.x*this.width, v2.y*this.height] = 0;
     };
 }
