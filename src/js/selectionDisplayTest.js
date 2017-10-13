@@ -2,7 +2,7 @@ function isSelected(selection, x, y, w, h) {
     return x >= 0 && x < w && y >= 0 && y < h && selection[x + y * w] > 0;
 }
 
-function border(selection, w, h) {
+function computeBorder(selection, w, h) {
     border = [];
     for (var y = 0; y < h; y++) {
         for (var x = 0; x < w; x++) {
@@ -37,7 +37,7 @@ for (var i = 0; i < 100; i ++) {
     }
 }
 
-var borderSel = border(selection, w, h);
+var borderSel = computeBorder(selection, w, h);
 
 function drawSelection(s, ctx, w, h) {
     var img = ctx.getImageData(0, 0, w, h);
@@ -45,13 +45,13 @@ function drawSelection(s, ctx, w, h) {
     var pattern = 10;
     var period = 500;
     var offset = (Date.now() % period) * pattern * 2 / period;
-    for (var pos of borderSel) {
-        var x = pos[0];
-        var y = pos[1];
-        if(((x + y + offset) / pattern) % 2 < 1) continue;
-        img.data[(x + y * w) * 4] = 0x0;
-        img.data[(x + y * w) * 4 + 3] = 0xFF;
-    }
+    // for (var pos of borderSel) {
+    //     var x = pos[0];
+    //     var y = pos[1];
+    //     if(((x + y + offset) / pattern) % 2 < 1) continue;
+    //     img.data[(x + y * w) * 4] = 0x0;
+    //     img.data[(x + y * w) * 4 + 3] = 0xFF;
+    // }
 
     ctx.putImageData(img, 0, 0);
 }

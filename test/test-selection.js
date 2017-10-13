@@ -21,7 +21,7 @@ describe('Selection border', function () {
     });
 
     it('is disjoint with the selection', function() {
-        for (var i = 0; i < 500; i++) {
+        for (var i = 0; i < 50; i++) {
             var selection = [];
             var w = 800;
             var h = 600;
@@ -32,7 +32,7 @@ describe('Selection border', function () {
                     selection.push(0);
                 }
             }
-            expect(border(selection)).isDisjoint(selection);
+            expect(computeBorder(selection, w, h)).isDisjoint(selection);
         }
     });
 });
