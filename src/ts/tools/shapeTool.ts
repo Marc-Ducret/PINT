@@ -1,35 +1,40 @@
-ShapeTool.prototype = new Tool("ShapeTool");
-function ShapeTool() {
-    this.settings = new SettingsRequester();
-    this.settings.add({name: "strokeColor", descName: "Stroke color", inputType: "color", defaultValue: "#ffffff"});
-    this.settings.add({name: "fillColor", descName: "Fill color", inputType: "color", defaultValue: "#000000"});
-    this.settings.add({name: "lineWidth", descName: "Line width", inputType: "number", defaultValue: "5"});
-    this.settings.add({name: "shape", descName: "Shape", inputType: "select", defaultValue: "square",
-                        values: [{name: "square", desc: "Square"},
-                                 {name: "circle", desc: "Circle"},
-                                 {name: "ellipse", desc: "Ellipse"}]});
+import {Tool} from "../tool";
 
+export class ShapeTool extends Tool {
+    firstCorner: Vec2;
+    lastCorner: Vec2;
 
-    this.startUse = function(img, pos) {
+    constructor () {
+        super("ShapeTool");
+        this.addSetting({name: "strokeColor", descName: "Stroke color", inputType: "color", defaultValue: "#ffffff"});
+        this.addSetting({name: "fillColor", descName: "Fill color", inputType: "color", defaultValue: "#000000"});
+        this.addSetting({name: "lineWidth", descName: "Line width", inputType: "number", defaultValue: "5"});
+        this.addSetting({name: "shape", descName: "Shape", inputType: "select", defaultValue: "square",
+                                options: [{name: "square", desc: "Square"},
+                                        {name: "circle", desc: "Circle"},
+                                        {name: "ellipse", desc: "Ellipse"}]});
+    }
+
+    startUse (img, pos) {
         this.firstCorner = pos;
         this.lastCorner = pos;
     };
 
-    this.continueUse = function(pos) {
+    continueUse (pos) {
         this.lastCorner = pos;
     };
 
-    this.endUse = function(pos) {
+    endUse (pos) {
         this.continueUse(pos);
         return null;
     };
 
-    this.drawPreview = function(ctx) {
-        ctx.fillStyle = this.settings.fillColor;
-        ctx.strokeStyle = this.settings.strokeColor;
-        ctx.lineWidth = this.settings.lineWidth;
+    drawPreview (ctx) {
+        ctx.fillStyle = this.settings.get('fillColor');
+        ctx.strokeStyle = this.settings.get('strokeColor');
+        ctx.lineWidth = this.settings.get('lineWidth');
 
-        switch (this.settings.shape) {
+        switch (this.settings.get('shape')) {
             case "square":
                 ctx.beginPath();
                 var x = Math.min(this.firstCorner.x, this.lastCorner.x),
@@ -64,8 +69,3 @@ function ShapeTool() {
     };
 }
 
-
-
-$(function() {
-    registerTool(new ShapeTool());
-});

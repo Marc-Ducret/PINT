@@ -1,12 +1,20 @@
-function SettingsInterface(container) {
-    this.container = container;
-    this.savedSettings = {};
+import * as $ from "jquery";
 
-    this.setupToolSettings = function(tool) {
+import {Tool} from "./tool";
+import {Option, SettingsRequester, SettingRequest} from "./settingsRequester";
+
+export class SettingsInterface {
+    container: JQuery<HTMLElement>;
+    savedSettings: {[name: string] : number} = {};
+
+    constructor (container: JQuery<HTMLElement>) {
+        this.container = container;
+    }
+
+    setupToolSettings (tool : Tool) {
         this.container.empty();
         var self = this;
-        for (var i in tool.settings.requests) {
-            var request = tool.settings.requests[i];
+        for (let request of tool.settings.requests) {
             var name = request.name;
             var desc = request.descName;
 
@@ -44,13 +52,13 @@ function SettingsInterface(container) {
                     input.attr("id",request.name);
                     input.attr("name",request.name);
 
-                    $(request.values).each(function() {
-                        var option = $("<option>");
-                        console.log(this);
-                        option.attr("value", this.name);
-                        option.html(this.desc);
+                    for (let opt of request.options) {
+                        let option = $("<option>");
+                        console.log(opt);
+                        option.attr("value", opt.name);
+                        option.html(opt.desc);
                         input.append(option);
-                    });
+                    }
 
                     self.savedSettings[request.name] = request.defaultValue;
                     input.change((function(name) {

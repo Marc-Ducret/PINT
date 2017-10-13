@@ -1,14 +1,19 @@
 module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON("package.json"),
+        ts: {
+            base: {
+                src: ['src/ts/**/*.ts'],
+                dest: '../build/main.js',
+                options: {
+                    target: 'es6',
+                    module: 'amd',
+                    moduleResolution: 'node'
+               //     lib: ['dom', 'es2015', 'es2015.iterable']
+                }
+            }
+        },
         concat_dev: {
-            js: {
-                src: ["node_modules/jquery/dist/jquery.js",
-                    "node_modules/materialize-css/dist/js/materialize.js",
-                    "node_modules/vec2/vec2.js",
-                    "src/js/**"],
-                dest: "build/main.js"
-            },
             css: {
                 src: ["node_modules/materialize-css/dist/css/materialize.css",
                     "src/css/*.css"],
@@ -16,13 +21,6 @@ module.exports = function(grunt) {
             }
         },
         concat: {
-            js: {
-                src: ["node_modules/jquery/dist/jquery.min.js",
-                    "node_modules/materialize-css/dist/js/materialize.min.js",
-                    "node_modules/vec2/vec2.min.js",
-                    "src/js/**"],
-                dest: "build/main.js"
-            },
             css: {
                 src: ["node_modules/materialize-css/dist/css/materialize.min.css",
                     "src/css/*.css"],
@@ -92,9 +90,10 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-inline');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-jsdoc');
+    grunt.loadNpmTasks('grunt-ts');
 
     // Default task(s).
-    grunt.registerTask('default', ['concat_dev', 'htmlmin']);
+    grunt.registerTask('default', ['ts', 'concat_dev', 'htmlmin']);
     grunt.registerTask('release', ['concat', 'uglify', 'htmlmin', 'cssmin', 'inline', 'clean']);
     grunt.registerTask('doc',['jsdoc']);
     grunt.registerTask('test',['concat_dev', 'htmlmin', 'jasmine']);
