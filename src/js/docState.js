@@ -33,8 +33,8 @@ function Project(name) {
      *@brief Specifies witch tool to begin using
      *@param {Vec2} vect coordinates in the canvas
      */
-    this.mouseClick = function(vect){
-        if (this.currentTool !== null){
+    this.mouseClick = function(vect) {
+        if (this.currentTool !== null) {
             this.currentTool.startUse(null, vect);
         }
     };
@@ -44,8 +44,8 @@ function Project(name) {
      * @param {Vec2} vect coordinates in the canvas
      * @returns true if the function updated one of the layers, else returns false.
      */
-    this.mouseMove = function (vect){
-        if (this.currentTool !== null){
+    this.mouseMove = function (vect) {
+        if (this.currentTool !== null) {
             this.currentTool.continueUse(vect);
             this.previewLayer.reset();
             this.currentTool.drawPreview(this.previewLayer.getContext());
@@ -59,8 +59,8 @@ function Project(name) {
      * @brief Specifies witch tool to use
      * @param {Vec2} vect coordinates in the canvas
      */
-    this.mouseRelease = function (vect){
-        if (this.currentTool !== null){
+    this.mouseRelease = function (vect) {
+        if (this.currentTool !== null) {
             if(this.currentTool.endUse(vect) === null) {
               this.currentLayer.getContext()
                 .drawImage(this.previewLayer.getHTMLElement(),0,0);
@@ -71,7 +71,7 @@ function Project(name) {
     /**
      *@brief Add a Layer at the end of the layerList
      */
-    this.addLayer = function(){
+    this.addLayer = function() {
 	    this.layerList.append(Layer(this.layerList.length));
     };
 
@@ -80,7 +80,7 @@ function Project(name) {
      * @param {number} i First layer to switch, index starting from 0
      * @param {number} j Second layer to switch, index starting from 0
      */
-    this.exchangeLayers = function(i,j){
+    this.exchangeLayers = function(i,j) {
         if (i >= this.layerList.length || j >= this.layerList.length){
             throw "try to exchange a layer that doesn't exist with another one"
             ;
@@ -96,7 +96,7 @@ function Project(name) {
      *@brief remove a Layer
      *@param {number} i Layer to remove starting from 0
      */
-    this.removeLayer = function(i){
+    this.removeLayer = function(i) {
         this.layerList.splice(i,1); // remove 1 element in position i
     }
 
