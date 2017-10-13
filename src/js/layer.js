@@ -14,6 +14,14 @@ function Layer(dimensions) {
         return this.context;
     };
 
+    this.getWidth = function() {
+        return this.width;
+    };
+    
+    this.getHeight = function() {
+        return this.height;
+    };
+
     this.reset = function() {
         this.context.clearRect(0,0,this.width,this.height);
     }
