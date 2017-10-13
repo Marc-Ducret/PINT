@@ -39,19 +39,19 @@ for (var i = 0; i < 100; i ++) {
 
 var borderSel = computeBorder(selection, w, h);
 
-function drawSelection(s, ctx, w, h) {
+function drawSelection(border, ctx, w, h) {
     var img = ctx.getImageData(0, 0, w, h);
 
     var pattern = 10;
     var period = 500;
     var offset = (Date.now() % period) * pattern * 2 / period;
-    // for (var pos of borderSel) {
-    //     var x = pos[0];
-    //     var y = pos[1];
-    //     if(((x + y + offset) / pattern) % 2 < 1) continue;
-    //     img.data[(x + y * w) * 4] = 0x0;
-    //     img.data[(x + y * w) * 4 + 3] = 0xFF;
-    // }
+    for (var i in border) {
+        var x = border[i][0];
+        var y = border[i][1];
+        if(((x + y + offset) / pattern) % 2 < 1) continue;
+        img.data[(x + y * w) * 4] = 0x0;
+        img.data[(x + y * w) * 4 + 3] = 0xFF;
+    }
 
     ctx.putImageData(img, 0, 0);
 }

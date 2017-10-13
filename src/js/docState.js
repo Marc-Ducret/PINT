@@ -27,7 +27,8 @@ function Project(name) {
      */
     this.mouseClick = function(vect) {
         if (this.currentTool !== null) {
-            this.currentTool.startUse(null, vect);
+            var img = this.currentLayer.getContext().getImageData(0, 0, this.dimensions.x, this.dimensions.y);
+            this.currentTool.startUse(img, vect);
         }
     };
 

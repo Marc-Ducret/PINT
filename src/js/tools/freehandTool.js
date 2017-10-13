@@ -28,18 +28,18 @@ FreehandTool.prototype = new Tool("FreehandTool");
     };
 
     this.drawPreview = function(ctx) {
-    ctx.beginPath();
-    for (var i = 0; i < this.positions.length; i++) {
-        var pos = this.positions[i];
-        if(i === 0) {
-            ctx.moveTo(pos.x, pos.y);
-        } else {
-            ctx.lineTo(pos.x, pos.y);
+        ctx.beginPath();
+        for (var i = 0; i < this.positions.length; i++) {
+            var pos = this.positions[i];
+            if(i === 0) {
+                ctx.moveTo(pos.x, pos.y);
+            } else {
+                ctx.lineTo(pos.x, pos.y);
+            }
         }
-    }
-    ctx.lineWidth = this.settings.lineWidth;
-    ctx.strokeStyle = this.settings.strokeColor;
-    ctx.stroke();
+        ctx.lineWidth = this.settings.lineWidth;
+        ctx.strokeStyle = this.settings.strokeColor;
+        ctx.stroke();
     };
 }
 
