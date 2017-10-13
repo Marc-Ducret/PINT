@@ -11,6 +11,14 @@ function Project(name) {
     this.layerList = [this.currentLayer, this.previewLayer]; // The renderer draw layers in order.
     this.currentTool = null;
 
+    /** selection is a table of int between 0 and 255 that represente selected
+     *pixels (initialized with number of pixels of current layer)
+     *@todo : standardize selection dimention - layers ...
+     */
+    this.currentSelection = [];
+    for(var i=0;i<this.currentLayer.getWidth*this.currentLayer.getHeight();i++)
+	this.currentSelection.append(0)
+
     this.currentLayer.fill();
 
     /**
