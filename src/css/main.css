@@ -1,8 +1,12 @@
+html {
+    overflow: hidden;
+}
+
 body {
     background-color: #131213;
     margin:0;
     color: white;
-    font-family: "Roboto Thin";
+    font-family: Roboto;
 }
 
 #top-nav {
@@ -24,6 +28,7 @@ body {
     font-size: 56px;
     color: white;
     text-decoration: none;
+    font-weight: 100;
 }
 
 #title-container {
@@ -53,7 +58,6 @@ body {
 
 #viewport {
     width: 100%;
-    height: calc(100vh - 156px);
 }
 
 #viewport-container {
