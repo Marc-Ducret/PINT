@@ -9,7 +9,8 @@ module.exports = function(grunt) {
                     target: 'es6',
                     module: 'amd',
                     moduleResolution: 'node',
-                    rootDir: 'src/ts/'
+                    rootDir: 'src/ts/',
+                    fast: 'always'
                //     lib: ['dom', 'es2015', 'es2015.iterable']
                 }
             }
