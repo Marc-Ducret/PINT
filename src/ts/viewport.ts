@@ -13,9 +13,10 @@ export class Viewport {
     layerList: Array<Layer> = [];
 
 
-    constructor (canvas: JQuery<HTMLCanvasElement>, layerDimensions) {
+    constructor (canvas: JQuery<HTMLCanvasElement>, layerDimensions: Vec2) {
         this.canvas = canvas[0];
         this.context = this.canvas.getContext('2d');
+        this.layerDimensions = layerDimensions;
     }
 
     viewportDimensionsChanged () {
@@ -25,7 +26,7 @@ export class Viewport {
 
         this.currentTranslation = this.viewportDimensions.divide(2,true).subtract(this.layerDimensions.divide(2,true),true);
         this.currentScale = 1;
-        window.requestAnimationFrame(this.renderLayers);
+        window.requestAnimationFrame(this.renderLayers.bind(this));
     };
 
     setLayerList (newLayerList) {
@@ -55,6 +56,6 @@ export class Viewport {
     };
 
     globalToLocalPosition (position) {
-        return position.subtract(this.currentTranslation, true).divide(this.currentScale);
+        return position.subtract(this.currentTranslation, true).divide(this.currentScale, true);
     }
 }
