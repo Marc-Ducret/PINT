@@ -5,6 +5,7 @@
 
 import {Layer} from "./layer";
 import {Tool} from "./tool";
+import {Vec2} from "./vec2";
 
 export class Project {
     name: string;

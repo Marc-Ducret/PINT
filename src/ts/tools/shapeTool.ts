@@ -1,4 +1,5 @@
 import {Tool} from "../tool";
+import {Vec2} from "../vec2";
 
 export class ShapeTool extends Tool {
     firstCorner: Vec2;

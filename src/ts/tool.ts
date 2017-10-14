@@ -1,4 +1,5 @@
 import {SettingRequest, SettingsRequester} from "./settingsRequester";
+import {Vec2} from "./vec2";
 
 export abstract class Tool {
     name: string;

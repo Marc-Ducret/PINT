@@ -4,11 +4,12 @@ module.exports = function(grunt) {
         ts: {
             base: {
                 src: ['src/ts/**/*.ts'],
-                dest: '../build/main.js',
+                dest: 'build/js/',
                 options: {
                     target: 'es6',
                     module: 'amd',
-                    moduleResolution: 'node'
+                    moduleResolution: 'node',
+                    rootDir: 'src/ts/'
                //     lib: ['dom', 'es2015', 'es2015.iterable']
                 }
             }
@@ -77,6 +78,7 @@ module.exports = function(grunt) {
                 }
             }
         }
+
 
     });
 

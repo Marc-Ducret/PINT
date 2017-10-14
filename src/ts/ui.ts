@@ -4,6 +4,7 @@ import {Project} from "./docState";
 import {SettingsInterface} from "./settingsInterface";
 import {Viewport} from "./viewport";
 import {ToolRegistry} from "./toolregistry";
+import {Vec2} from "./vec2";
 
 /**
  * @file User interface handler
@@ -17,7 +18,7 @@ import {ToolRegistry} from "./toolregistry";
  * @class UIController
  * @description Creates a new Project, a new Viewport and link both components for rendering.
  */
-class UIController {
+export class UIController {
     mouseMoving: boolean = false;
     lastPosition: Vec2 = null;
     project: Project;
@@ -32,7 +33,7 @@ class UIController {
         this.viewport.setLayerList(this.project.layerList);
         this.viewport.viewportDimensionsChanged();
 
-        this.settingsUI = new SettingsInterface($("#toolsettings_container"));
+        this.settingsUI = new SettingsInterface(<JQuery<HTMLElement>> $("#toolsettings_container"));
         this.toolRegistry = new ToolRegistry();
     }
 
@@ -134,26 +135,3 @@ class UIController {
 }
 
 
-
-
-
-
-var controller;
-
-/**
- * @description Binds HTML events to UIController's handlers.
- */
-$(document).ready(function() {
-    controller = new UIController();
-
-    $("#toolbox-container").children().click(controller.onToolboxClicked.bind(controller));
-    $("#viewport").mousedown(controller.onMouseDown.bind(controller));
-    $("#viewport").mouseup(controller.onMouseUp.bind(controller));
-    $("#viewport").mousemove(controller.onMouseMove.bind(controller));
-
-    $(window).on('resize', (function(e) {
-        controller.onWindowResize(new Vec2($(window).width(), $(window).height()));
-    }).bind(controller));
-
-    controller.onWindowResize(new Vec2($(window).width(), $(window).height()));
-});

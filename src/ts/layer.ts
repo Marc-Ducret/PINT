@@ -1,4 +1,5 @@
 import * as $ from "jquery";
+import {Vec2} from "vec2";
 
 export class Layer {
     canvasElement: JQuery<HTMLCanvasElement>;
