@@ -1,6 +1,6 @@
 import * as $ from "jquery";
 
-import {Tool} from "./tool";
+import {Tool} from "../tools/tool";
 import {Option, SettingsRequester, SettingRequest} from "./settingsRequester";
 
 export class SettingsInterface {

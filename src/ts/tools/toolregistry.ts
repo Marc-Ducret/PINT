@@ -1,13 +1,20 @@
 
-import {TestTool, Tool} from "./tool";
-import {ShapeTool} from "./tools/shapeTool";
+import {ShapeTool} from "./shapeTool";
+import {AutoSelectTool} from "./autoselectTool";
+import {FillTool} from "./fillTool";
+import {FreehandTool} from "./freehandTool";
+import {Tool} from "./tool";
+import {SelectionTool} from "./selectionTool";
 
 export class ToolRegistry {
     registry: {[name: string]: Tool} = {};
 
     constructor () {
-        this.registerTool(new TestTool());
         this.registerTool(new ShapeTool());
+        this.registerTool(new AutoSelectTool());
+        this.registerTool(new FillTool());
+        this.registerTool(new FreehandTool());
+        this.registerTool(new SelectionTool());
     }
 
     /**
@@ -21,7 +28,7 @@ export class ToolRegistry {
     /**
      * Retrieve a tool in the registry
      * @throws{No such tool} if there is no such tool
-     * @param{string} the name of the tool
+     * @param{string} name the name of the tool
      * @return the found tool
      */
     getToolByName(name: string) {

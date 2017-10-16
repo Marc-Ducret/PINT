@@ -34,4 +34,12 @@ export class Layer {
         this.context.strokeStyle = "#ffffff";
         this.context.fillRect(0,0,this.width,this.height);
     };
+
+    getWidth() : number {
+        return this.width;
+    }
+
+    getHeight() : number {
+        return this.height;
+    }
 }

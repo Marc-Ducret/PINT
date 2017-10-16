@@ -4,7 +4,7 @@
  */
 
 import {Layer} from "./layer";
-import {Tool} from "./tool";
+import {Tool} from "./tools/tool";
 import {Vec2} from "./vec2";
 
 export class Project {
@@ -14,8 +14,9 @@ export class Project {
     currentLayer: Layer;
     layerList: Array<Layer>; // The renderer draw layers in order.
     currentTool: Tool;
+    currentSelection: Array<number>; // @todo: there is an optimized array type to store numbers.
 
-    constructor (name) {
+    constructor (name: string) {
         this.name = name;
         this.dimensions = new Vec2(800,600);
         this.previewLayer = new Layer(this.dimensions);
@@ -23,13 +24,24 @@ export class Project {
         this.layerList = [this.currentLayer, this.previewLayer]; // The renderer draw layers in order.
         this.currentTool = null;
         this.currentLayer.fill();
+
+        /** selection is a table of int between 0 and 255 that represente selected
+         *pixels (initialized with number of pixels of current layer)
+         *@todo : standardize selection dimention - layers ...
+         */
+        this.currentSelection = [];
+        for(let i=0;i<this.currentLayer.getWidth()*this.currentLayer.getHeight();i++)
+            this.currentSelection.push(0);
+
+        this.currentLayer.fill();
     }
+
 
     /**
      *@brief: Specifies witch tool to use
      *@param {Tool} tool Tool to use
      */
-    changeTool (tool){
+    changeTool (tool: Tool){
 	    this.currentTool = tool;
     };
 
@@ -37,9 +49,11 @@ export class Project {
      *@brief Specifies witch tool to begin using
      *@param {Vec2} vect coordinates in the canvas
      */
-    mouseClick (vect){
-        if (this.currentTool !== null){
-            this.currentTool.startUse(null, vect);
+
+    mouseClick (vect: Vec2){
+        if (this.currentTool !== null) {
+            let img = this.currentLayer.getContext().getImageData(0, 0, this.dimensions.x, this.dimensions.y);
+            this.currentTool.startUse(img, vect);
         }
     };
 
@@ -48,7 +62,8 @@ export class Project {
      * @param {Vec2} vect coordinates in the canvas
      * @returns true if the function updated one of the layers, else returns false.
      */
-    mouseMove (vect){
+
+    mouseMove (vect: Vec2){
         if (this.currentTool !== null){
             this.currentTool.continueUse(vect);
             this.previewLayer.reset();
@@ -63,7 +78,8 @@ export class Project {
      * @brief Specifies witch tool to use
      * @param {Vec2} vect coordinates in the canvas
      */
-    mouseRelease (vect){
+
+    mouseRelease (vect: Vec2){
         if (this.currentTool !== null){
             if(this.currentTool.endUse(vect) === null) {
               this.currentLayer.getContext()
@@ -75,6 +91,7 @@ export class Project {
     /**
      *@brief Add a Layer at the end of the layerList
      */
+
     addLayer (){
 	    this.layerList.push(new Layer(this.dimensions));
     };
@@ -84,7 +101,8 @@ export class Project {
      * @param {number} i First layer to switch, index starting from 0
      * @param {number} j Second layer to switch, index starting from 0
      */
-    exchangeLayers (i,j){
+
+    exchangeLayers (i: number, j: number){
         if (i >= this.layerList.length || j >= this.layerList.length){
             throw "try to exchange a layer that doesn't exist with another one"
             ;
@@ -100,7 +118,8 @@ export class Project {
      *@brief remove a Layer
      *@param {number} i Layer to remove starting from 0
      */
-    removeLayer (i){
+
+    removeLayer (i: number){
         this.layerList.splice(i,1); // remove 1 element in position i
     }
 

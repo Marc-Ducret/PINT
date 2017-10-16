@@ -15,14 +15,12 @@ module.exports = function(grunt) {
                 }
             }
         },
-        concat_dev: {
-            css: {
+        concat: {
+            css_dev: {
                 src: ["node_modules/materialize-css/dist/css/materialize.css",
                     "src/css/*.css"],
                 dest: "build/main.css"
-            }
-        },
-        concat: {
+            },
             css: {
                 src: ["node_modules/materialize-css/dist/css/materialize.min.css",
                     "src/css/*.css"],
@@ -96,8 +94,8 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-ts');
 
     // Default task(s).
-    grunt.registerTask('default', ['ts', 'concat_dev', 'htmlmin']);
-    grunt.registerTask('release', ['concat', 'uglify', 'htmlmin', 'cssmin', 'inline', 'clean']);
+    grunt.registerTask('default', ['ts', 'concat:css_dev', 'htmlmin']);
+    grunt.registerTask('release', ['concat:css', 'uglify', 'htmlmin', 'cssmin', 'inline', 'clean']);
     grunt.registerTask('doc',['jsdoc']);
-    grunt.registerTask('test',['concat_dev', 'htmlmin', 'jasmine']);
+    grunt.registerTask('test',['concat:css_dev', 'htmlmin', 'jasmine']);
 }

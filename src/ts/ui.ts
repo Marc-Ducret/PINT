@@ -1,9 +1,9 @@
 import * as $ from "jquery";
 
 import {Project} from "./docState";
-import {SettingsInterface} from "./settingsInterface";
+import {SettingsInterface} from "./tool_settings/settingsInterface";
 import {Viewport} from "./viewport";
-import {ToolRegistry} from "./toolregistry";
+import {ToolRegistry} from "./tools/toolregistry";
 import {Vec2} from "./vec2";
 
 /**
