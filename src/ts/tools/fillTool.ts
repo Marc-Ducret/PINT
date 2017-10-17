@@ -8,7 +8,7 @@ import {colorSelect} from "./autoselectTool";
 
 export class FillTool extends Tool {
 
-    pixels: Array<number>;
+    pixels: Uint8ClampedArray;
     newImage: ImageData;
 
     constructor() {

@@ -85,6 +85,7 @@ export class Project {
                 this.currentTool.drawPreview(this.previewLayer.getContext());
                 this.currentLayer.getContext()
                     .drawImage(this.previewLayer.getHTMLElement(),0,0);
+                this.previewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
             }
         }
     };

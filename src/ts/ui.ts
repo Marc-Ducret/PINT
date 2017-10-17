@@ -114,10 +114,10 @@ export class UIController {
 
         if (this.mouseMoving) {
             if(this.project.mouseMove(this.lastPosition)) {
-                this.viewport.renderLayers();
                 window.requestAnimationFrame(this.onStep.bind(this));
             }
         }
+        this.viewport.renderLayers();
     };
 
     /**

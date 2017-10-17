@@ -1,10 +1,10 @@
 import {Vec2} from "../vec2";
 
-function isSelected(selection, x, y, w, h) {
-    return x >= 0 && x < w && y >= 0 && y < h && selection[x + y * w] > 0;
+function isSelected(selection: Uint8ClampedArray, x, y, w, h) {
+    return x >= 0 && x < w && y >= 0 && y < h && selection[x + y * w] === 1;
 }
 
-export function computeBorder(selection: Array<number>, w: number, h: number) : Array<Vec2> {
+export function computeBorder(selection: Uint8ClampedArray, w: number, h: number) : Array<Vec2> {
     let border: Array<Vec2> = [];
     for (let y = 0; y < h; y++) {
         for (let x = 0; x < w; x++) {
@@ -23,10 +23,7 @@ export function computeBorder(selection: Array<number>, w: number, h: number) : 
 var w = 800; // TODO: Don't hardcode that.
 var h = 600;
 
-var selection = [];
-for (var i = 0; i < w * h; i ++) {
-    selection.push(0);
-}
+var selection = new Uint8ClampedArray(w*h);
 
 for (var i = 0; i < 100; i ++) {
     for (var j = 0; j < 100; j ++) {
