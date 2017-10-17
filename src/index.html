@@ -33,7 +33,7 @@
                 <i class="medium material-icons" data-function="controller.project.saveProject();">save</i>
                 <i class="medium material-icons" data-tool="FillTool">palette</i>
                 <i class="medium material-icons" data-tool="AutoSelectTool">layers</i>
-                <i class="medium material-icons"data-tool="SelectionTool">photo_size_select_small</i>
+                <i class="medium material-icons" data-tool="SelectionTool">photo_size_select_small</i>
                 <i class="medium material-icons">zoom_in</i>
                 <i class="medium material-icons">zoom_out</i>
             </p>
@@ -50,24 +50,23 @@
         </div>
     </div>
 </div>
-<script type="text/javascript" src="../node_modules/jquery/dist/jquery.js"></script>
+
 <script type="text/javascript">
-    var require = {
-        baseUrl: '.',
+var require = {
+    baseUrl: '.',
 
-        paths: {
-            //main libraries
-            jquery: '../node_modules/jquery/dist/jquery'
-        },
+    paths: {
+        //main libraries
+        jquery: 'jquery'
+    },
 
-        shim: {
-            jquery: {
-                exports: '$'
-            }
+    shim: {
+        jquery: {
+            exports: '$'
         }
-    };
+    }
+};
 </script>
-<script type="text/javascript" src="../node_modules/requirejs/require.js" data-main="js/main.js"></script>
-<!--<script type="text/javascript" src="main.js?__inline"></script>-->
+<script type="text/javascript" src="require.js" data-main="main.js"></script>
 </body>
 </html>

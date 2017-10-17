@@ -2,6 +2,7 @@ import * as $ from "jquery";
 
 import {Tool} from "../tools/tool";
 import {Option, SettingsRequester, SettingRequest} from "./settingsRequester";
+import Selector = JQuery.Selector;
 
 export class SettingsInterface {
     container: JQuery<HTMLElement>;
@@ -22,11 +23,11 @@ export class SettingsInterface {
                 request.defaultValue = this.savedSettings[name]; /** @warning This assumes that settings request of the same name requires the same types. **/
             }
 
-            var label = $("<label></label>");
+            let label: JQuery<Node> = $("<label></label>");
             label.attr("for",name);
             label.html(desc);
 
-            var input = null;
+            let input: JQuery<Node> = null;
 
             switch (request.inputType) {
                 case "number":
@@ -57,7 +58,7 @@ export class SettingsInterface {
                         console.log(opt);
                         option.attr("value", opt.name);
                         option.html(opt.desc);
-                        input.append(option);
+                        option.appendTo(<JQuery> input);
                     }
 
                     self.savedSettings[request.name] = request.defaultValue;
@@ -69,11 +70,11 @@ export class SettingsInterface {
                     break;
             }
 
-            var container = $("<div>");
-            label.appendTo(container);
-            input.appendTo(container);
+            var container: JQuery<Node> = $("<div>");
+            label.appendTo(<JQuery> container);
+            input.appendTo(<JQuery> container);
 
-            container.appendTo(this.container);
+            container.appendTo(<JQuery> this.container);
         }
     };
 }

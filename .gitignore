@@ -1,5 +1,4 @@
 # Custom
-.travis.yml
 .tscache/
 build/
 doc/

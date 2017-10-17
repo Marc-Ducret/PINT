@@ -19,5 +19,5 @@ Build commands:
 * Dev build: ``grunt``
 * Release build: ``grunt release``
 * Documentation: ``grunt doc``
-* Tests: ``grunt test``
+* Tests: ``npm test``
 * Clean: ``grunt clean``

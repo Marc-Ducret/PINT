@@ -1,6 +1,7 @@
 import * as $ from "jquery";
-import {UIController} from "./ui";
-import {Vec2} from "./vec2";
+import {UIController} from "./ts/ui";
+import {Vec2} from "./ts/vec2";
+
 
 
 /**

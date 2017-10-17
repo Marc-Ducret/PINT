@@ -1,4 +1,14 @@
 
+import {giveMeTheAnswer, randomModification} from "../src/ts/test-file";
+
+declare global {
+    export namespace jasmine {
+        interface Matchers<T> {
+            toBeBetweenZeroAndOne(expected: number) : boolean;
+        }
+    }
+}
+
 describe('The answer', function () {
 
     beforeEach(function () {
@@ -20,7 +30,8 @@ describe('The answer', function () {
     });
 
     it('random gives a number between zero and one', function() {
-        expect(giveMeANumberBetweenZeroAndOne()).toBeBetweenZeroAndOne();
+        let a = Math.random()*15;
+        expect(randomModification(a) - a + 0.5).toBeBetweenZeroAndOne(0);
     })
 });
 

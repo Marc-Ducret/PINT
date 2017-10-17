@@ -6,7 +6,7 @@ install:
     - npm install
 script:
     - grunt release
-    - grunt test
+    - npm test
 deploy:
     name: PINT WebApp
     provider: pages
