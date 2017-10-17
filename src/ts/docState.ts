@@ -6,6 +6,7 @@
 import {Layer} from "./layer";
 import {Tool} from "./tools/tool";
 import {Vec2} from "./vec2";
+import {PixelSelection} from "./selection/selection";
 
 export class Project {
     name: string;
@@ -14,7 +15,7 @@ export class Project {
     currentLayer: Layer;
     layerList: Array<Layer>; // The renderer draw layers in order.
     currentTool: Tool;
-    currentSelection: Array<number>; // @todo: there is an optimized array type to store numbers.
+    currentSelection: PixelSelection;
 
     constructor (name: string) {
         this.name = name;
@@ -29,9 +30,7 @@ export class Project {
          *pixels (initialized with number of pixels of current layer)
          *@todo : standardize selection dimention - layers ...
          */
-        this.currentSelection = [];
-        for(let i=0;i<this.currentLayer.getWidth()*this.currentLayer.getHeight();i++)
-            this.currentSelection.push(0);
+        this.currentSelection = new PixelSelection(this.dimensions.x, this.dimensions.y);
 
         this.currentLayer.fill();
     }
@@ -64,14 +63,15 @@ export class Project {
      */
 
     mouseMove (vect: Vec2){
+        let ctx = this.previewLayer.getContext();
         if (this.currentTool !== null){
             this.currentTool.continueUse(vect);
             this.previewLayer.reset();
             this.currentTool.drawPreview(this.previewLayer.getContext());
-            return true;
-        } else {
-            return false;
         }
+
+        this.currentSelection.draw(ctx);
+        return true;
     };
 
     /**

@@ -20,24 +20,6 @@ export function computeBorder(selection: Uint8ClampedArray, w: number, h: number
     return border;
 }
 
-var w = 800; // TODO: Don't hardcode that.
-var h = 600;
-
-var selection = new Uint8ClampedArray(w*h);
-
-for (var i = 0; i < 100; i ++) {
-    for (var j = 0; j < 100; j ++) {
-        selection[100 + i + (100 + j) * w] = 1;
-    }
-}
-for (var i = 0; i < 100; i ++) {
-    for (var j = 0; j < 100; j ++) {
-        selection[150 + i + (125 + j) * w] = 1;
-    }
-}
-
-var borderSel = computeBorder(selection, w, h);
-
 export function drawSelection(border: Array<Vec2>, ctx: CanvasRenderingContext2D, w: number, h: number) {
     var img = ctx.getImageData(0, 0, w, h);
 

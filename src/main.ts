@@ -2,13 +2,11 @@ import * as $ from "jquery";
 import {UIController} from "./ts/ui";
 import {Vec2} from "./ts/vec2";
 
-
-
 /**
  * @description Binds HTML events to UIController's handlers.
  */
 
-let controller = new UIController();
+export var controller = new UIController();
 console.log("Setting up UI");
 
 $("#toolbox-container").children().click(controller.onToolboxClicked.bind(controller));

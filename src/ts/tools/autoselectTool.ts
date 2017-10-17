@@ -1,7 +1,6 @@
 import {Tool} from "./tool";
 import {Vec2} from "../vec2";
-import {computeBorder, drawSelection} from "../selection/selectionDisplayTest";
-
+import {controller} from "../../main";
 
 interface Coordinates {
     x: number,
@@ -19,7 +18,7 @@ export function colorSelect(img: ImageData, pos: Vec2): Uint8ClampedArray {
     let toVisit: Array<Coordinates> = [pos];
     let selection = new Uint8ClampedArray(w*h);
 
-    let id = function(p: Coordinates) : number{
+    let id = function(p: Coordinates) : number {
         return Math.floor(p.x + w * p.y);
     };
 
@@ -38,7 +37,6 @@ export function colorSelect(img: ImageData, pos: Vec2): Uint8ClampedArray {
             selection[id(p)] = 3;
             toVisit.push(p);
         }
-
     };
     let i = id(pos);
     console.log(img.data[i*4+1]+" | "+img.data[i*4+2]+ " | " + img.data[i*4]);
@@ -79,9 +77,8 @@ export class AutoSelectTool extends Tool {
     startUse (img, pos) {
         this.image = img;
         this.used = true;
-        this.selection = colorSelect(this.image, new Vec2(Math.floor(pos.x), Math.floor(pos.y)));
-        this.border = computeBorder(this.selection, this.image.width, this.image.height);
-        console.log('border length: ', this.border.length);
+        controller.project.currentSelection.addRegion(colorSelect(this.image, new Vec2(Math.floor(pos.x), Math.floor(pos.y))));
+        controller.project.currentSelection.updateBorder();
     };
 
     endUse (pos) {
@@ -93,6 +90,5 @@ export class AutoSelectTool extends Tool {
     };
 
     drawPreview (ctx: CanvasRenderingContext2D) {
-        drawSelection(this.border, ctx, this.image.width, this.image.height);
     };
 }
