@@ -4,6 +4,7 @@ build/
 doc/
 .idea/
 src/ts/*.js
+tscommand*.txt
 
 # Logs
 logs
