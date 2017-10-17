@@ -111,9 +111,10 @@ export class UIController {
      * @memberOf UIController
      */
     onStep (timestamp: number) {
-        if(this.project.mouseMove(this.lastPosition)) {
-            this.viewport.renderLayers();
-            if (this.mouseMoving) {
+
+        if (this.mouseMoving) {
+            if(this.project.mouseMove(this.lastPosition)) {
+                this.viewport.renderLayers();
                 window.requestAnimationFrame(this.onStep.bind(this));
             }
         }
