@@ -12,6 +12,7 @@ interface Coordinates {
 TODO: Put this in a class or at least in another file.
  */
 export function colorSelect(img: ImageData, pos: Vec2): Uint8ClampedArray {
+    "use strict";
     console.log(img);
     let w = img.width;
     let h = img.height;
