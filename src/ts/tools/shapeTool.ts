@@ -1,6 +1,6 @@
 import {Tool} from "./tool";
 import {Vec2} from "../vec2";
-import {PixelSelection} from "../selection/selection";
+import {Project} from "../docState";
 
 export class ShapeTool extends Tool {
     firstCorner: Vec2;
@@ -17,7 +17,7 @@ export class ShapeTool extends Tool {
                                         {name: "ellipse", desc: "Ellipse"}]});
     }
 
-    startUse (img, pos, currentSelection: PixelSelection) {
+    startUse (img, pos, project) {
         this.firstCorner = pos;
         this.lastCorner = pos;
     };
@@ -70,4 +70,3 @@ export class ShapeTool extends Tool {
 
     };
 }
-

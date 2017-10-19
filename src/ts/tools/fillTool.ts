@@ -5,7 +5,7 @@
 import {Tool} from "./tool";
 import {Vec2} from "../vec2";
 import {colorSelect} from "./autoselectTool";
-import {PixelSelection} from "../selection/selection";
+import {Project} from "../docState";
 
 export class FillTool extends Tool {
 
@@ -17,7 +17,7 @@ export class FillTool extends Tool {
         this.addSetting({name: "fillColor", descName: "Fill color", inputType: "color", defaultValue: "#000000"});
     }
 
-    startUse (img: ImageData, pos: Vec2, currentSelection: PixelSelection) {
+    startUse (img: ImageData, pos: Vec2, project) {
         this.pixels = colorSelect(img, new Vec2(Math.floor(pos.x), Math.floor(pos.y)));
 
         let width: number = img.width;
@@ -31,18 +31,15 @@ export class FillTool extends Tool {
             b: parseInt(result[3], 16)
         } : null;
 
-
         let data = new Uint8ClampedArray(4*width*height);
-
-
 
         for (let x=0; x<width; x++) {
             for (let y=0; y<height; y++) {
-                if (this.pixels[y*width+x] === 1) {
+                if (this.pixels[y*width+x] === 1 && project.currentSelection.isSelected(new Vec2(x, y))) {
                     data[4*(y*width+x)    ] = color.r;// R
                     data[4*(y*width+x) + 1] = color.g;// G
                     data[4*(y*width+x) + 2] = color.b;// B
-                    data[4*(y*width+x) + 3] = 255;// A
+                    data[4*(y*width+x) + 3] = 0xFF;// A
                 }
             }
         }
@@ -62,4 +59,3 @@ export class FillTool extends Tool {
         ctx.putImageData(this.newImage,0,0);
     };
 }
-
