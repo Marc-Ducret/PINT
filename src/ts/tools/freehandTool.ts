@@ -16,11 +16,12 @@ export class FreehandTool extends Tool {
     }
 
     startUse (img, pos) {
+        this.positions = [];
         this.continueUse(pos);
     };
 
     endUse (pos) {
-        this.positions = [];
+        this.continueUse(pos);
         return null;
     };
 

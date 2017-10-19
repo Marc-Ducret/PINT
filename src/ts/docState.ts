@@ -82,6 +82,7 @@ export class Project {
     mouseRelease (vect: Vec2){
         if (this.currentTool !== null){
             if(this.currentTool.endUse(vect) === null) {
+                this.previewLayer.reset();
                 this.currentTool.drawPreview(this.previewLayer.getContext());
                 this.currentLayer.getContext()
                     .drawImage(this.previewLayer.getHTMLElement(),0,0);
