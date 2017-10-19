@@ -1,6 +1,7 @@
 import {Tool} from "./tool";
 import {Vec2} from "../vec2";
 import {controller} from "../../main";
+import {PixelSelection} from "../selection/selection";
 
 interface Coordinates {
     x: number,
@@ -74,11 +75,11 @@ export class AutoSelectTool extends Tool {
         super("AutoSelectTool");
     }
 
-    startUse (img: ImageData, pos: Vec2) {
+    startUse(img: ImageData, pos: Vec2, currentSelection: PixelSelection) {
         this.image = img;
         this.used = true;
-        controller.project.currentSelection.addRegion(colorSelect(this.image, new Vec2(Math.floor(pos.x), Math.floor(pos.y))));
-        controller.project.currentSelection.updateBorder();
+        currentSelection.addRegion(colorSelect(this.image, new Vec2(Math.floor(pos.x), Math.floor(pos.y))));
+        currentSelection.updateBorder();
     };
 
     endUse (pos) {

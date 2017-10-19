@@ -3,6 +3,7 @@
  */
 import {Tool} from "./tool";
 import {Vec2} from "../vec2";
+import {PixelSelection} from "../selection/selection";
 
 export class FreehandTool extends Tool {
     positions: Array<Vec2> = [];
@@ -15,7 +16,7 @@ export class FreehandTool extends Tool {
 
     }
 
-    startUse (img, pos) {
+    startUse (img, pos, currentSelection: PixelSelection) {
         this.positions = [];
         this.continueUse(pos);
     };

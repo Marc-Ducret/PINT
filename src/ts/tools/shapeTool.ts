@@ -1,5 +1,6 @@
 import {Tool} from "./tool";
 import {Vec2} from "../vec2";
+import {PixelSelection} from "../selection/selection";
 
 export class ShapeTool extends Tool {
     firstCorner: Vec2;
@@ -16,7 +17,7 @@ export class ShapeTool extends Tool {
                                         {name: "ellipse", desc: "Ellipse"}]});
     }
 
-    startUse (img, pos) {
+    startUse (img, pos, currentSelection: PixelSelection) {
         this.firstCorner = pos;
         this.lastCorner = pos;
     };

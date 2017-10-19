@@ -54,7 +54,7 @@ export class Project {
     mouseClick (vect: Vec2){
         if (this.currentTool !== null) {
             let img = this.currentLayer.getContext().getImageData(0, 0, this.dimensions.x, this.dimensions.y);
-            this.currentTool.startUse(img, vect);
+            this.currentTool.startUse(img, vect, this.currentSelection);
         }
     };
 

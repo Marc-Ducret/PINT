@@ -5,6 +5,7 @@
 import {Tool} from "./tool";
 import {Vec2} from "../vec2";
 import {colorSelect} from "./autoselectTool";
+import {PixelSelection} from "../selection/selection";
 
 export class FillTool extends Tool {
 
@@ -16,7 +17,7 @@ export class FillTool extends Tool {
         this.addSetting({name: "fillColor", descName: "Fill color", inputType: "color", defaultValue: "#000000"});
     }
 
-    startUse (img: ImageData, pos: Vec2) {
+    startUse (img: ImageData, pos: Vec2, currentSelection: PixelSelection) {
         this.pixels = colorSelect(img, pos);
 
         let width: number = img.width;
