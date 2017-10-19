@@ -20,7 +20,7 @@ export function colorSelect(img: ImageData, pos: Vec2): Uint8ClampedArray {
     let selection = new Uint8ClampedArray(w*h);
 
     let id = function(p: Coordinates) : number {
-        return Math.floor(p.x + w * p.y);
+        return p.x + w * p.y;
     };
 
     selection[id(pos)] = 3;

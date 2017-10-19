@@ -18,7 +18,7 @@ export class FillTool extends Tool {
     }
 
     startUse (img: ImageData, pos: Vec2, currentSelection: PixelSelection) {
-        this.pixels = colorSelect(img, pos);
+        this.pixels = colorSelect(img, new Vec2(Math.floor(pos.x), Math.floor(pos.y)));
 
         let width: number = img.width;
         let height: number = img.height;
