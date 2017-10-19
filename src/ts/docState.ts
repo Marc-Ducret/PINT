@@ -18,6 +18,8 @@ export class Project {
     currentTool: Tool;
     currentSelection: PixelSelection;
 
+    redraw: boolean;
+
     constructor (name: string) {
         this.name = name;
         this.dimensions = new Vec2(800,600);
@@ -26,6 +28,9 @@ export class Project {
         this.selectionLayer = new Layer(this.dimensions);
         this.layerList = [this.currentLayer, this.previewLayer, this.selectionLayer]; // The renderer draw layers in order.
         this.currentTool = null;
+
+        this.redraw = false;
+
         this.currentLayer.fill();
 
         /** selection is a table of int between 0 and 255 that represente selected
@@ -71,6 +76,7 @@ export class Project {
             this.currentTool.continueUse(vect);
             this.previewLayer.reset();
             this.currentTool.drawPreview(this.previewLayer.getContext());
+            this.redraw = true;
         }
 
         this.currentSelection.draw(ctx);
@@ -90,6 +96,7 @@ export class Project {
                 this.currentLayer.getContext()
                     .drawImage(this.previewLayer.getHTMLElement(),0,0);
                 this.previewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
+                this.redraw = true;
             }
         }
     };

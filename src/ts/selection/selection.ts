@@ -70,4 +70,9 @@ export class PixelSelection {
     draw(ctx: CanvasRenderingContext2D) {
         drawSelection(this.border, ctx, this.width, this.height);
     }
+
+    reset() {
+        this.values = new Uint8ClampedArray(this.width*this.height);
+        this.border = [];
+    }
 }

@@ -29,9 +29,15 @@ export function drawSelection(border: Array<Vec2>, ctx: CanvasRenderingContext2D
     for (var i in border) {
         var x = border[i].x;
         var y = border[i].y;
-        if(((x + y + offset) / pattern) % 2 < 1) continue;
-        img.data[(x + y * w) * 4] = 0x0;
-        img.data[(x + y * w) * 4 + 3] = 0xFF;
+        if(((x + y + offset) / pattern) % 2 < 1) {
+            img.data[(x + y * w) * 4] = 0xFF;
+            img.data[(x + y * w) * 4 + 1] = 0xFF;
+            img.data[(x + y * w) * 4 + 2] = 0xFF;
+            img.data[(x + y * w) * 4 + 3] = 0xFF;
+        } else {
+            img.data[(x + y * w) * 4] = 0x0;
+            img.data[(x + y * w) * 4 + 3] = 0xFF;
+        }
     }
 
     ctx.putImageData(img, 0, 0);

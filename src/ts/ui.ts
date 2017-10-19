@@ -122,6 +122,10 @@ export class UIController {
             should_redraw = true;
         }
 
+        if (this.project.redraw) {
+            should_redraw = true;
+        }
+
         if (should_redraw) {
             this.viewport.renderLayers();
         }

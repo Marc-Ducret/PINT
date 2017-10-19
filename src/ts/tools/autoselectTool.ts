@@ -78,6 +78,7 @@ export class AutoSelectTool extends Tool {
     startUse(img: ImageData, pos: Vec2, currentSelection: PixelSelection) {
         this.image = img;
         this.used = true;
+        currentSelection.reset();
         currentSelection.addRegion(colorSelect(this.image, new Vec2(Math.floor(pos.x), Math.floor(pos.y))));
         currentSelection.updateBorder();
     };
