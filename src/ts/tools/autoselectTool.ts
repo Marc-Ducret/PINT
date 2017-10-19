@@ -74,7 +74,7 @@ export class AutoSelectTool extends Tool {
         super("AutoSelectTool");
     }
 
-    startUse (img, pos) {
+    startUse (img: ImageData, pos: Vec2) {
         this.image = img;
         this.used = true;
         controller.project.currentSelection.addRegion(colorSelect(this.image, new Vec2(Math.floor(pos.x), Math.floor(pos.y))));

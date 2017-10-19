@@ -16,6 +16,7 @@ export class PixelSelection {
         this.width = w;
         this.height = h;
         this.values = new Uint8ClampedArray(w*h);
+        this.border = [];
     }
 
 

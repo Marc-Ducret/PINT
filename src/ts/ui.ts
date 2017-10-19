@@ -35,6 +35,8 @@ export class UIController {
 
         this.settingsUI = new SettingsInterface(<JQuery<HTMLElement>> $("#toolsettings_container"));
         this.toolRegistry = new ToolRegistry();
+
+        window.requestAnimationFrame(this.onStep.bind(this));
     }
 
     /**
@@ -77,7 +79,6 @@ export class UIController {
         this.mouseMoving = true;
 
         this.project.mouseClick(this.lastPosition);
-        window.requestAnimationFrame(this.onStep.bind(this));
     };
 
     /**
@@ -111,13 +112,20 @@ export class UIController {
      * @memberOf UIController
      */
     onStep (timestamp: number) {
+        let should_redraw: boolean = false;
 
         if (this.mouseMoving) {
-            if(this.project.mouseMove(this.lastPosition)) {
-                window.requestAnimationFrame(this.onStep.bind(this));
-            }
+            should_redraw = this.project.mouseMove(this.lastPosition);
         }
-        this.viewport.renderLayers();
+
+        if (this.project.renderSelection()) {
+            should_redraw = true;
+        }
+
+        if (should_redraw) {
+            this.viewport.renderLayers();
+        }
+        window.requestAnimationFrame(this.onStep.bind(this));
     };
 
     /**

@@ -13,6 +13,7 @@ export class Project {
     dimensions: Vec2;
     previewLayer: Layer;
     currentLayer: Layer;
+    selectionLayer: Layer;
     layerList: Array<Layer>; // The renderer draw layers in order.
     currentTool: Tool;
     currentSelection: PixelSelection;
@@ -22,7 +23,8 @@ export class Project {
         this.dimensions = new Vec2(800,600);
         this.previewLayer = new Layer(this.dimensions);
         this.currentLayer = new Layer(this.dimensions);
-        this.layerList = [this.currentLayer, this.previewLayer]; // The renderer draw layers in order.
+        this.selectionLayer = new Layer(this.dimensions);
+        this.layerList = [this.currentLayer, this.previewLayer, this.selectionLayer]; // The renderer draw layers in order.
         this.currentTool = null;
         this.currentLayer.fill();
 
@@ -64,6 +66,7 @@ export class Project {
 
     mouseMove (vect: Vec2){
         let ctx = this.previewLayer.getContext();
+
         if (this.currentTool !== null){
             this.currentTool.continueUse(vect);
             this.previewLayer.reset();
@@ -90,6 +93,16 @@ export class Project {
             }
         }
     };
+
+    renderSelection () : boolean {
+        if (this.currentSelection.border.length > 0) {
+            this.selectionLayer.reset();
+            this.currentSelection.draw(this.selectionLayer.getContext());
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     /**
      *@brief Add a Layer at the end of the layerList
