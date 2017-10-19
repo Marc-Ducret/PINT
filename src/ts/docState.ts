@@ -151,8 +151,10 @@ export class Project {
      * for the user
      */
     saveProject () {
-        this.currentLayer.getHTMLElement().toBlob(function(blob) {
-           // saveAs(blob, "project.png"); @TODO: fix this.
-        });
+        let content = this.currentLayer.getHTMLElement().toDataURL("image/png").replace("image/png","image/octet-stream");
+        let fake_link = document.createElement('a');
+        fake_link.download = this.name + '.png';
+        fake_link.href = content;
+        fake_link.click();
     }
 }
