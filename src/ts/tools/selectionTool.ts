@@ -5,12 +5,12 @@
 
 import {Tool} from "./tool";
 import {Vec2} from "../vec2";
-import {PixelSelection} from "../selection/selection";
+import {Project} from "../docState";
 
 export class SelectionTool extends Tool {
     firstCorner: Vec2;
     lastCorner: Vec2;
-    selection: PixelSelection;
+    project: Project;
 
     constructor() {
         super("SelectionTool");
@@ -27,10 +27,10 @@ export class SelectionTool extends Tool {
     }
 
 
-    startUse(img: ImageData, pos: Vec2, currentSelection: PixelSelection) {
+    startUse(img: ImageData, pos: Vec2, project: Project) {
         this.firstCorner = pos;
         this.lastCorner = pos;
-        this.selection = currentSelection;
+        this.project = project;
     };
 
     continueUse(pos) {

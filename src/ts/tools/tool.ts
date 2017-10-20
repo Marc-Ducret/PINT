@@ -1,6 +1,7 @@
 import {SettingRequest, SettingsRequester} from "../tool_settings/settingsRequester";
 import {Vec2} from "../vec2";
 import {PixelSelection} from "../selection/selection";
+import {Project} from "../docState";
 
 export abstract class Tool {
     name: string;
@@ -15,7 +16,7 @@ export abstract class Tool {
      * Called with a position when a tool starts being used.
      * Params: ImageData, position
      */
-    abstract startUse(img: ImageData, pos: Vec2, currentSelection: PixelSelection);
+    abstract startUse(img: ImageData, pos: Vec2, project: Project);
 
     /**
      * Called with a position when a tool is being used and the mouse position
@@ -41,5 +42,4 @@ export abstract class Tool {
     addSetting(request: SettingRequest) {
         this.settings.add(request);
     }
-
 }
