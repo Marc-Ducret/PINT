@@ -1,7 +1,7 @@
 import * as $ from "jquery";
 
 import {Tool} from "../tools/tool";
-import {Option, SettingsRequester, SettingRequest} from "./settingsRequester";
+import {Option, SettingsRequester, SettingRequest, InputType} from "./settingsRequester";
 import Selector = JQuery.Selector;
 
 export class SettingsInterface {
@@ -30,14 +30,20 @@ export class SettingsInterface {
             let input: JQuery<Node> = null;
 
             switch (request.inputType) {
-                case "number":
-                case "color":
+                case InputType.Number:
+                case InputType.Color:
+                    let input_name = request.inputType === InputType.Color ? "color" : "number";
+
                     input = $("<input/>");
-                    input.attr("type",request.inputType);
+                    input.attr("type",input_name);
                     input.attr("value",request.defaultValue);
                     input.attr("id",request.name);
                     input.attr("name",request.name);
                     input.attr("class", "browser-default");
+
+                    if (request.inputType === InputType.Number) {
+                        input.attr("min", 0);
+                    }
 
                     self.savedSettings[request.name] = request.defaultValue;
                     input.change((function(name) {
@@ -46,7 +52,7 @@ export class SettingsInterface {
 
                     tool.settings.setGetter(request.name, (function(name) {return this.savedSettings[name]}).bind(this, request.name));
                     break;
-                case "select":
+                case InputType.Select:
                     input = $("<select>");
                     input.attr("type",request.inputType);
                     input.attr("value",request.defaultValue);

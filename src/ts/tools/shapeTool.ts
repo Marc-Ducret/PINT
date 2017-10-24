@@ -1,6 +1,7 @@
 import {Tool} from "./tool";
 import {Vec2} from "../vec2";
 import {Project} from "../docState";
+import {InputType} from "../tool_settings/settingsRequester";
 
 export class ShapeTool extends Tool {
     firstCorner: Vec2;
@@ -8,10 +9,10 @@ export class ShapeTool extends Tool {
 
     constructor () {
         super("ShapeTool");
-        this.addSetting({name: "strokeColor", descName: "Stroke color", inputType: "color", defaultValue: "#ffffff"});
-        this.addSetting({name: "fillColor", descName: "Fill color", inputType: "color", defaultValue: "#000000"});
-        this.addSetting({name: "lineWidth", descName: "Line width", inputType: "number", defaultValue: "5"});
-        this.addSetting({name: "shape", descName: "Shape", inputType: "select", defaultValue: "square",
+        this.addSetting({name: "strokeColor", descName: "Stroke color", inputType: InputType.Color, defaultValue: "#ffffff"});
+        this.addSetting({name: "fillColor", descName: "Fill color", inputType: InputType.Color, defaultValue: "#000000"});
+        this.addSetting({name: "lineWidth", descName: "Line width", inputType: InputType.Number, defaultValue: "5"});
+        this.addSetting({name: "shape", descName: "Shape", inputType: InputType.Select, defaultValue: "square",
                                 options: [{name: "square", desc: "Square"},
                                         {name: "circle", desc: "Circle"},
                                         {name: "ellipse", desc: "Ellipse"}]});

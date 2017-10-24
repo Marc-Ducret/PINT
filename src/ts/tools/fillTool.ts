@@ -6,6 +6,7 @@ import {Tool} from "./tool";
 import {Vec2} from "../vec2";
 import {colorSelect} from "./autoselectTool";
 import {Project} from "../docState";
+import {InputType} from "../tool_settings/settingsRequester";
 
 export class FillTool extends Tool {
 
@@ -14,7 +15,7 @@ export class FillTool extends Tool {
 
     constructor() {
         super("FillTool");
-        this.addSetting({name: "fillColor", descName: "Fill color", inputType: "color", defaultValue: "#000000"});
+        this.addSetting({name: "fillColor", descName: "Fill color", inputType: InputType.Color, defaultValue: "#000000"});
     }
 
     startUse (img: ImageData, pos: Vec2, project) {

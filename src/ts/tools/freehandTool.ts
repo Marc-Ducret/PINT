@@ -4,6 +4,7 @@
 import {Tool} from "./tool";
 import {Vec2} from "../vec2";
 import {Project} from "../docState";
+import {InputType} from "../tool_settings/settingsRequester";
 
 export class FreehandTool extends Tool {
     positions: Array<Vec2> = [];
@@ -11,8 +12,8 @@ export class FreehandTool extends Tool {
     constructor() {
         super("FreehandTool");
 
-        this.addSetting({name: "strokeColor", descName: "Stroke color", inputType: "color", defaultValue: "#000000"});
-        this.addSetting({name: "lineWidth", descName: "Stroke width", inputType: "number", defaultValue: "5"});
+        this.addSetting({name: "strokeColor", descName: "Stroke color", inputType: InputType.Color, defaultValue: "#000000"});
+        this.addSetting({name: "lineWidth", descName: "Stroke width", inputType: InputType.Number, defaultValue: "5"});
 
     }
 
