@@ -39,25 +39,17 @@ export class SelectionTool extends Tool {
 
     endUse(pos) {
         this.continueUse(pos);
-        // Je n'ai pas compris comment l'outil fonctionne donc j'ai commenté le tout pour la compilation.
-        /*
+
+        let selection = new Uint8ClampedArray(this.project.dimensions.x * this.project.dimensions.y);
         switch (this.settings.get("shape")) {
             case "square":
-                for (var i = 0; i < h; i++) {
-                    for (var j = 0; j < w; j++) {
-                        selection.add(Vec2(x + i, y + j), 1)
+                for (var y = Math.floor(Math.min(this.firstCorner.y, this.lastCorner.y)); y < Math.max(this.firstCorner.y, this.lastCorner.y); y++) {
+                    for (var x = Math.floor(Math.min(this.firstCorner.x, this.lastCorner.x)); x < Math.max(this.firstCorner.x, this.lastCorner.x); x++) {
+                        selection[x + y * this.project.dimensions.x] = 0xFF;
                     }
                 }
                 break;
             case "circle":
-                for (var i = -radius; i < radius; i++) {
-                    w = Math.sqrt(Math.pow(radius - Math.abs(i), 2));
-                    for (var j = -w; j < w; j++) {
-                        selection.add(Vec2(center.x + i, center.y + j), 1)
-                    }
-                }// @todo : verify if it doesn't matter if selection.add try
-                //to add a Vec2 out of range of the selection (+floating
-                //number instead of int
                 break;
             case "ellipse":
                 break;
@@ -66,8 +58,10 @@ export class SelectionTool extends Tool {
             default:
                 console.error("No shape selected.");
                 break;
-        }*/
-        return null;
+        }
+        this.project.currentSelection.addRegion(selection);
+        this.project.currentSelection.updateBorder();
+        return false;
     };
 
     drawPreview(ctx) {
