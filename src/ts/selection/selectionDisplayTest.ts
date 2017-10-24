@@ -1,7 +1,7 @@
 import {Vec2} from "../vec2";
 
 function isSelected(selection: Uint8ClampedArray, x, y, w, h) {
-    return x >= 0 && x < w && y >= 0 && y < h && selection[x + y * w] === 1;
+    return x >= 0 && x < w && y >= 0 && y < h && selection[x + y * w] > 0;
 }
 
 export function computeBorder(selection: Uint8ClampedArray, w: number, h: number) : Array<Vec2> {

@@ -34,7 +34,7 @@ export class PixelSelection {
      *@param {number} intensity (between 0 and 1)
      */
     add (p: Vec2, intensity: number) {
-	    this.values[p.x + p.y*this.width] = Math.min(0xFF, this.values[p.x + p.y*this.width] + intensity)
+	    this.values[Math.floor(p.x) + Math.floor(p.y)*this.width] = Math.min(0xFF, this.values[p.x + p.y*this.width] + intensity)
     }
 
     /**
@@ -79,11 +79,11 @@ export class PixelSelection {
     }
 
     /**
-     * @param {Vec2} p the position to test selection at 
+     * @param {Vec2} p the position to test selection at
      * @return if the pixel at p is selected
      */
     isSelected(p: Vec2) {
         return p.x >= 0 && p.x < this.width && p.y >= 0 && p.y < this.height
-            && this.values[p.x + this.width * p.y] === 1;
+            && this.values[p.x + this.width * p.y] > 0;
     }
 }
