@@ -1,8 +1,7 @@
 import * as $ from "jquery";
 
 import {Tool} from "../tools/tool";
-import {Option, SettingsRequester, SettingRequest, InputType} from "./settingsRequester";
-import Selector = JQuery.Selector;
+import {Option, InputType} from "./settingsRequester";
 
 /**
  * Manages HTML elements to display settings to user and transmit parameters to the requester tool.
@@ -87,7 +86,7 @@ export class SettingsInterface {
     public setupToolSettings (tool : Tool) {
         this.container.empty();
         const self = this;
-        for (let request of tool.settings.requests) {
+        for (let request of tool.settingsGetRequests()) {
             const name = request.name;
             const desc = request.descName;
 
@@ -130,7 +129,7 @@ export class SettingsInterface {
                 self.savedSettings[name] = this.val();
             }).bind(input, request.name));
 
-            tool.settings.setGetter(request.name, (function(name) {return this.savedSettings[name]}).bind(this, request.name));
+            tool.settingsSetGetter(request.name, (function(name) {return this.savedSettings[name]}).bind(this, request.name));
 
             /*
             Connect the different HTML elements.

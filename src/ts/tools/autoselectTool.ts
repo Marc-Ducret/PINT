@@ -4,16 +4,28 @@ import {Project} from "../docState";
 import {colorSelect} from "../image_utils/connexComponent";
 import {PixelSelection} from "../selection/selection";
 
+/**
+ * 'Magic wand' automatic selection tool, selects the connex component of the picture containing the clicked position.
+ */
 export class AutoSelectTool extends Tool {
     image: ImageData;
     used: boolean;
     selection: PixelSelection;
     border: Array<Vec2>;
 
+    /**
+     * Instantiates the Tool with AutoSelectTool name.
+     */
     constructor () {
         super("AutoSelectTool");
     }
 
+    /**
+     * On click, computes the connex component and update selection.
+     * @param {ImageData} img Content of the drawing canvas.
+     * @param {Vec2} pos Click position
+     * @param {Project} project Document state
+     */
     startUse(img: ImageData, pos: Vec2, project: Project) {
         this.image = img;
         this.used = true;

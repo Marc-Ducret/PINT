@@ -6,9 +6,16 @@ import {Vec2} from "../vec2";
 import {Project} from "../docState";
 import {InputType} from "../tool_settings/settingsRequester";
 
+/**
+ * Freehand drawing tool.
+ */
 export class FreehandTool extends Tool {
     positions: Array<Vec2> = [];
 
+    /**
+     * Instantiates the tool with name FreehandTool.
+     * Takes two settings: stroke color and line width.
+     */
     constructor() {
         super("FreehandTool");
 
@@ -41,8 +48,8 @@ export class FreehandTool extends Tool {
                 ctx.lineTo(pos.x, pos.y);
             }
         }
-        ctx.lineWidth = this.settings.get("lineWidth");
-        ctx.strokeStyle = this.settings.get("strokeColor");
+        ctx.lineWidth = this.getSetting("lineWidth");
+        ctx.strokeStyle = this.getSetting("strokeColor");
         ctx.stroke();
     };
 }

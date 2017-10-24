@@ -7,7 +7,11 @@ import {Tool} from "./tool";
 import {Vec2} from "../vec2";
 import {Project} from "../docState";
 import {InputType} from "../tool_settings/settingsRequester";
+import {PixelSelection} from "../selection/selection";
 
+/**
+ * Shape selection tool, allows the user to add a shape to current selection.
+ */
 export class SelectionTool extends Tool {
     firstCorner: Vec2;
     lastCorner: Vec2;
@@ -16,8 +20,6 @@ export class SelectionTool extends Tool {
     constructor() {
         super("SelectionTool");
 
-        this.addSetting({name: "strokeColor", descName: "Stroke color", inputType: InputType.Color, defaultValue: "#FF00FF"});
-        this.addSetting({name: "lineWidth", descName: "Line width", inputType: InputType.Number, defaultValue: "1"});
         this.addSetting({
             name: "shape", descName: "Shape", inputType: InputType.Select, defaultValue: "square",
             options: [{name: "square", desc: "Square"},
@@ -41,11 +43,11 @@ export class SelectionTool extends Tool {
     endUse(pos) {
         this.continueUse(pos);
 
-        let selection = new Uint8ClampedArray(this.project.dimensions.x * this.project.dimensions.y);
-        switch (this.settings.get("shape")) {
+        let selection = new PixelSelection(this.project.dimensions.x * this.project.dimensions.y);
+        switch (this.getSetting("shape")) {
             case "square":
-                for (var y = Math.floor(Math.min(this.firstCorner.y, this.lastCorner.y)); y < Math.max(this.firstCorner.y, this.lastCorner.y); y++) {
-                    for (var x = Math.floor(Math.min(this.firstCorner.x, this.lastCorner.x)); x < Math.max(this.firstCorner.x, this.lastCorner.x); x++) {
+                for (let y = Math.floor(Math.min(this.firstCorner.y, this.lastCorner.y)); y < Math.max(this.firstCorner.y, this.lastCorner.y); y++) {
+                    for (let x = Math.floor(Math.min(this.firstCorner.x, this.lastCorner.x)); x < Math.max(this.firstCorner.x, this.lastCorner.x); x++) {
                         selection[x + y * this.project.dimensions.x] = 0xFF;
                     }
                 }
@@ -66,10 +68,10 @@ export class SelectionTool extends Tool {
     };
 
     drawPreview(ctx) {
-        ctx.strokeStyle = this.settings.get("strokeColor");
-        ctx.lineWidth = this.settings.get("lineWidth");
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 1;
 
-        switch (this.settings.get("shape")) {
+        switch (this.getSetting("shape")) {
             case "square":
                 ctx.beginPath();
                 let x = Math.min(this.firstCorner.x, this.lastCorner.x),

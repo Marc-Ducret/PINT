@@ -10,22 +10,35 @@ import {colorSelect} from "../image_utils/connexComponent";
 import {PixelSelection} from "../selection/selection";
 import {Project} from "../docState";
 
+/**
+ * Fill a connex component tool.
+ */
 export class FillTool extends Tool {
 
     pixels: PixelSelection;
     newImage: ImageData;
 
+    /**
+     * Instantiate the tool with FillTool name.
+     * Takes one setting, the fill color.
+     */
     constructor() {
         super("FillTool");
         this.addSetting({name: "fillColor", descName: "Fill color", inputType: InputType.Color, defaultValue: "#000000"});
     }
 
+    /**
+     * On click, computes the connex component containing the click position and fill it with the parameter color.
+     * @param {ImageData} img Content of the drawing canvas.
+     * @param {Vec2} pos Click position
+     * @param {Project} project Document state
+     */
     startUse (img: ImageData, pos: Vec2, project: Project) {
         this.pixels = colorSelect(img, new Vec2(Math.floor(pos.x), Math.floor(pos.y)));
 
         let width: number = img.width;
         let height: number = img.height;
-        let color_hex: string = this.settings.get("fillColor");
+        let color_hex: string = this.getSetting("fillColor");
 
         let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(color_hex);
         let color = result ? {

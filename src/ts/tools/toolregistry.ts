@@ -22,7 +22,7 @@ export class ToolRegistry {
      * @param{Tool} tool the tool to register
      */
     registerTool(tool: Tool) {
-        this.registry[tool.name] = tool;
+        this.registry[tool.getName()] = tool;
     }
 
     /**

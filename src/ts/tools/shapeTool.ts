@@ -3,6 +3,9 @@ import {Vec2} from "../vec2";
 import {Project} from "../docState";
 import {InputType} from "../tool_settings/settingsRequester";
 
+/**
+ * Draw a shape tool.
+ */
 export class ShapeTool extends Tool {
     firstCorner: Vec2;
     lastCorner: Vec2;
@@ -33,11 +36,11 @@ export class ShapeTool extends Tool {
     };
 
     drawPreview (ctx) {
-        ctx.fillStyle = this.settings.get('fillColor');
-        ctx.strokeStyle = this.settings.get('strokeColor');
-        ctx.lineWidth = this.settings.get('lineWidth');
+        ctx.fillStyle = this.getSetting('fillColor');
+        ctx.strokeStyle = this.getSetting('strokeColor');
+        ctx.lineWidth = this.getSetting('lineWidth');
 
-        switch (this.settings.get('shape')) {
+        switch (this.getSetting('shape')) {
             case "square":
                 ctx.beginPath();
                 var x = Math.min(this.firstCorner.x, this.lastCorner.x),

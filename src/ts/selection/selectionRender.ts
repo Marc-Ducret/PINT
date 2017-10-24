@@ -1,5 +1,12 @@
 import {Vec2} from "../vec2";
 
+/**
+ * Renders a border to a canvas.
+ * @param {Array<Vec2>} border Border to render.
+ * @param {CanvasRenderingContext2D} ctx Canvas to render on.
+ * @param {number} w Canvas width.
+ * @param {number} h Canvas height.
+ */
 export function drawSelection(border: Array<Vec2>, ctx: CanvasRenderingContext2D, w: number, h: number) {
     let img = ctx.getImageData(0, 0, w, h);
 
