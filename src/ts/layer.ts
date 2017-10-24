@@ -1,6 +1,9 @@
 import * as $ from "jquery";
 import {Vec2} from "./vec2";
 
+/**
+ * Interface for a virtual HTML Canvas element.
+ */
 export class Layer {
     canvasElement: JQuery<HTMLCanvasElement>;
     context: CanvasRenderingContext2D;

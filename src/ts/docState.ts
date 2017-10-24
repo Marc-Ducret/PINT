@@ -8,6 +8,9 @@ import {Tool} from "./tools/tool";
 import {Vec2} from "./vec2";
 import {PixelSelectionHandler} from "./selection/selection";
 
+/**
+ * Project manager.
+ */
 export class Project {
     name: string;
     dimensions: Vec2;
