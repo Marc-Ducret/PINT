@@ -7,7 +7,6 @@ import {Vec2} from "../vec2";
 
 import {InputType} from "../tool_settings/settingsRequester";
 import {colorSelect} from "../image_utils/connexComponent";
-import {PixelSelection} from "../selection/selection";
 import {Project} from "../docState";
 
 /**
@@ -15,7 +14,7 @@ import {Project} from "../docState";
  */
 export class FillTool extends Tool {
 
-    pixels: PixelSelection;
+    pixels: Uint8ClampedArray;
     newImage: ImageData;
 
     /**

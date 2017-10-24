@@ -2,7 +2,6 @@ import {Tool} from "./tool";
 import {Vec2} from "../vec2";
 import {Project} from "../docState";
 import {colorSelect} from "../image_utils/connexComponent";
-import {PixelSelection} from "../selection/selection";
 
 /**
  * 'Magic wand' automatic selection tool, selects the connex component of the picture containing the clicked position.
@@ -10,7 +9,7 @@ import {PixelSelection} from "../selection/selection";
 export class AutoSelectTool extends Tool {
     image: ImageData;
     used: boolean;
-    selection: PixelSelection;
+    selection: Uint8ClampedArray;
     border: Array<Vec2>;
 
     /**

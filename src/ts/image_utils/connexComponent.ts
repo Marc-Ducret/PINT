@@ -1,5 +1,4 @@
 import {Vec2} from "../vec2";
-import {PixelSelection} from "../selection/selection";
 
 /**
  * Converts (x,y) coordinates of a matrix array to its linear index.
@@ -15,13 +14,13 @@ function flatten(p: Vec2, img_width: number) {
  * Gives as a PixelSelection array the connected component of the picture containing a given point.
  * @param {ImageData} img Picture to explore.
  * @param {Vec2} pos Starting point of exploration.
- * @returns {PixelSelection}
+ * @returns {Uint8ClampedArray}
  */
-export function colorSelect(img: ImageData, pos: Vec2): PixelSelection {
+export function colorSelect(img: ImageData, pos: Vec2): Uint8ClampedArray {
     let w = img.width;
     let h = img.height;
     let toVisit: Array<Vec2> = [pos];
-    let selection = new PixelSelection(w*h);
+    let selection = new Uint8ClampedArray(w*h);
 
     /**
      * Contains the exploration status of pixels. (0 is not explored, 1 is pending, 2 is done.)

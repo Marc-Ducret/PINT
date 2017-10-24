@@ -1,8 +1,8 @@
-import {computeBorder} from '../src/ts/selection/selectionDisplayTest';
-import {PixelSelection} from '../src/ts/selection/selection';
+
 import {SelectionTool} from '../src/ts/tools/selectionTool';
 import {Project} from '../src/ts/docState';
 import {Vec2} from '../src/ts/vec2';
+import {computeBorder} from "../src/ts/selection/selectionUtils";
 
 declare global {
     export namespace jasmine {

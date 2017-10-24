@@ -7,7 +7,6 @@ import {Tool} from "./tool";
 import {Vec2} from "../vec2";
 import {Project} from "../docState";
 import {InputType} from "../tool_settings/settingsRequester";
-import {PixelSelection} from "../selection/selection";
 
 /**
  * Shape selection tool, allows the user to add a shape to current selection.
@@ -43,7 +42,7 @@ export class SelectionTool extends Tool {
     endUse(pos) {
         this.continueUse(pos);
 
-        let selection = new PixelSelection(this.project.dimensions.x * this.project.dimensions.y);
+        let selection = new Uint8ClampedArray(this.project.dimensions.x * this.project.dimensions.y);
         switch (this.getSetting("shape")) {
             case "square":
                 for (let y = Math.floor(Math.min(this.firstCorner.y, this.lastCorner.y)); y < Math.max(this.firstCorner.y, this.lastCorner.y); y++) {
