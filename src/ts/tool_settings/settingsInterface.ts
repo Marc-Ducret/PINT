@@ -42,7 +42,6 @@ export class SettingsInterface {
             default:
                 console.error("Wrong type requested in createInputElement.");
                 return null;
-                break;
         }
 
         input.attr("type",type_string);

@@ -4,18 +4,24 @@
  *@params {number, number} size in pixels
  */
 import {Vec2} from "../vec2";
-import {computeBorder, drawSelection} from "./selectionDisplayTest";
+import {drawSelection} from "./selectionRender";
+import {computeBorder} from "./selectionUtils";
 
-export class PixelSelection {
+/**
+ * Contains a pixel selection mask. Value 0 means not selected, value 255 means totally selected.
+ */
+export class PixelSelection extends Uint8ClampedArray {}
+
+export class PixelSelectionHandler {
     width: number;
     height: number;
-    values: Uint8ClampedArray;
+    values: PixelSelection;
     border: Array<Vec2>;
 
     constructor(w, h) {
         this.width = w;
         this.height = h;
-        this.values = new Uint8ClampedArray(w*h);
+        this.values = new PixelSelection(w*h);
         this.border = [];
     }
 
@@ -48,9 +54,9 @@ export class PixelSelection {
 
     /**
      * @brief add a whole region to the selection
-     * @param {Uint8ClampedArray} sel the region to add
+     * @param {PixelSelection} sel the region to add
      */
-    addRegion(sel: Uint8ClampedArray) {
+    addRegion(sel: PixelSelection) {
         for(let i in sel) {
             this.values[i] = Math.min(0xFF, this.values[i] + sel[i]);
         }
@@ -74,7 +80,7 @@ export class PixelSelection {
      * Resets the selection to no pixel selected
      */
     reset() {
-        this.values = new Uint8ClampedArray(this.width*this.height);
+        this.values = new PixelSelection(this.width*this.height);
         this.border = [];
     }
 

@@ -6,7 +6,7 @@
 import {Layer} from "./layer";
 import {Tool} from "./tools/tool";
 import {Vec2} from "./vec2";
-import {PixelSelection} from "./selection/selection";
+import {PixelSelectionHandler} from "./selection/selection";
 
 export class Project {
     name: string;
@@ -16,7 +16,7 @@ export class Project {
     selectionLayer: Layer;
     layerList: Array<Layer>; // The renderer draw layers in order.
     currentTool: Tool;
-    currentSelection: PixelSelection;
+    currentSelection: PixelSelectionHandler;
 
     redraw: boolean;
 
@@ -37,7 +37,7 @@ export class Project {
          *pixels (initialized with number of pixels of current layer)
          *@todo : standardize selection dimention - layers ...
          */
-        this.currentSelection = new PixelSelection(this.dimensions.x, this.dimensions.y);
+        this.currentSelection = new PixelSelectionHandler(this.dimensions.x, this.dimensions.y);
 
         this.currentLayer.fill();
     }

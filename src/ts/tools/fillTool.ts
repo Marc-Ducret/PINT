@@ -4,13 +4,15 @@
 
 import {Tool} from "./tool";
 import {Vec2} from "../vec2";
-import {colorSelect} from "./autoselectTool";
-import {Project} from "../docState";
+
 import {InputType} from "../tool_settings/settingsRequester";
+import {colorSelect} from "../image_utils/connexComponent";
+import {PixelSelection} from "../selection/selection";
+import {Project} from "../docState";
 
 export class FillTool extends Tool {
 
-    pixels: Uint8ClampedArray;
+    pixels: PixelSelection;
     newImage: ImageData;
 
     constructor() {
@@ -18,7 +20,7 @@ export class FillTool extends Tool {
         this.addSetting({name: "fillColor", descName: "Fill color", inputType: InputType.Color, defaultValue: "#000000"});
     }
 
-    startUse (img: ImageData, pos: Vec2, project) {
+    startUse (img: ImageData, pos: Vec2, project: Project) {
         this.pixels = colorSelect(img, new Vec2(Math.floor(pos.x), Math.floor(pos.y)));
 
         let width: number = img.width;

@@ -1,6 +1,6 @@
 import {SettingRequest, SettingsRequester} from "../tool_settings/settingsRequester";
 import {Vec2} from "../vec2";
-import {PixelSelection} from "../selection/selection";
+import {PixelSelectionHandler} from "../selection/selection";
 import {Project} from "../docState";
 
 export abstract class Tool {
