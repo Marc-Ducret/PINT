@@ -50,7 +50,7 @@ export class FillTool extends Tool {
 
         for (let x=0; x<width; x++) {
             for (let y=0; y<height; y++) {
-                if (this.pixels[y*width+x] === 1 && project.currentSelection.isSelected(new Vec2(x, y))) {
+                if (this.pixels[y*width+x] > 0 && project.currentSelection.isSelected(new Vec2(x, y))) {
                     data[4*(y*width+x)    ] = color.r;// R
                     data[4*(y*width+x) + 1] = color.g;// G
                     data[4*(y*width+x) + 2] = color.b;// B
