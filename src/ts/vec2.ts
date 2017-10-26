@@ -16,7 +16,7 @@ export class Vec2 {
      * @returns {number}
      */
     distance (other: Vec2) {
-        return Math.sqrt((other.x - this.x)**2 + (other.y - this.y));
+        return Math.sqrt((other.x - this.x)**2 + (other.y - this.y)**2);
     }
 
     /**
