@@ -25,10 +25,10 @@ export function computeBorder(selection: Uint8ClampedArray, w: number, h: number
     for (let y = 0; y < h; y++) {
         for (let x = 0; x < w; x++) {
             if(isSelected(selection, x, y, w, h)
-                && (!isSelected(selection, x-1, y+0, w, h)
-                    ||  !isSelected(selection, x+0, y-1, w, h)
-                    ||  !isSelected(selection, x+1, y+0, w, h)
-                    ||  !isSelected(selection, x+0, y+1, w, h))) {
+                && (!isSelected(selection, x-1, y, w, h)
+                    ||  !isSelected(selection, x, y-1, w, h)
+                    ||  !isSelected(selection, x+1, y, w, h)
+                    ||  !isSelected(selection, x, y+1, w, h))) {
                 border.push(new Vec2(x, y));
             }
         }

@@ -1,6 +1,5 @@
 import {Tool} from "./tool";
 import {Vec2} from "../vec2";
-import {Project} from "../docState";
 import {InputType} from "../tool_settings/settingsRequester";
 
 /**
@@ -43,7 +42,7 @@ export class ShapeTool extends Tool {
         switch (this.getSetting('shape')) {
             case "square":
                 ctx.beginPath();
-                var x = Math.min(this.firstCorner.x, this.lastCorner.x),
+                const x = Math.min(this.firstCorner.x, this.lastCorner.x),
                     y = Math.min(this.firstCorner.y, this.lastCorner.y),
                     w = Math.abs(this.firstCorner.x - this.lastCorner.x),
                     h = Math.abs(this.firstCorner.y - this.lastCorner.y);
@@ -58,7 +57,7 @@ export class ShapeTool extends Tool {
                 ctx.stroke();
                 break;
             case "ellipse":
-                var xdep = this.lastCorner.x/2 + this.firstCorner.x/2,
+                const xdep = this.lastCorner.x/2 + this.firstCorner.x/2,
                     ydep = this.lastCorner.y/2 + this.firstCorner.y/2,
                     xlen = Math.abs(this.lastCorner.x/2 - this.firstCorner.x/2),
                     ylen = Math.abs(this.lastCorner.y/2 - this.firstCorner.y/2);
