@@ -65,6 +65,7 @@ describe('Shape selection', function () {
                                 result = false;
                             }
                         }
+                        if(result != expected) console.log('tested:', actual);
                         return {
                             pass: result == expected
                         };
@@ -77,31 +78,38 @@ describe('Shape selection', function () {
     it('is convex', function() {
         var tool = new SelectionTool();
         var proj = new Project('test project');
-        for (var i = 0; i < 1; i++) {
-            var w = proj.dimensions.x;
-            var h = proj.dimensions.y;
+        for (var i = 0; i < 5; i++) {
+            var w = 50;
+            var h = 50;
 
             let randPos = function() {
                 return new Vec2(Math.floor(Math.random() * w), Math.floor(Math.random() * h));
             };
 
+            proj.currentSelection.reset();
+
+            tool.settingsSetGetter('shape', () => 'circle');
 
             tool.startUse(null, randPos(), proj);
             tool.endUse(randPos());
 
             var row = new Uint8ClampedArray(w);
             for(var y = 0; y < h; y++) {
-                for(var x = 0; x < w; x++) {
-                    row[x] = proj.currentSelection.values[x + y*w];
+                if(Math.random() < 1) {
+                    for(var x = 0; x < w; x++) {
+                        row[x] = proj.currentSelection.values[x + y*proj.dimensions.x];
+                    }
+                    expect(row).isConvex(true);
                 }
-                expect(row).isConvex(true);
             }
             var col = new Uint8ClampedArray(h);
             for(var x = 0; x < w; x++) {
-                for(var y = 0; y < h; y++) {
-                    col[y] = proj.currentSelection.values[x + y*w];
+                if(Math.random() < 1) {
+                    for(var y = 0; y < h; y++) {
+                        col[y] = proj.currentSelection.values[x + y*proj.dimensions.x];
+                    }
+                    expect(col).isConvex(true);
                 }
-                expect(col).isConvex(true);
             }
         }
     });

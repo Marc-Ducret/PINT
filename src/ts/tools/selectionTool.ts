@@ -52,19 +52,19 @@ export class SelectionTool extends Tool {
                 }
                 break;
             case "circle":
-                let ct = 0;
                 let radius = Math.ceil(this.firstCorner.distance(this.lastCorner));
-                console.log("counting within ", radius);
                 for (let y = this.firstCorner.y - radius; y < this.firstCorner.y + radius; y++) {
                     for (let x = this.firstCorner.x - radius; x < this.firstCorner.x + radius; x++) {
-                        if(x >= 0 && x < this.project.dimensions.x && y >= 0 && y < this.project.dimensions.y
-                            && (x - this.firstCorner.x) ** 2 + (y - this.firstCorner.y) ** 2 <= radius ** 2) {
-                            selection[x + y * this.project.dimensions.x] = 0xFF;
-                            ct++;
+                        if(x >= 0 && x < this.project.dimensions.x && y >= 0 && y < this.project.dimensions.y) {
+                            let d = (x - this.firstCorner.x) ** 2 + (y - this.firstCorner.y) ** 2;
+                            if(d <= radius ** 2) {
+                                selection[x + y * this.project.dimensions.x] = 0xFF;
+                            } else if(d <= (radius + 1) ** 2) {
+                                selection[x + y * this.project.dimensions.x] = Math.floor(0x100 * (radius + 1 - Math.sqrt(d)));
+                            }
                         }
                     }
                 }
-                console.log("found ", ct);
                 break;
             case "ellipse":
                 break;
