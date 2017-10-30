@@ -53,8 +53,8 @@ export class SelectionTool extends Tool {
                 break;
             case "circle":
                 let radius = Math.ceil(this.firstCorner.distance(this.lastCorner));
-                for (let y = this.firstCorner.y - radius; y < this.firstCorner.y + radius; y++) {
-                    for (let x = this.firstCorner.x - radius; x < this.firstCorner.x + radius; x++) {
+                for (let y = Math.floor(this.firstCorner.y - radius); y < this.firstCorner.y + radius; y++) {
+                    for (let x = Math.floor(this.firstCorner.x - radius); x < this.firstCorner.x + radius; x++) {
                         if(x >= 0 && x < this.project.dimensions.x && y >= 0 && y < this.project.dimensions.y) {
                             let d = (x - this.firstCorner.x) ** 2 + (y - this.firstCorner.y) ** 2;
                             if(d <= radius ** 2) {
