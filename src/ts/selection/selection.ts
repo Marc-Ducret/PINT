@@ -88,4 +88,16 @@ export class PixelSelectionHandler {
         return p.x >= 0 && p.x < this.width && p.y >= 0 && p.y < this.height
             && this.values[p.x + this.width * p.y] > 0;
     }
+
+    /**
+     * @param {Vec2} p the position to test selection at
+     * @return a value between 0 and 0xFF where 0 is not selected and 0xFF is fully selected
+     */
+    getSelectionIntensity(p: Vec2) {
+        if(p.x >= 0 && p.x < this.width && p.y >= 0 && p.y < this.height) {
+            return this.values[p.x + this.width * p.y];
+        } else {
+            return 0;
+        }
+    }
 }
