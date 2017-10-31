@@ -154,10 +154,14 @@ export class Project {
      * for the user
      */
     saveProject () {
-        let content = this.currentLayer.getHTMLElement().toDataURL("image/png").replace("image/png","image/octet-stream");
+        let content = this.currentLayer.getHTMLElement()
+            .toDataURL("image/png")
+            .replace("image/png","image/octet-stream");
         let fake_link = document.createElement('a');
         fake_link.download = this.name + '.png';
         fake_link.href = content;
+        document.body.appendChild(fake_link);
         fake_link.click();
+        document.body.removeChild(fake_link);
     }
 }
