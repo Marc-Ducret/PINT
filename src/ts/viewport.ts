@@ -19,6 +19,10 @@ export class Viewport {
     constructor (canvas: JQuery<HTMLCanvasElement>, layerDimensions: Vec2) {
         this.canvas = canvas[0];
         this.context = this.canvas.getContext('2d');
+        this.context.imageSmoothingEnabled = false;
+        this.context.mozImageSmoothingEnabled = false;
+        this.context.webkitImageSmoothingEnabled = false;
+        
         this.layerDimensions = layerDimensions;
     }
 
@@ -30,7 +34,13 @@ export class Viewport {
         this.canvas.height = this.canvas.scrollHeight;
         this.viewportDimensions = new Vec2(this.canvas.width, this.canvas.height);
 
-        this.currentTranslation = this.viewportDimensions.divide(2,true).subtract(this.layerDimensions.divide(2,true),true);
+        this.currentTranslation =
+            this.viewportDimensions
+                .divide(2,true)
+                .subtract(
+                    this.layerDimensions
+                        .divide(2,true)
+                    ,true);
         this.currentScale = 1;
         window.requestAnimationFrame(this.renderLayers.bind(this));
     };
@@ -42,6 +52,22 @@ export class Viewport {
     setLayerList (newLayerList) {
         this.layerList = newLayerList;
     };
+
+    getScale () : number {
+        return this.currentScale;
+    }
+
+    setScale (scale: number) {
+        this.currentScale = scale;
+
+        this.currentTranslation =
+            this.viewportDimensions
+                .divide(2,true)
+                .subtract(
+                    this.layerDimensions
+                        .divide(2/scale,true)
+                    ,true);
+    }
 
     /**
      * Render layers one by one in order, applying transformations such as zoom and translation.

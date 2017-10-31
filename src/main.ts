@@ -16,6 +16,7 @@ toolbox_container.children().click(controller.onToolboxClicked.bind(controller))
 viewport.mousedown(controller.onMouseDown.bind(controller));
 viewport.mouseup(controller.onMouseUp.bind(controller));
 viewport.mousemove(controller.onMouseMove.bind(controller));
+window.addEventListener('wheel', controller.onMouseWheel.bind(controller));
 
 $(window).on('resize', (function(e) {
     controller.onWindowResize(new Vec2($(window).width(), $(window).height()));

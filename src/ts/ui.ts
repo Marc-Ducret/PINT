@@ -25,6 +25,7 @@ export class UIController {
     viewport: Viewport;
     settingsUI: SettingsInterface;
     toolRegistry: ToolRegistry;
+    redraw: boolean;
 
     constructor (){
         this.project = new Project("Untitled");
@@ -36,6 +37,7 @@ export class UIController {
         this.settingsUI = new SettingsInterface(<JQuery<HTMLElement>> $("#toolsettings_container"));
         this.toolRegistry = new ToolRegistry();
 
+        this.redraw = true;
         window.requestAnimationFrame(this.onStep.bind(this));
     }
 
@@ -104,6 +106,13 @@ export class UIController {
         this.lastPosition = this.viewport.globalToLocalPosition(new Vec2(event.offsetX, event.offsetY));
     };
 
+
+    onMouseWheel (event: WheelEvent) {
+        let zoom = event.deltaY;
+        this.viewport.setScale(this.viewport.getScale()*Math.pow(1.001, zoom));
+        this.redraw = true;
+    };
+
     /**
      * @function onStep
      * @description Handles a paint step by transmitting the position of the mouse to the project handler, and then rendering the document.
@@ -112,23 +121,22 @@ export class UIController {
      * @memberOf UIController
      */
     onStep (timestamp: number) {
-        let should_redraw: boolean = false;
-
-        if (this.mouseMoving) {
-            should_redraw = this.project.mouseMove(this.lastPosition);
+        if (this.mouseMoving && this.project.mouseMove(this.lastPosition)) {
+            this.redraw = true;
         }
 
         if (this.project.renderSelection()) {
-            should_redraw = true;
+            this.redraw = true;
         }
 
         if (this.project.redraw) {
-            should_redraw = true;
+            this.redraw = true;
         }
 
-        if (should_redraw) {
+        if (this.redraw) {
             this.viewport.renderLayers();
         }
+        this.redraw = false;
         window.requestAnimationFrame(this.onStep.bind(this));
     };
 
