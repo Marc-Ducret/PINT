@@ -36,9 +36,9 @@ describe('Selection border', function () {
     });
 
     it('is disjoint with the selection', function() {
-        for (let i = 0; i < 50; i++) {
-            const w = 800;
-            const h = 600;
+        for (let i = 0; i < 5; i++) {
+            const w = 20;
+            const h = 20;
             let selection = new Uint8ClampedArray(w*h);
             for (let i = 0; i < w*h; i++) {
                 if (Math.random() > .95) {
@@ -79,8 +79,8 @@ describe('Shape selection', function () {
         let tool = new SelectionTool();
         let proj = new Project('test project');
         for (let i = 0; i < 5; i++) {
-            const w = 50;
-            const h = 50;
+            const w = 20;
+            const h = 20;
 
             let randPos = function() {
                 return new Vec2(Math.floor(Math.random() * w), Math.floor(Math.random() * h));
