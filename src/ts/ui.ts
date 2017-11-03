@@ -28,7 +28,7 @@ export class UIController {
     redraw: boolean;
 
     constructor (){
-        this.project = new Project("Untitled");
+        this.project = new Project(this, "Untitled");
         this.viewport = new Viewport(<JQuery<HTMLCanvasElement>> $("#viewport"), this.project.dimensions);
 
         this.viewport.setLayerList(this.project.layerList);
@@ -108,10 +108,20 @@ export class UIController {
 
 
     onMouseWheel (event: WheelEvent) {
-        let zoom = event.deltaY;
-        this.viewport.setScale(this.viewport.getScale()*Math.pow(1.001, zoom));
-        this.redraw = true;
+        this.zoom(event.deltaY);
     };
+
+    zoom (value: number) {
+        this.viewport.setScale(this.viewport.getScale()*Math.pow(1.001, value));
+        this.redraw = true;
+    }
+
+    translate (translation: Vec2) {
+        let realTranslation = this.viewport.getTranslation().add(translation.divide(this.viewport.getScale(),true), true);
+        this.viewport.setTranslation(realTranslation);
+        this.redraw = true;
+    }
+
 
     /**
      * @function onStep

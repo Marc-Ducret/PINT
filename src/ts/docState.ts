@@ -7,6 +7,7 @@ import {Layer} from "./layer";
 import {Tool} from "./tools/tool";
 import {Vec2} from "./vec2";
 import {PixelSelectionHandler} from "./selection/selection";
+import {UIController} from "./ui";
 
 /**
  * Project manager.
@@ -20,10 +21,10 @@ export class Project {
     layerList: Array<Layer>; // The renderer draw layers in order.
     currentTool: Tool;
     currentSelection: PixelSelectionHandler;
-
+    ui: UIController;
     redraw: boolean;
 
-    constructor (name: string) {
+    constructor (ui: UIController, name: string) {
         this.name = name;
         this.dimensions = new Vec2(800,600);
         this.previewLayer = new Layer(this.dimensions);
@@ -31,7 +32,7 @@ export class Project {
         this.selectionLayer = new Layer(this.dimensions);
         this.layerList = [this.currentLayer, this.previewLayer, this.selectionLayer]; // The renderer draw layers in order.
         this.currentTool = null;
-
+        this.ui = ui;
         this.redraw = false;
 
         this.currentLayer.fill();
@@ -45,6 +46,9 @@ export class Project {
         this.currentLayer.fill();
     }
 
+    getUI() : UIController {
+        return this.ui;
+    }
 
     /**
      *@brief: Specifies witch tool to use

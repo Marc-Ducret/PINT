@@ -53,4 +53,21 @@ export class Vec2 {
             return this;
         }
     }
+
+    /**
+     * Add this vector to another one.
+     * @param {Vec2} other Another vector.
+     * @param {boolean} not_in_place If true, creates a new vector. If false, made in place.
+     * @returns {Vec2}
+     */
+    add (other: Vec2, not_in_place: boolean) {
+        if (not_in_place) {
+            return new Vec2(this.x + other.x, this.y + other.y);
+        } else {
+            this.x = this.x + other.x;
+            this.y = this.y + other.y;
+
+            return this;
+        }
+    }
 }
