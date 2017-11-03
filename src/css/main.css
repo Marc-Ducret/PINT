@@ -47,9 +47,13 @@ body {
     padding-top: 35px;
 }
 
-#toolbox-container i:hover{
+#toolbox-container *:hover{
     cursor: pointer;
     color: #86fdff;
+}
+
+#toolbox-container img:hover {
+    filter: brightness(100%) sepia(100) saturate(100) hue-rotate(149deg);
 }
 
 #filename-container input {
@@ -64,3 +68,4 @@ body {
 #viewport-container {
     padding: 0;
 }
+
