@@ -71,7 +71,9 @@ export class SettingsInterface {
 
         for (let opt of options) {
             let option = $("<option>");
-            console.log(opt);
+            if (opt.name === defaultValue) {
+                option.attr("selected", "selected");
+            }
             option.attr("value", opt.name);
             option.html(opt.desc);
             option.appendTo(<JQuery> input);
