@@ -19,10 +19,6 @@ export class Viewport {
     constructor (canvas: JQuery<HTMLCanvasElement>, layerDimensions: Vec2) {
         this.canvas = canvas[0];
         this.context = this.canvas.getContext('2d');
-        this.context.imageSmoothingEnabled = false;
-        this.context.mozImageSmoothingEnabled = false;
-        this.context.webkitImageSmoothingEnabled = false;
-        
         this.layerDimensions = layerDimensions;
     }
 
@@ -75,6 +71,10 @@ export class Viewport {
     renderLayers () {
         // Reset canvas
         this.resetCanvas();
+
+        this.context.imageSmoothingEnabled = false;
+        this.context.mozImageSmoothingEnabled = false;
+        this.context.webkitImageSmoothingEnabled = false;
 
         // Set appropriate scale and translation.
         this.context.translate(this.currentTranslation.x, this.currentTranslation.y);
