@@ -77,9 +77,12 @@ body {
     width: 30%;
 }
 
-#newproject_container button {
-    line-height: 42px;
-    background-color: black;
+#newproject_button {
+    line-height: 30px;
+    height: 70px;
+    vertical-align: top;
+    padding: 5px;
+    font-size: 20px;
 }
 
 #newproject_container input{
