@@ -19,6 +19,10 @@ export class PixelSelectionHandler {
         this.height = h;
         this.values = new Uint8ClampedArray(w*h);
         this.border = [];
+
+        for (let i=0;i<w*h;i++) {
+            this.values[i] = 255;
+        }
     }
 
     /**
