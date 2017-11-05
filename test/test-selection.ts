@@ -77,7 +77,7 @@ describe('Shape selection', function () {
 
     it('is convex', function() {
         let tool = new SelectionTool();
-        let proj = new Project('test project');
+        let proj = new Project(null, 'test project', new Vec2(200,200));
         for (let i = 0; i < 5; i++) {
             const w = 20;
             const h = 20;
