@@ -47,12 +47,16 @@ body {
     padding-top: 35px;
 }
 
+#toolbox-container img {
+    height: 56px;
+}
+
 #toolbox-container *:hover{
     cursor: pointer;
     color: #86fdff;
 }
 
-#toolbox-container img:hover {
+#toolbox-container img:hover, .hovered {
     filter: brightness(100%) sepia(100) saturate(100) hue-rotate(149deg);
 }
 

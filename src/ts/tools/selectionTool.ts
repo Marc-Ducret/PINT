@@ -17,7 +17,7 @@ export class SelectionTool extends Tool {
     project: Project;
 
     constructor() {
-        super("SelectionTool");
+        super("SelectionTool", "Selection");
 
         this.addSetting({
             name: "shape", descName: "Shape", inputType: InputType.Select, defaultValue: "square",

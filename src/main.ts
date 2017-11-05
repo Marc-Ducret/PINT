@@ -16,6 +16,8 @@ let width_input = $("#newproject_width");
 let height_input = $("#newproject_height");
 
 toolbox_container.children().click(controller.onToolboxClicked.bind(controller));
+toolbox_container.children().hover(controller.onToolboxHovered.bind(controller),
+    controller.onToolboxHoverLeft.bind(controller));
 viewport.mousedown(controller.onMouseDown.bind(controller));
 viewport.mouseup(controller.onMouseUp.bind(controller));
 viewport.mousemove(controller.onMouseMove.bind(controller));

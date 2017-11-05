@@ -22,7 +22,7 @@ export class FillTool extends Tool {
      * Takes one setting, the fill color.
      */
     constructor() {
-        super("FillTool");
+        super("FillTool", "Fill");
         this.addSetting({name: "fillColor", descName: "Fill color", inputType: InputType.Color, defaultValue: "#000000"});
     }
 

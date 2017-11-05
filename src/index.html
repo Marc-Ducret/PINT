@@ -31,18 +31,18 @@
         </div>
         <div class="col s7">
             <p id="toolbox-container"> <!-- Sample icons offered by materializecss-->
-                <i class="medium material-icons">undo</i>
-                <i class="medium material-icons">redo</i>
+                <i class="medium material-icons" data-desc="(Undo)">undo</i>
+                <i class="medium material-icons" data-desc="(Redo)">redo</i>
                 <i class="medium material-icons" data-tool="HandTool">gamepad</i>
-                <i class="medium material-icons">mode_edit</i>
+                <i class="medium material-icons" data-desc="(Line)">mode_edit</i>
                 <i class="medium material-icons" data-tool="FreehandTool">brush</i>
                 <i class="medium material-icons" data-tool="ShapeTool">check_box_outline_blank</i>
-                <i class="medium material-icons" data-function="this.project.saveProject();">save</i>
+                <i class="medium material-icons" data-function="this.project.saveProject();" data-desc="Save">save</i>
                 <i class="medium material-icons" data-tool="FillTool">format_color_fill</i>
-                <img src="assets/magic.png" style="height: 56px" data-tool="AutoSelectTool"/>
+                <img src="assets/magic.png" data-tool="AutoSelectTool"/>
                 <i class="medium material-icons" data-tool="SelectionTool">photo_size_select_small</i>
-                <i class="medium material-icons" data-function="this.zoom(50);">zoom_in</i>
-                <i class="medium material-icons" data-function="this.zoom(-50);">zoom_out</i>
+                <i class="medium material-icons" data-function="this.zoom(50);" data-desc="Zoom in">zoom_in</i>
+                <i class="medium material-icons" data-function="this.zoom(-50);" data-desc="Zoom out">zoom_out</i>
             </p>
         </div>
     </div>
@@ -51,8 +51,9 @@
         <div class="col s10" id="viewport-container">
             <canvas id="viewport"></canvas>
         </div>
-        <div class="col s2" id="toolsettings_container">
-
+        <div class="col s2" id="right_pane">
+            <h2 id="name_container"></h2>
+            <div id="toolsettings_container"></div>
         </div>
     </div>
 </div>

@@ -16,7 +16,7 @@ export class FreehandTool extends Tool {
      * Takes two settings: stroke color and line width.
      */
     constructor() {
-        super("FreehandTool");
+        super("FreehandTool", "Pencil");
 
         this.addSetting({name: "strokeColor", descName: "Stroke color", inputType: InputType.Color, defaultValue: "#000000"});
         this.addSetting({name: "lineWidth", descName: "Stroke width", inputType: InputType.Number, defaultValue: "5"});

@@ -1,3 +1,13 @@
+#right_pane {
+    background-color: #303030;
+    padding: 0;
+    margin: 0;
+}
+
+#right_pane h2 {
+    text-align: center;
+}
+
 #toolsettings_container {
     font-size: 42px;
     background-color: #303030;
@@ -17,7 +27,7 @@
 }
 
 #toolsettings_container div {
-    border-bottom: white solid 1px;
+    border-top: white solid 1px;
     margin: 5px;
     padding: 5px;
     width: 100%;

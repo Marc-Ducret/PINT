@@ -16,7 +16,7 @@ export class AutoSelectTool extends Tool {
      * Instantiates the Tool with AutoSelectTool name.
      */
     constructor () {
-        super("AutoSelectTool");
+        super("AutoSelectTool", "Magic wand");
     }
 
     /**

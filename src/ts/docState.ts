@@ -50,6 +50,10 @@ export class Project {
         this.currentLayer.fill();
     }
 
+    getCurrentTool() : Tool {
+        return this.currentTool;
+    }
+
     getUI() : UIController {
         return this.ui;
     }

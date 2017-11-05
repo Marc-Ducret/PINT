@@ -16,7 +16,7 @@ export class HandTool extends Tool {
     project: Project;
 
     constructor() {
-        super("HandTool");
+        super("HandTool", "Move");
     }
 
 

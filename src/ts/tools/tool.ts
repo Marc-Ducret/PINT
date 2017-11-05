@@ -4,10 +4,12 @@ import {Project} from "../docState";
 
 export abstract class Tool {
     private name: string;
+    private desc: string;
     private settings: SettingsRequester;
 
-    constructor (name) {
+    constructor (name, desc) {
         this.name = name;
+        this.desc = desc;
         this.settings = new SettingsRequester();
     }
 
@@ -61,6 +63,10 @@ export abstract class Tool {
      */
     public getName() {
         return this.name;
+    }
+
+    public getDesc() {
+        return this.desc;
     }
 
     /**

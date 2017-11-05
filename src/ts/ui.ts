@@ -57,9 +57,11 @@ export class UIController {
         if(toolname !== null) {
             let tool = this.toolRegistry.getToolByName(toolname);
             if(tool !== null) {
-                this.settingsUI.setupToolSettings(tool);
                 if (this.project != null) {
                     this.project.changeTool(tool);
+                    this.settingsUI.setupToolSettings(tool);
+                    $("#toolbox-container").children().removeClass("hovered");
+                    (<Element> event.target).className += " hovered";
                 }
             } else {
                 console.warn("No such tool "+toolname);
@@ -73,6 +75,35 @@ export class UIController {
             }
         }
     };
+
+    static displayName(name: string) {
+        $("#name_container").html(name);
+    }
+
+    onToolboxHovered (event: Event) {
+        let toolname = (<Element> event.target).getAttribute("data-tool");
+        if(toolname !== null) {
+            let tool = this.toolRegistry.getToolByName(toolname);
+            UIController.displayName(tool.getDesc());
+        } else {
+            let desc = (<Element> event.target).getAttribute("data-desc");
+            UIController.displayName(desc);
+        }
+    }
+
+    onToolboxHoverLeft (event: Event) {
+        if (this.project == null) {
+            UIController.displayName("");
+            return;
+        }
+
+        let tool = this.project.getCurrentTool();
+        if (tool != null) {
+            UIController.displayName(tool.getDesc());
+        } else {
+            UIController.displayName("");
+        }
+    }
 
     /**
      * @function onMouseDown
