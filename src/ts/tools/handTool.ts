@@ -19,6 +19,10 @@ export class HandTool extends Tool {
         super("HandTool", "Move");
     }
 
+    reset () {
+        this.firstCorner = null;
+        this.lastCorner = null;
+    }
 
     startUse(img: ImageData, pos: Vec2, project: Project) {
         this.firstCorner = project.getUI().viewport.localToGlobalPosition(pos);
@@ -37,6 +41,9 @@ export class HandTool extends Tool {
     };
 
     drawPreview(ctx) {
+        if (this.firstCorner == null || this.lastCorner == null) {
+            return;
+        }
         this.project.getUI().translate(this.lastCorner.subtract(this.firstCorner, true));
     };
 }

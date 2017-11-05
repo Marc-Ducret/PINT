@@ -21,6 +21,7 @@ toolbox_container.children().hover(controller.onToolboxHovered.bind(controller),
 viewport.mousedown(controller.onMouseDown.bind(controller));
 viewport.mouseup(controller.onMouseUp.bind(controller));
 viewport.mousemove(controller.onMouseMove.bind(controller));
+viewport.mouseleave(controller.onMouseUp.bind(controller));
 document.getElementById("viewport").addEventListener('wheel', controller.onMouseWheel.bind(controller));
 
 newproject_button.click(function() {

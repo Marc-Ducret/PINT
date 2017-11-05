@@ -19,6 +19,13 @@ export class AutoSelectTool extends Tool {
         super("AutoSelectTool", "Magic wand");
     }
 
+    reset() {
+        this.image = null;
+        this.used = false;
+        this.selection = null;
+        this.border = null;
+    }
+
     /**
      * On click, computes the connex component and update selection.
      * @param {ImageData} img Content of the drawing canvas.

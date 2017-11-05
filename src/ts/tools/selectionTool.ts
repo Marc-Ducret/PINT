@@ -28,6 +28,10 @@ export class SelectionTool extends Tool {
         });
     }
 
+    reset () {
+        this.firstCorner = null;
+        this.lastCorner = null;
+    }
 
     startUse(img: ImageData, pos: Vec2, project: Project) {
         this.firstCorner = pos;
@@ -41,6 +45,9 @@ export class SelectionTool extends Tool {
 
     endUse(pos) {
         this.continueUse(pos);
+        if (this.firstCorner == null || this.lastCorner == null || this.project == null) {
+            return;
+        }
 
         let selection = new Uint8ClampedArray(this.project.dimensions.x * this.project.dimensions.y);
         switch (this.getSetting("shape")) {
@@ -74,12 +81,17 @@ export class SelectionTool extends Tool {
                 console.error("No shape selected.");
                 break;
         }
+        this.project.currentSelection.reset();
         this.project.currentSelection.addRegion(selection);
         this.project.currentSelection.updateBorder();
         return false;
     };
 
     drawPreview(ctx) {
+        if (this.firstCorner == null || this.lastCorner == null) {
+            return;
+        }
+
         ctx.strokeStyle = '#000';
         ctx.lineWidth = 1;
 

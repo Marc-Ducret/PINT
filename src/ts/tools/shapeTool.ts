@@ -29,12 +29,21 @@ export class ShapeTool extends Tool {
         this.lastCorner = pos;
     };
 
+    reset () {
+        this.firstCorner = null;
+        this.lastCorner = null;
+    }
+
     endUse (pos) {
         this.continueUse(pos);
         return null;
     };
 
     drawPreview (ctx) {
+        if (this.firstCorner == null || this.lastCorner == null) {
+            return;
+        }
+
         ctx.fillStyle = this.getSetting('fillColor');
         ctx.strokeStyle = this.getSetting('strokeColor');
         ctx.lineWidth = this.getSetting('lineWidth');

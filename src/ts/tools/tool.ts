@@ -13,6 +13,8 @@ export abstract class Tool {
         this.settings = new SettingsRequester();
     }
 
+    abstract reset();
+
     /**
      * Function called on first click using the tool.
      * @param {ImageData} img Canvas content on tool click.

@@ -144,6 +144,10 @@ export class UIController {
      */
     onMouseMove (event: MouseEvent) {
         this.lastPosition = this.viewport.globalToLocalPosition(new Vec2(event.offsetX, event.offsetY));
+        if (this.mouseMoving && this.project != null) {
+            this.project.mouseMove(this.lastPosition);
+        }
+        this.redraw = true;
     };
 
 
@@ -172,10 +176,6 @@ export class UIController {
      */
     onStep (timestamp: number) {
         if (this.project != null) {
-            if (this.mouseMoving && this.project.mouseMove(this.lastPosition)) {
-                this.redraw = true;
-            }
-
             if (this.project.renderSelection()) {
                 this.redraw = true;
             }

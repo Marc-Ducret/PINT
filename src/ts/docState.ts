@@ -111,6 +111,7 @@ export class Project {
                 this.currentLayer.getContext()
                     .drawImage(this.previewLayer.getHTMLElement(),0,0);
             }
+            this.currentTool.reset();
             this.previewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
             this.redraw = true;
         }

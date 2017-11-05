@@ -15,6 +15,11 @@ export class LineTool extends Tool {
         this.addSetting({name: "lineWidth", descName: "Line width", inputType: InputType.Number, defaultValue: "5"});
     }
 
+    reset () {
+        this.firstCorner = null;
+        this.lastCorner = null;
+    }
+
     startUse (img, pos, project) {
         this.firstCorner = pos;
         this.lastCorner = pos;
@@ -30,6 +35,10 @@ export class LineTool extends Tool {
     };
 
     drawPreview (ctx) {
+        if (this.firstCorner == null || this.lastCorner == null) {
+            return;
+        }
+
         ctx.strokeStyle = this.getSetting('strokeColor');
         ctx.lineWidth = this.getSetting('lineWidth');
         ctx.beginPath();

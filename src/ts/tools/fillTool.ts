@@ -26,6 +26,12 @@ export class FillTool extends Tool {
         this.addSetting({name: "fillColor", descName: "Fill color", inputType: InputType.Color, defaultValue: "#000000"});
     }
 
+
+    reset () {
+        this.pixels = null;
+        this.newImage = null;
+    }
+
     /**
      * On click, computes the connex component containing the click position and fill it with the parameter color.
      * @param {ImageData} img Content of the drawing canvas.
@@ -72,6 +78,8 @@ export class FillTool extends Tool {
     };
 
     drawPreview (ctx: CanvasRenderingContext2D) {
-        ctx.putImageData(this.newImage,0,0);
+        if (this.newImage != null) {
+            ctx.putImageData(this.newImage,0,0);
+        }
     };
 }
