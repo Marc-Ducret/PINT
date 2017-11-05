@@ -152,7 +152,17 @@ export class UIController {
 
 
     onMouseWheel (event: WheelEvent) {
+        // offset from the center.
+        let ofsX = this.viewport.viewportDimensions.x/2 - event.offsetX;
+        let ofsY = this.viewport.viewportDimensions.y/2 - event.offsetY;
+
+        let oldScale = this.viewport.getScale();
         this.zoom(event.deltaY);
+        let newScale = this.viewport.getScale();
+
+        let deltaX = -ofsX*(oldScale-newScale)/oldScale;
+        let deltaY = -ofsY*(oldScale-newScale)/oldScale;
+        this.translate(new Vec2(deltaX, deltaY));
     };
 
     zoom (value: number) {
