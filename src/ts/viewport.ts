@@ -16,10 +16,10 @@ export class Viewport {
     layerList: Array<Layer> = [];
 
 
-    constructor (canvas: JQuery<HTMLCanvasElement>, layerDimensions: Vec2) {
+    constructor (canvas: JQuery<HTMLCanvasElement>) {
         this.canvas = canvas[0];
         this.context = this.canvas.getContext('2d');
-        this.layerDimensions = layerDimensions;
+        this.layerDimensions = new Vec2(0, 0);
 
         this.currentScale = 1;
         this.currentTranslation = new Vec2(0, 0);
@@ -40,7 +40,14 @@ export class Viewport {
      * Updates the list of rendered layers.
      * @param newLayerList
      */
-    setLayerList (newLayerList) {
+    setLayerList (newLayerList: Array<Layer>) {
+        if (newLayerList.length == 0) {
+            this.layerDimensions.x = 0;
+            this.layerDimensions.y = 0;
+        } else {
+            this.layerDimensions.x = newLayerList[0].getWidth();
+            this.layerDimensions.y = newLayerList[0].getHeight();
+        }
         this.layerList = newLayerList;
     };
 
@@ -91,8 +98,8 @@ export class Viewport {
      * Reset drawing canvas.
      */
     resetCanvas () {
-        this.context.fillStyle = "#303030";
-        this.context.strokeStyle = "#303030";
+        this.context.fillStyle = "#202020";
+        this.context.strokeStyle = "#202020";
         this.context.fillRect(0,0,this.canvas.width,this.canvas.height);
     };
 

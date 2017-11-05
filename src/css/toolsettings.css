@@ -4,7 +4,8 @@
     margin-bottom:0;
     padding-top: 15px;
     padding-bottom: 15px;
-    min-height: 100px;
+    height: 100vh;
+    overflow-y: auto;
 }
 
 #toolsettings_container div {
@@ -16,12 +17,17 @@
 }
 
 #toolsettings_container div {
-    border-right: white solid 1px;
+    border-bottom: white solid 1px;
+    margin: 5px;
+    padding: 5px;
+    width: 100%;
 }
 
 #toolsettings_container label {
     font-size: 24px;
     color: white;
+    float: left;
+    line-height: 65px;
 }
 
 #toolsettings_container label::after {
@@ -32,18 +38,21 @@
     border: none;
     padding: 0;
     background-color: transparent;
+    float: right;
 }
 
 #toolsettings_container input[type="number"] {
     width: 90px;
+    float: right;
 }
 
 #toolsettings_container select {
-    width: inherit;
+    width: fit-content;
     color: black;
     display: inline;
     vertical-align: middle;
     height: 60px;
+    float: right;
 }
 
 #toolsettings_container input {

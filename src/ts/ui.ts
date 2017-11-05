@@ -21,17 +21,14 @@ import {Vec2} from "./vec2";
 export class UIController {
     mouseMoving: boolean = false;
     lastPosition: Vec2 = null;
-    project: Project;
+    project: Project = null;
     viewport: Viewport;
     settingsUI: SettingsInterface;
     toolRegistry: ToolRegistry;
     redraw: boolean;
 
     constructor (){
-        this.project = new Project(this, "Untitled");
-        this.viewport = new Viewport(<JQuery<HTMLCanvasElement>> $("#viewport"), this.project.dimensions);
-
-        this.viewport.setLayerList(this.project.layerList);
+        this.viewport = new Viewport(<JQuery<HTMLCanvasElement>> $("#viewport"));
         this.viewport.viewportDimensionsChanged();
 
         this.settingsUI = new SettingsInterface(<JQuery<HTMLElement>> $("#toolsettings_container"));
@@ -39,6 +36,12 @@ export class UIController {
 
         this.redraw = true;
         window.requestAnimationFrame(this.onStep.bind(this));
+    }
+
+    newProject (dimensions: Vec2) {
+        this.redraw = true;
+        this.project = new Project(this, "Untitled", dimensions);
+        this.viewport.setLayerList(this.project.layerList);
     }
 
     /**
@@ -50,17 +53,19 @@ export class UIController {
      */
     onToolboxClicked (event: Event) {
 
-        var toolname = (<Element> event.target).getAttribute("data-tool");
+        let toolname = (<Element> event.target).getAttribute("data-tool");
         if(toolname !== null) {
-            var tool = this.toolRegistry.getToolByName(toolname);
+            let tool = this.toolRegistry.getToolByName(toolname);
             if(tool !== null) {
                 this.settingsUI.setupToolSettings(tool);
-                this.project.changeTool(tool);
+                if (this.project != null) {
+                    this.project.changeTool(tool);
+                }
             } else {
                 console.warn("No such tool "+toolname);
             }
         } else {
-            var func = (<Element> event.target).getAttribute("data-function");
+            let func = (<Element> event.target).getAttribute("data-function");
             if(func !== null) {
                 eval(func);
             } else {
@@ -80,7 +85,9 @@ export class UIController {
         this.lastPosition = this.viewport.globalToLocalPosition(new Vec2(event.offsetX, event.offsetY));
         this.mouseMoving = true;
 
-        this.project.mouseClick(this.lastPosition);
+        if (this.project != null) {
+            this.project.mouseClick(this.lastPosition);
+        }
     };
 
     /**
@@ -92,7 +99,9 @@ export class UIController {
     onMouseUp (event: MouseEvent) {
         this.lastPosition = this.viewport.globalToLocalPosition(new Vec2(event.offsetX, event.offsetY));
         this.mouseMoving = false;
-        this.project.mouseRelease(this.lastPosition);
+        if (this.project != null) {
+            this.project.mouseRelease(this.lastPosition);
+        }
     };
 
     /**
@@ -131,16 +140,18 @@ export class UIController {
      * @memberOf UIController
      */
     onStep (timestamp: number) {
-        if (this.mouseMoving && this.project.mouseMove(this.lastPosition)) {
-            this.redraw = true;
-        }
+        if (this.project != null) {
+            if (this.mouseMoving && this.project.mouseMove(this.lastPosition)) {
+                this.redraw = true;
+            }
 
-        if (this.project.renderSelection()) {
-            this.redraw = true;
-        }
+            if (this.project.renderSelection()) {
+                this.redraw = true;
+            }
 
-        if (this.project.redraw) {
-            this.redraw = true;
+            if (this.project.redraw) {
+                this.redraw = true;
+            }
         }
 
         if (this.redraw) {

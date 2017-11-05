@@ -20,8 +20,13 @@
             </p>
         </div>
         <div class="col s3">
-            <p id="filename-container">
+            <p id="filename-container" style="display: none">
                 <input type="text" value="Untitled 1"/>
+            </p>
+            <p id="newproject_container">
+                <input id="newproject_width" type="number" value="800" min="1"/>×
+                <input id="newproject_height" type="number" value="600" min="1"/>
+                <button id="newproject_button">New project</button>
             </p>
         </div>
         <div class="col s7">
@@ -41,14 +46,13 @@
             </p>
         </div>
     </div>
-    <div class="row z-depth-4" id="toolsettings_container">
-        <div>
-            <label> </label>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col s12" id="viewport-container">
+
+    <div class="row z-depth-3">
+        <div class="col s10" id="viewport-container">
             <canvas id="viewport"></canvas>
+        </div>
+        <div class="col s2" id="toolsettings_container">
+
         </div>
     </div>
 </div>

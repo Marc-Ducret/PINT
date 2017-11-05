@@ -24,9 +24,13 @@ export class Project {
     ui: UIController;
     redraw: boolean;
 
-    constructor (ui: UIController, name: string) {
+    constructor (ui: UIController, name: string, dimensions: Vec2) {
         this.name = name;
-        this.dimensions = new Vec2(800,600);
+        if (dimensions == null) {
+            this.dimensions = new Vec2(800,600);
+        } else {
+            this.dimensions = dimensions;
+        }
         this.previewLayer = new Layer(this.dimensions);
         this.currentLayer = new Layer(this.dimensions);
         this.selectionLayer = new Layer(this.dimensions);
