@@ -6,6 +6,7 @@ import {FreehandTool} from "./freehandTool";
 import {Tool} from "./tool";
 import {SelectionTool} from "./selectionTool";
 import {HandTool} from "./handTool";
+import {LineTool} from "./lineTool";
 
 export class ToolRegistry {
     registry: {[name: string]: Tool} = {};
@@ -17,6 +18,7 @@ export class ToolRegistry {
         this.registerTool(new FreehandTool());
         this.registerTool(new SelectionTool());
         this.registerTool(new HandTool());
+        this.registerTool(new LineTool());
     }
 
     /**
