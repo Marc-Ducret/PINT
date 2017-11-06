@@ -22,9 +22,7 @@ export class SelectionTool extends Tool {
         this.addSetting({
             name: "shape", descName: "Shape", inputType: InputType.Select, defaultValue: "square",
             options: [{name: "square", desc: "Square"},
-                {name: "circle", desc: "Circle"},
-                {name: "ellipse", desc: "Ellipse"},
-                {name: "arbitrary", desc: "Arbitrary"}]
+                {name: "circle", desc: "Circle"}]
         });
     }
 
