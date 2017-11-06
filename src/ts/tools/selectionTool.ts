@@ -83,13 +83,9 @@ export class SelectionTool extends Tool {
                 console.error("No shape selected.");
                 break;
         }
-        console.log('apply');
         this.project.currentSelection.reset();
-        console.log('reset');
         this.project.currentSelection.addRegion(selection);
-        console.log('add');
         this.project.currentSelection.updateBorder();
-        console.log('border');
         return false;
     };
 

@@ -21,7 +21,7 @@ export class PixelSelectionHandler {
         this.border = [];
 
         for (let i=0;i<w*h;i++) {
-            this.values[i] = 255;
+            this.values[i] = 0xFF;
         }
     }
 
