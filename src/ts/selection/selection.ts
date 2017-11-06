@@ -57,9 +57,9 @@ export class PixelSelectionHandler {
      * @param {Uint8ClampedArray} sel the region to add
      */
     addRegion(sel: Uint8ClampedArray) {
-        for(let i in sel) {
-            this.values[i] = Math.min(0xFF, this.values[i] + sel[i]);
-        }
+        sel.forEach((val, i) => {
+            this.values[i] = Math.min(0xFF, this.values[i] + val);
+        });
     }
 
     /**
