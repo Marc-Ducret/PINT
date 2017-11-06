@@ -54,14 +54,16 @@ export class SelectionTool extends Tool {
             case "square":
                 for (let y = Math.floor(Math.min(this.firstCorner.y, this.lastCorner.y)); y < Math.max(this.firstCorner.y, this.lastCorner.y); y++) {
                     for (let x = Math.floor(Math.min(this.firstCorner.x, this.lastCorner.x)); x < Math.max(this.firstCorner.x, this.lastCorner.x); x++) {
-                        selection[x + y * this.project.dimensions.x] = 0xFF;
+                        if(x >= 0 && y >= 0 && x < this.project.dimensions.x && y < this.project.dimensions.y) {
+                            selection[x + y * this.project.dimensions.x] = 0xFF;
+                        }
                     }
                 }
                 break;
             case "circle":
                 let radius = Math.ceil(this.firstCorner.distance(this.lastCorner));
-                for (let y = Math.floor(this.firstCorner.y - radius); y < this.firstCorner.y + radius; y++) {
-                    for (let x = Math.floor(this.firstCorner.x - radius); x < this.firstCorner.x + radius; x++) {
+                for (let y = Math.floor(this.firstCorner.y - radius) - 2; y <= this.firstCorner.y + radius + 2; y++) {
+                    for (let x = Math.floor(this.firstCorner.x - radius) - 2; x <= this.firstCorner.x + radius + 2; x++) {
                         if(x >= 0 && x < this.project.dimensions.x && y >= 0 && y < this.project.dimensions.y) {
                             let d = (x - this.firstCorner.x) ** 2 + (y - this.firstCorner.y) ** 2;
                             if(d <= radius ** 2) {
@@ -81,9 +83,13 @@ export class SelectionTool extends Tool {
                 console.error("No shape selected.");
                 break;
         }
+        console.log('apply');
         this.project.currentSelection.reset();
+        console.log('reset');
         this.project.currentSelection.addRegion(selection);
+        console.log('add');
         this.project.currentSelection.updateBorder();
+        console.log('border');
         return false;
     };
 
