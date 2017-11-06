@@ -39,7 +39,9 @@ export class FreehandTool extends Tool {
     };
 
     continueUse (pos) {
-        this.positions.push(pos);
+        if(this.positions.length == 0 || pos.distance(this.positions[this.positions.length-1]) > 2) {
+            this.positions.push(pos);
+        }
     };
 
     drawPreview (ctx) {
@@ -54,6 +56,8 @@ export class FreehandTool extends Tool {
         }
         ctx.lineWidth = this.getSetting("lineWidth");
         ctx.strokeStyle = this.getSetting("strokeColor");
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
         ctx.stroke();
     };
 }
