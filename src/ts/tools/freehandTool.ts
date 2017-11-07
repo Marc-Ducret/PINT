@@ -55,7 +55,7 @@ export class FreehandTool extends Tool {
      * @param {Vec2} pos Mouse position
      */
     continueUse (pos) {
-        if(this.positions.length == 0 || pos.distance(this.positions[this.positions.length-1]) > 2) {
+        if(this.positions.length == 0 || pos.distance(this.positions[this.positions.length-1]) > 0) {
             this.positions.push(pos);
         }
     };

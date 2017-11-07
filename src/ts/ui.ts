@@ -117,7 +117,7 @@ export class UIController {
         this.mouseMoving = true;
 
         if (this.project != null) {
-            this.project.mouseClick(this.lastPosition);
+            this.project.mouseClick(this.lastPosition.floor());
         }
     };
 
@@ -131,7 +131,7 @@ export class UIController {
         this.lastPosition = this.viewport.globalToLocalPosition(new Vec2(event.offsetX, event.offsetY));
         this.mouseMoving = false;
         if (this.project != null) {
-            this.project.mouseRelease(this.lastPosition);
+            this.project.mouseRelease(this.lastPosition.floor());
         }
     };
 
@@ -145,7 +145,7 @@ export class UIController {
     onMouseMove (event: MouseEvent) {
         this.lastPosition = this.viewport.globalToLocalPosition(new Vec2(event.offsetX, event.offsetY));
         if (this.mouseMoving && this.project != null) {
-            this.project.mouseMove(this.lastPosition);
+            this.project.mouseMove(this.lastPosition.floor());
         }
         this.redraw = true;
     };
@@ -215,6 +215,31 @@ export class UIController {
         this.viewport.viewportDimensionsChanged();
     };
 
+
+    /**
+     * Given the UI DOM elements as an input, bind events to the controller.
+     */
+    bindEvents (toolbox_container, viewport, newproject_button, newproject_width, newproject_height) {
+        toolbox_container.children().click(this.onToolboxClicked.bind(this));
+        toolbox_container.children().hover(this.onToolboxHovered.bind(this),
+            this.onToolboxHoverLeft.bind(this));
+        viewport.mousedown(this.onMouseDown.bind(this));
+        viewport.mouseup(this.onMouseUp.bind(this));
+        viewport.mousemove(this.onMouseMove.bind(this));
+        viewport.mouseleave(this.onMouseUp.bind(this));
+        document.getElementById("viewport").addEventListener('wheel', this.onMouseWheel.bind(this));
+
+        newproject_button.click(function() {
+            this.newProject(new Vec2(<number> newproject_width.val(), <number> newproject_height.val()));
+        }.bind(this));
+
+        $(window).on('resize', (function(e) {
+            this.onWindowResize(new Vec2($(window).width(), $(window).height()));
+        }).bind(this));
+
+        this.onWindowResize(new Vec2($(window).width(), $(window).height()));
+
+    }
 }
 
 

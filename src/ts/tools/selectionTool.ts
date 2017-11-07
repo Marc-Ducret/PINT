@@ -102,6 +102,7 @@ export class SelectionTool extends Tool {
                     y = Math.min(this.firstCorner.y, this.lastCorner.y),
                     w = Math.abs(this.firstCorner.x - this.lastCorner.x),
                     h = Math.abs(this.firstCorner.y - this.lastCorner.y);
+                
                 ctx.rect(x, y, w, h);
                 ctx.stroke();
                 break;

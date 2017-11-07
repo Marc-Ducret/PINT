@@ -10,6 +10,10 @@ export class Vec2 {
         this.y = y_;
     }
 
+    floor () : Vec2 {
+        return new Vec2(Math.floor(this.x), Math.floor(this.y));
+    }
+
     /**
      * Euclidean distance between this point and another one.
      * @param {Vec2} other Another point.

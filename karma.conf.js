@@ -20,14 +20,14 @@ module.exports = function(config) {
             suppressSkipped: true,  // do not print information about skipped tests
             showSpecTiming: false // print the time elapsed for each spec
         },
-        logLevel: config.LOG_ERROR,
+        logLevel: config.LOG_WARN,
         singleRun: true,
         customLaunchers: {
             Chrome_travis_ci: {
                 base: 'Chrome',
                 flags: ['--no-sandbox']
             }
-        },
+        }
     };
 
     if (process.env.TRAVIS) {

@@ -39,6 +39,8 @@ export class Project {
             this.dimensions = dimensions;
         }
         this.previewLayer = new Layer(this.dimensions);
+        this.previewLayer.getContext().translate(0.5, 0.5);
+
         this.currentLayer = new Layer(this.dimensions);
         this.selectionLayer = new Layer(this.dimensions);
         this.layerList = [this.currentLayer, this.previewLayer, this.selectionLayer]; // The renderer draw layers in order.
