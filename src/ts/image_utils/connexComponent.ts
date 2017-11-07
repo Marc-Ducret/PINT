@@ -16,7 +16,7 @@ function flatten(p: Vec2, img_width: number) {
  * @param {Vec2} pos Starting point of exploration.
  * @returns {Uint8ClampedArray}
  */
-export function colorSelect(img: ImageData, pos: Vec2): Uint8ClampedArray {
+export function colorSelect(img: ImageData, pos: Vec2, threshold: number): Uint8ClampedArray {
     let w = img.width;
     let h = img.height;
     let toVisit: Array<Vec2> = [pos];
@@ -30,17 +30,6 @@ export function colorSelect(img: ImageData, pos: Vec2): Uint8ClampedArray {
     explored[flatten(pos,w)] = 1;
 
     /**
-     * Returns the integer corresponding to the pixel color of a flattened position.
-     * @param {number} i The flattened position.
-     * @returns {number}
-     */
-    let color = function(i: number): number {
-        return  (img.data[i * 4 + 2] << 16)
-            +   (img.data[i * 4 + 1] << 8)
-            +   (img.data[i * 4    ] << 0);
-    };
-
-    /**
      * Add a position in the stack only if it has not be seen yet.
      * @param {Vec2} p Position to add.
      */
@@ -51,7 +40,20 @@ export function colorSelect(img: ImageData, pos: Vec2): Uint8ClampedArray {
         }
     };
 
-    let colorToMatch = color(flatten(pos,w));
+    let indexToMatch = flatten(pos, w);
+
+    /**
+     * Returns the mean color component distance from the pixel at i to the pixel to match.
+     * @param {number} i The flattened position.
+     * @returns {number}
+     */
+    let dist = function(i: number): number {
+        let s = 0;
+        for(let j = 0; j < 3; j++) {
+            s += Math.abs(img.data[i * 4 + j] - img.data[indexToMatch * 4 + j]);
+        }
+        return s;
+    }
 
     /**
      * Depth first search to gather pixels of the connected component.
@@ -61,7 +63,7 @@ export function colorSelect(img: ImageData, pos: Vec2): Uint8ClampedArray {
         let i = flatten(p,w);
 
         if(explored[i] === 1) {
-            if(color(i) == colorToMatch) { // Here we can adjust the precision (might not need to be the exact same color)
+            if(dist(i) / 3 <= threshold) { // Here we can adjust the precision (might not need to be the exact same color)
                 selection[i] = 0xFF;
                 explored[i] = 2;
                 addNeighbour(new Vec2(p.x + 1, p.y));

@@ -24,6 +24,7 @@ export class FillTool extends Tool {
     constructor() {
         super("FillTool", "Fill");
         this.addSetting({name: "fillColor", descName: "Fill color", inputType: InputType.Color, defaultValue: "#000000"});
+        this.addSetting({name: "threshold", descName: "Threshold", inputType: InputType.Number, defaultValue: 0});
     }
 
 
@@ -39,7 +40,7 @@ export class FillTool extends Tool {
      * @param {Project} project Document state
      */
     startUse (img: ImageData, pos: Vec2, project: Project) {
-        this.pixels = colorSelect(img, new Vec2(Math.floor(pos.x), Math.floor(pos.y)));
+        this.pixels = colorSelect(img, new Vec2(Math.floor(pos.x), Math.floor(pos.y)), this.getSetting("threshold"));
 
         let width: number = img.width;
         let height: number = img.height;
