@@ -11,7 +11,7 @@ module.exports = function(config) {
             "test/**/*.ts": ["karma-typescript"],
         },
         reporters: ["progress", 'coverage', "karma-typescript"],
-        browsers: ["PhantomJS"],
+        browsers: ["Chrome"],
         singleRun: true
     });
 };
