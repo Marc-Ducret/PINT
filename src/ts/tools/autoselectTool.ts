@@ -19,6 +19,9 @@ export class AutoSelectTool extends Tool {
         super("AutoSelectTool", "Magic wand");
     }
 
+    /**
+     * Reset tool data.
+     */
     reset() {
         this.image = null;
         this.used = false;

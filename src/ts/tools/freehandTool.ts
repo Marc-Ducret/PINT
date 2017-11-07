@@ -23,27 +23,47 @@ export class FreehandTool extends Tool {
 
     }
 
-
+    /**
+     * Reset tool data.
+     */
     reset () {
         this.positions = [];
     }
 
+    /**
+     * Starting from a reset state, ignore parameters and add the first mouse position to position table.
+     * @param {ImageData} img Ignored.
+     * @param {Vec2} pos Mouse position.
+     * @param {Project} project Ignored.
+     */
     startUse (img, pos, project) {
-        this.positions = [];
         this.continueUse(pos);
     };
 
+    /**
+     * Last mouse event handler. Just aggregate the data.
+     * @param {Vec2} pos Mouse position
+     * @returns {any} null means redraw according to the preview canvas.
+     */
     endUse (pos) {
         this.continueUse(pos);
         return null;
     };
 
+    /**
+     * If given position is not too close from the last position, aggregate position into the position table.
+     * @param {Vec2} pos Mouse position
+     */
     continueUse (pos) {
         if(this.positions.length == 0 || pos.distance(this.positions[this.positions.length-1]) > 2) {
             this.positions.push(pos);
         }
     };
 
+    /**
+     * Rendering using canvas features.
+     * @param {CanvasRenderingContext2D} ctx Canvas context.
+     */
     drawPreview (ctx) {
         ctx.beginPath();
         for (let i = 0; i < this.positions.length; i++) {

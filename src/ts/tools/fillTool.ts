@@ -26,7 +26,9 @@ export class FillTool extends Tool {
         this.addSetting({name: "fillColor", descName: "Fill color", inputType: InputType.Color, defaultValue: "#000000"});
     }
 
-
+    /**
+     * Reset tool data.
+     */
     reset () {
         this.pixels = null;
         this.newImage = null;
