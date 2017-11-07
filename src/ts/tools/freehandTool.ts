@@ -65,6 +65,14 @@ export class FreehandTool extends Tool {
      * @param {CanvasRenderingContext2D} ctx Canvas context.
      */
     drawPreview (ctx) {
+        ctx.lineWidth = this.getSetting("lineWidth");
+        ctx.strokeStyle = this.getSetting("strokeColor");
+        ctx.fillStyle = this.getSetting("strokeColor");
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        if (this.positions.length > 0) {
+            ctx.fillRect(this.positions[0].x-0.5,this.positions[0].y-0.5,1,1);
+        }
         ctx.beginPath();
         for (let i = 0; i < this.positions.length; i++) {
             let pos = this.positions[i];
@@ -74,10 +82,6 @@ export class FreehandTool extends Tool {
                 ctx.lineTo(pos.x, pos.y);
             }
         }
-        ctx.lineWidth = this.getSetting("lineWidth");
-        ctx.strokeStyle = this.getSetting("strokeColor");
-        ctx.lineCap = "round";
-        ctx.lineJoin = "round";
         ctx.stroke();
     };
 }

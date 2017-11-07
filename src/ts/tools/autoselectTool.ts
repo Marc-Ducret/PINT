@@ -11,6 +11,7 @@ export class AutoSelectTool extends Tool {
     used: boolean;
     selection: Uint8ClampedArray;
     border: Array<Vec2>;
+    readonly overrideSelectionMask: boolean = true;
 
     /**
      * Instantiates the Tool with AutoSelectTool name.

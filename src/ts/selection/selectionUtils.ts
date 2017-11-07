@@ -1,5 +1,12 @@
 import {Vec2} from "../vec2";
 
+export function mask(selection: Uint8ClampedArray, img: ImageData) {
+    selection.forEach(function(value: number, index: number) {
+        img.data[4*index+3] = value*img.data[4*index+3]/255;
+    });
+    return img;
+}
+
 /**
  * Check if a point is in a selection.
  * @param {Uint8ClampedArray} selection Given selection.

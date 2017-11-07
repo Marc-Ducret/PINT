@@ -8,6 +8,7 @@ import {Tool} from "./tools/tool";
 import {Vec2} from "./vec2";
 import {PixelSelectionHandler} from "./selection/selection";
 import {UIController} from "./ui";
+import {mask} from "./selection/selectionUtils";
 
 /**
  * Project manager.
@@ -90,6 +91,9 @@ export class Project {
     mouseClick (vect: Vec2){
         if (this.currentTool !== null) {
             let img = this.currentLayer.getContext().getImageData(0, 0, this.dimensions.x, this.dimensions.y);
+            if (!this.currentTool.overrideSelectionMask) {
+                img = mask(this.currentSelection.getValues(), img);
+            }
             this.currentTool.startUse(img, vect, this);
         }
     };
