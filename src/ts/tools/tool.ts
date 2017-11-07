@@ -6,6 +6,7 @@ export abstract class Tool {
     private name: string;
     private desc: string;
     private settings: SettingsRequester;
+    readonly overrideSelectionMask: boolean = false;
 
     /**
      * Tool builder, giving it a name and a displayed description.

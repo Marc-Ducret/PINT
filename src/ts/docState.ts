@@ -105,8 +105,14 @@ export class Project {
 
         if (this.currentTool !== null){
             this.currentTool.continueUse(vect);
+
             this.previewLayer.reset();
             this.currentTool.drawPreview(this.previewLayer.getContext());
+
+            if (!this.currentTool.overrideSelectionMask) {
+                this.previewLayer.applyMask(this.currentSelection.getValues());
+            }
+
             this.redraw = true;
         }
 
@@ -125,6 +131,10 @@ export class Project {
             if(this.currentTool.endUse(vect) === null) {
                 this.previewLayer.reset();
                 this.currentTool.drawPreview(this.previewLayer.getContext());
+                if (!this.currentTool.overrideSelectionMask) {
+                    this.previewLayer.applyMask(this.currentSelection.getValues());
+                }
+
                 this.currentLayer.getContext()
                     .drawImage(this.previewLayer.getHTMLElement(),0,0);
             }
@@ -139,7 +149,7 @@ export class Project {
      * @returns {boolean} true if a redraw is needed, else false.
      */
     renderSelection () : boolean {
-        if (this.currentSelection.border.length > 0) {
+        if (this.currentSelection.getBorder().length > 0) {
             this.selectionLayer.reset();
             this.currentSelection.draw(this.selectionLayer.getContext());
             return true;

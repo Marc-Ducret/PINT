@@ -15,6 +15,7 @@ export class SelectionTool extends Tool {
     firstCorner: Vec2;
     lastCorner: Vec2;
     project: Project;
+    readonly overrideSelectionMask: boolean = true;
 
     constructor() {
         super("SelectionTool", "Selection");

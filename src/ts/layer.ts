@@ -1,5 +1,6 @@
 import * as $ from "jquery";
 import {Vec2} from "./vec2";
+import {PixelSelectionHandler} from "./selection/selection";
 
 /**
  * Interface for a virtual HTML Canvas element.
@@ -44,5 +45,13 @@ export class Layer {
 
     getHeight() : number {
         return this.height;
+    }
+
+    applyMask(selection: Uint8ClampedArray) {
+        let img = this.context.getImageData(0, 0, this.width, this.height);
+        selection.forEach(function(value: number, index: number) {
+           img.data[4*index+3] = value*img.data[4*index+3]/255;
+        });
+        this.context.putImageData(img, 0, 0);
     }
 }
