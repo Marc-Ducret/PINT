@@ -10,8 +10,17 @@ module.exports = function(config) {
             "src/**/*.ts": ["karma-typescript", "coverage"],
             "test/**/*.ts": ["karma-typescript"],
         },
-        reporters: ["progress", 'coverage', "karma-typescript"],
+        reporters: ['spec', 'coverage'],
         browsers: ["Chrome"],
+        specReporter: {
+            maxLogLines: 5,         // limit number of lines logged per test
+            suppressErrorSummary: true,  // do not print error summary
+            suppressFailed: false,  // do not print information about failed tests
+            suppressPassed: false,  // do not print information about passed tests
+            suppressSkipped: true,  // do not print information about skipped tests
+            showSpecTiming: false // print the time elapsed for each spec
+        },
+        logLevel: config.LOG_ERROR,
         singleRun: true,
         customLaunchers: {
             Chrome_travis_ci: {

@@ -8,6 +8,9 @@ import {SelectionTool} from "./selectionTool";
 import {HandTool} from "./handTool";
 import {LineTool} from "./lineTool";
 
+/**
+ * Basically a hashmap interface.
+ */
 export class ToolRegistry {
     registry: {[name: string]: Tool} = {};
 

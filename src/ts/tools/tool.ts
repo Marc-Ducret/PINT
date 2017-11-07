@@ -7,12 +7,20 @@ export abstract class Tool {
     private desc: string;
     private settings: SettingsRequester;
 
+    /**
+     * Tool builder, giving it a name and a displayed description.
+     * @param name Name
+     * @param desc Description
+     */
     constructor (name, desc) {
         this.name = name;
         this.desc = desc;
         this.settings = new SettingsRequester();
     }
 
+    /**
+     * Reset the state of the tool.
+     */
     abstract reset();
 
     /**
