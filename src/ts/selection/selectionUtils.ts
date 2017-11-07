@@ -9,7 +9,7 @@ import {Vec2} from "../vec2";
  * @param h Image height.
  * @returns {boolean}
  */
-function isSelected(selection: Uint8ClampedArray, x, y, w, h) {
+export function isSelected(selection: Uint8ClampedArray, x, y, w, h) {
     return x >= 0 && x < w && y >= 0 && y < h && selection[x + y * w] > 0;
 }
 
