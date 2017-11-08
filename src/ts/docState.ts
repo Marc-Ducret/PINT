@@ -3,11 +3,11 @@
  *@brief Project class representing a project. (controller)
  */
 
-import {Layer} from "./layer";
+import {Layer} from "./ui/layer";
 import {Tool} from "./tools/tool";
 import {Vec2} from "./vec2";
 import {PixelSelectionHandler} from "./selection/selection";
-import {UIController} from "./ui";
+import {UIController} from "./ui/ui";
 import {mask} from "./selection/selectionUtils";
 
 /**

@@ -19,27 +19,78 @@ body {
 
 #top-nav .col:not(:last-child) {
     border-right: solid white 1px;
+}
+
+#top-nav .col {
     margin-top: 15px;
     height: 100px;
 }
 
-
-.title {
-    line-height: 100px;
-    font-size: 56px;
-    color: white;
-    text-decoration: none;
-    font-weight: 100;
-}
-
-#title-container {
+#top-nav div p {
     margin:0;
     text-align: center;
+    line-height: 100px;
+    padding-top: 1em;
+}
+
+.flex {
+    display:flex;
+    align-items: center;
+    justify-content:center;
+}
+
+#top-nav .col {
+    text-align: center;
+}
+
+#top-nav div > a:hover {
+    cursor: pointer;
+}
+
+#top-nav div p a {
+    width: 100%;
+
+    line-height: 30px;
+    height: 70px;
+    vertical-align: top;
+    padding: 5px;
+    font-size: 20px;
+}
+
+#top-nav div p input {
+    font-size: 42px!important;
+    line-height: 100px!important;
 }
 
 #filename-container {
     margin: 0;
     line-height: 125px;
+}
+
+
+.newproject-container input{
+    text-align: center;
+}
+
+.newproject-container *{
+    width: 30%!important;
+}
+
+
+#back_col a {
+    line-height: 60px;
+    height: 70px;
+    vertical-align: top;
+    padding: 5px;
+    font-size: 20px;
+}
+
+
+.title {
+    line-height: 100px!important;
+    font-size: 56px!important;
+    color: white;
+    font-weight: 100;
 }
 
 #toolbox-container {
@@ -58,47 +109,6 @@ body {
 
 #toolbox-container img:hover, .hovered {
     filter: brightness(100%) sepia(100) saturate(100) hue-rotate(149deg);
-}
-
-#filename-container input {
-    font-size: 42px;
-    line-height: 100px;
-}
-
-
-
-#newproject_container {
-    text-align: center;
-    line-height: 100px;
-}
-
-#newproject_container *{
-    width: 30%;
-}
-#load_image_file a, #load_image_url a, #back_col a {
-    width: 100%;
-}
-
-#back_col a {
-    line-height: 60px;
-    height: 70px;
-    vertical-align: top;
-    padding: 5px;
-    font-size: 20px;
-}
-
-#load_image_file a, #load_image_url a, #newproject_container a {
-    line-height: 30px;
-    height: 70px;
-    vertical-align: top;
-    padding: 5px;
-    font-size: 20px;
-}
-
-#newproject_container input{
-    font-size: 42px;
-    line-height: 100px;
-    text-align: center;
 }
 
 #viewport {

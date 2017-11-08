@@ -1,5 +1,5 @@
 import {Layer} from "./layer";
-import {Vec2} from "./vec2";
+import {Vec2} from "../vec2";
 
 /**
  * Handler of the final step of rendering.

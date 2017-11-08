@@ -1,6 +1,6 @@
 import * as $ from "jquery";
-import {Vec2} from "./vec2";
-import {PixelSelectionHandler} from "./selection/selection";
+import {Vec2} from "../vec2";
+import {PixelSelectionHandler} from "../selection/selection";
 
 /**
  * Interface for a virtual HTML Canvas element.

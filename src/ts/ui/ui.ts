@@ -1,10 +1,11 @@
 import * as $ from "jquery";
 
-import {Project} from "./docState";
-import {SettingsInterface} from "./tool_settings/settingsInterface";
+import {Project} from "../docState";
+import {SettingsInterface} from "../tool_settings/settingsInterface";
 import {Viewport} from "./viewport";
-import {ToolRegistry} from "./tools/toolregistry";
-import {Vec2} from "./vec2";
+import {ToolRegistry} from "../tools/toolregistry";
+import {Vec2} from "../vec2";
+import {setup_menu} from "./menu";
 
 /**
  * @file User interface handler
@@ -35,28 +36,15 @@ export class UIController {
         this.settingsUI = new SettingsInterface(<JQuery<HTMLElement>> $("#toolsettings_container"));
         this.toolRegistry = new ToolRegistry();
 
-        this.menu_open = true;
+        setup_menu(this, document.getElementById("top-nav"));
+
         this.redraw = true;
         window.requestAnimationFrame(this.onStep.bind(this));
     }
 
-    titleChanged () {
-        let new_title: string = <string>$("#filename-container input").val();
+    filenameUpdate (new_title: string) {
         if (this.project != null) {
             this.project.name = new_title;
-        }
-    }
-
-    homeClicked () {
-        if (!this.menu_open) {
-            $("#toolbox_col").fadeOut(100);
-            $("#filename-container").fadeOut(100, function() {
-                $("#load_image_file_col").fadeIn(100);
-                $("#load_image_url_col").fadeIn(100);
-                $("#newproject_container").fadeIn(100);
-                $("#back_col").fadeIn(100);
-            });
-            this.menu_open = true;
         }
     }
 
