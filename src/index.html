@@ -14,7 +14,7 @@
     <div class="row z-depth-3" id="top-nav">
         <div class="col s2">
             <p id="title-container">
-                <a class="title" href="#">
+                <a class="title" href="#" onclick="controller.homeClicked()">
                     PINT.js
                 </a>
             </p>
@@ -29,8 +29,24 @@
                 <a id="newproject_button" class="btn-large">New project</a>
             </p>
         </div>
-        <div class="col s7">
-            <p id="toolbox-container"> <!-- Sample icons offered by materializecss-->
+        <div class="col s1" id="load_image_file_col">
+            <p id="load_image_file">
+                <a id="load_image_file_button" class="btn-large" onclick="controller.loadImageFromFile()">Load<br/> from file</a>
+            </p>
+        </div>
+        <div class="col s1" id="load_image_url_col">
+            <p id="load_image_url">
+                <a id="load_image_url_button" class="btn-large" onclick="controller.loadImageFromUrl()">Load<br/> from URL</a>
+            </p>
+        </div>
+        <div class="col s1" style="display: none" id="back_col">
+            <p id="back">
+                <a id="back_button" class="btn-large" onclick="controller.backClicked()">Back</a>
+            </p>
+        </div>
+        <div class="col" id="toolbox_col" style="display: none">
+            <p id="toolbox-container">
+                <!-- Sample icons offered by materializecss-->
                 <i class="medium material-icons" data-desc="(Undo)">undo</i>
                 <i class="medium material-icons" data-desc="(Redo)">redo</i>
                 <i class="medium material-icons" data-tool="HandTool">gamepad</i>

@@ -26,6 +26,7 @@ export class UIController {
     settingsUI: SettingsInterface;
     toolRegistry: ToolRegistry;
     redraw: boolean;
+    menu_open: boolean;
 
     constructor (){
         this.viewport = new Viewport(<JQuery<HTMLCanvasElement>> $("#viewport"));
@@ -34,14 +35,75 @@ export class UIController {
         this.settingsUI = new SettingsInterface(<JQuery<HTMLElement>> $("#toolsettings_container"));
         this.toolRegistry = new ToolRegistry();
 
+        this.menu_open = true;
         this.redraw = true;
         window.requestAnimationFrame(this.onStep.bind(this));
+    }
+
+    homeClicked () {
+        if (!this.menu_open) {
+            $("#toolbox_col").fadeOut(100);
+            $("#filename-container").fadeOut(100, function() {
+                $("#load_image_file_col").fadeIn(100);
+                $("#load_image_url_col").fadeIn(100);
+                $("#newproject_container").fadeIn(100);
+                $("#back_col").fadeIn(100);
+            });
+            this.menu_open = true;
+        }
+    }
+
+    loadImageFromFile() {
+        let input = document.createElement("input");
+        input.type = "file";
+        input.accept = ".jpg, .jpeg, .png";
+
+        let self = this;
+
+        input.addEventListener("change", function(event: any) {
+            let selectedFile: File = event.target.files[0];
+            let reader = new FileReader();
+            let imgtag = document.createElement("img");
+
+            reader.onload = function(event) {
+                imgtag.src = reader.result;
+                imgtag.addEventListener("load", function() {
+                    self.newProject(new Vec2(imgtag.width, imgtag.height));
+                    self.project.currentLayer.getContext().drawImage(imgtag, 0, 0);
+                });
+            };
+            reader.readAsDataURL(selectedFile);
+        });
+
+        input.click();
+        return false;
+    }
+
+    loadImageFromUrl() {
+
+    }
+
+    backClicked () {
+        if (this.menu_open) {
+            $("#back_col").fadeOut(100);
+            $("#load_image_url_col").fadeOut(100);
+            $("#load_image_file_col").fadeOut(100);
+            $("#newproject_container").fadeOut(100, function() {
+                $("#toolbox_col").fadeIn(100);
+                $("#filename-container").fadeIn(100);
+            });
+            this.menu_open = false;
+        }
     }
 
     newProject (dimensions: Vec2) {
         this.redraw = true;
         this.project = new Project(this, "Untitled", dimensions);
         this.viewport.setLayerList(this.project.layerList);
+
+        this.backClicked();
+
+        this.menu_open = false;
     }
 
     /**

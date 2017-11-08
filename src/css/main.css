@@ -65,19 +65,29 @@ body {
     line-height: 100px;
 }
 
-#newproject_container {
-    text-align: center;
-}
+
 
 #newproject_container {
+    text-align: center;
     line-height: 100px;
 }
 
 #newproject_container *{
     width: 30%;
 }
+#load_image_file a, #load_image_url a, #back_col a {
+    width: 100%;
+}
 
-#newproject_button {
+#back_col a {
+    line-height: 60px;
+    height: 70px;
+    vertical-align: top;
+    padding: 5px;
+    font-size: 20px;
+}
+
+#load_image_file a, #load_image_url a, #newproject_container a {
     line-height: 30px;
     height: 70px;
     vertical-align: top;
