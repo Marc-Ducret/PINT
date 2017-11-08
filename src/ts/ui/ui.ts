@@ -60,14 +60,13 @@ export class UIController {
         let input = document.createElement("input");
         input.type = "file";
         input.accept = ".jpg, .jpeg, .png";
-
+        input.setAttribute("style", "display:none");
         let self = this;
 
         input.addEventListener("change", function(event: any) {
             let selectedFile: File = event.target.files[0];
             let reader = new FileReader();
             let imgtag = document.createElement("img");
-
             reader.onload = function(event) {
                 imgtag.src = reader.result;
                 imgtag.addEventListener("load", function() {
@@ -78,6 +77,7 @@ export class UIController {
             reader.readAsDataURL(selectedFile);
         });
 
+        document.body.appendChild(input);
         input.click();
         return false;
     }
