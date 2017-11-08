@@ -40,6 +40,13 @@ export class UIController {
         window.requestAnimationFrame(this.onStep.bind(this));
     }
 
+    titleChanged () {
+        let new_title: string = <string>$("#filename-container input").val();
+        if (this.project != null) {
+            this.project.name = new_title;
+        }
+    }
+
     homeClicked () {
         if (!this.menu_open) {
             $("#toolbox_col").fadeOut(100);
@@ -100,6 +107,8 @@ export class UIController {
         this.backClicked();
 
         this.menu_open = false;
+        $("#filename-container input").val("Untitled"); // Reset title
+        $("#toolbox-container").children().removeClass("hovered"); // Unselect tools.
     }
 
     /**
