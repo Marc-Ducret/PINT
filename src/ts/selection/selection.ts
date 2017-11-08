@@ -9,10 +9,10 @@ import {computeBorder} from "./selectionUtils";
 
 
 export class PixelSelectionHandler {
-    width: number;
-    height: number;
-    values: Uint8ClampedArray;
-    border: Array<Vec2>;
+    private width: number;
+    private height: number;
+    private values: Uint8ClampedArray;
+    private border: Array<Vec2>;
 
     constructor(w, h) {
         this.width = w;
@@ -20,19 +20,17 @@ export class PixelSelectionHandler {
         this.values = new Uint8ClampedArray(w*h);
         this.border = [];
 
+        // select all at the beginning.
         for (let i=0;i<w*h;i++) {
             this.values[i] = 0xFF;
         }
     }
 
-    /**
-     *@brief change the size of the selection (delete previous selection)
-     *@param {number} newSize
-     */
-    changeSize (newSize: number) {
-       /* for(let i=0 ; i<newSize ; i++)
-            this.values.push(0)*/
+
+    getValues(): Uint8ClampedArray {
+        return this.values;
     }
+
 
     /**
      *@brief add pixels to the selection
@@ -40,7 +38,7 @@ export class PixelSelectionHandler {
      *@param {number} intensity (between 0 and 1)
      */
     add (p: Vec2, intensity: number) {
-	    this.values[Math.floor(p.x) + Math.floor(p.y)*this.width] = Math.min(0xFF, this.values[p.x + p.y*this.width] + intensity)
+	    this.values[Math.floor(p.x) + Math.floor(p.y)*this.width] = Math.min(0xFF, this.values[p.x + p.y*this.width] + intensity);
     }
 
     /**
@@ -103,5 +101,9 @@ export class PixelSelectionHandler {
         } else {
             return 0;
         }
+    }
+
+    getBorder() {
+        return this.border;
     }
 }

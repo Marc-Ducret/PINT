@@ -15,6 +15,7 @@ export class SelectionTool extends Tool {
     firstCorner: Vec2;
     lastCorner: Vec2;
     project: Project;
+    readonly overrideSelectionMask: boolean = true;
 
     constructor() {
         super("SelectionTool", "Selection");
@@ -102,6 +103,7 @@ export class SelectionTool extends Tool {
                     y = Math.min(this.firstCorner.y, this.lastCorner.y),
                     w = Math.abs(this.firstCorner.x - this.lastCorner.x),
                     h = Math.abs(this.firstCorner.y - this.lastCorner.y);
+                
                 ctx.rect(x, y, w, h);
                 ctx.stroke();
                 break;

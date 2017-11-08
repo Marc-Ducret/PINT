@@ -6,13 +6,22 @@ export abstract class Tool {
     private name: string;
     private desc: string;
     private settings: SettingsRequester;
+    readonly overrideSelectionMask: boolean = false;
 
+    /**
+     * Tool builder, giving it a name and a displayed description.
+     * @param name Name
+     * @param desc Description
+     */
     constructor (name, desc) {
         this.name = name;
         this.desc = desc;
         this.settings = new SettingsRequester();
     }
 
+    /**
+     * Reset the state of the tool.
+     */
     abstract reset();
 
     /**

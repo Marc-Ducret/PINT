@@ -97,7 +97,7 @@ describe('Shape selection', function () {
             for(let y = 0; y < h; y++) {
                 if(Math.random() < 1) {
                     for(let x = 0; x < w; x++) {
-                        row[x] = proj.currentSelection.values[x + y*proj.dimensions.x];
+                        row[x] = proj.currentSelection.getValues()[x + y*proj.dimensions.x];
                     }
                     expect(row).isConvex(true);
                 }
@@ -106,7 +106,7 @@ describe('Shape selection', function () {
             for(let x = 0; x < w; x++) {
                 if(Math.random() < 1) {
                     for(let y = 0; y < h; y++) {
-                        col[y] = proj.currentSelection.values[x + y*proj.dimensions.x];
+                        col[y] = proj.currentSelection.getValues()[x + y*proj.dimensions.x];
                     }
                     expect(col).isConvex(true);
                 }

@@ -1,10 +1,11 @@
 import * as $ from "jquery";
 
-import {Project} from "./docState";
-import {SettingsInterface} from "./tool_settings/settingsInterface";
+import {Project} from "../docState";
+import {SettingsInterface} from "../tool_settings/settingsInterface";
 import {Viewport} from "./viewport";
-import {ToolRegistry} from "./tools/toolregistry";
-import {Vec2} from "./vec2";
+import {ToolRegistry} from "../tools/toolregistry";
+import {Vec2} from "../vec2";
+import {setup_menu} from "./menu";
 
 /**
  * @file User interface handler
@@ -26,6 +27,7 @@ export class UIController {
     settingsUI: SettingsInterface;
     toolRegistry: ToolRegistry;
     redraw: boolean;
+    menu_open: boolean;
 
     constructor (){
         this.viewport = new Viewport(<JQuery<HTMLCanvasElement>> $("#viewport"));
@@ -34,14 +36,67 @@ export class UIController {
         this.settingsUI = new SettingsInterface(<JQuery<HTMLElement>> $("#toolsettings_container"));
         this.toolRegistry = new ToolRegistry();
 
+        setup_menu(this, document.getElementById("top-nav"));
+
         this.redraw = true;
         window.requestAnimationFrame(this.onStep.bind(this));
+    }
+
+    filenameUpdate (new_title: string) {
+        if (this.project != null) {
+            this.project.name = new_title;
+        }
+    }
+
+    loadImageFromFile() {
+        let input = document.createElement("input");
+        input.type = "file";
+        input.accept = ".jpg, .jpeg, .png";
+
+        let self = this;
+
+        input.addEventListener("change", function(event: any) {
+            let selectedFile: File = event.target.files[0];
+            let reader = new FileReader();
+            let imgtag = document.createElement("img");
+
+            reader.onload = function(event) {
+                imgtag.src = reader.result;
+                imgtag.addEventListener("load", function() {
+                    self.newProject(new Vec2(imgtag.width, imgtag.height));
+                    self.project.currentLayer.getContext().drawImage(imgtag, 0, 0);
+                });
+            };
+            reader.readAsDataURL(selectedFile);
+        });
+
+        input.click();
+        return false;
+    }
+
+    backClicked () {
+        if (this.menu_open) {
+            $("#back_col").fadeOut(100);
+            $("#load_image_url_col").fadeOut(100);
+            $("#load_image_file_col").fadeOut(100);
+            $("#newproject_container").fadeOut(100, function() {
+                $("#toolbox_col").fadeIn(100);
+                $("#filename-container").fadeIn(100);
+            });
+            this.menu_open = false;
+        }
     }
 
     newProject (dimensions: Vec2) {
         this.redraw = true;
         this.project = new Project(this, "Untitled", dimensions);
         this.viewport.setLayerList(this.project.layerList);
+
+        this.backClicked();
+
+        this.menu_open = false;
+        $("#filename-container input").val("Untitled"); // Reset title
+        $("#toolbox-container").children().removeClass("hovered"); // Unselect tools.
     }
 
     /**
@@ -117,7 +172,7 @@ export class UIController {
         this.mouseMoving = true;
 
         if (this.project != null) {
-            this.project.mouseClick(this.lastPosition);
+            this.project.mouseClick(this.lastPosition.floor());
         }
     };
 
@@ -131,7 +186,7 @@ export class UIController {
         this.lastPosition = this.viewport.globalToLocalPosition(new Vec2(event.offsetX, event.offsetY));
         this.mouseMoving = false;
         if (this.project != null) {
-            this.project.mouseRelease(this.lastPosition);
+            this.project.mouseRelease(this.lastPosition.floor());
         }
     };
 
@@ -145,7 +200,7 @@ export class UIController {
     onMouseMove (event: MouseEvent) {
         this.lastPosition = this.viewport.globalToLocalPosition(new Vec2(event.offsetX, event.offsetY));
         if (this.mouseMoving && this.project != null) {
-            this.project.mouseMove(this.lastPosition);
+            this.project.mouseMove(this.lastPosition.floor());
         }
         this.redraw = true;
     };
@@ -215,6 +270,31 @@ export class UIController {
         this.viewport.viewportDimensionsChanged();
     };
 
+
+    /**
+     * Given the UI DOM elements as an input, bind events to the controller.
+     */
+    bindEvents (toolbox_container, viewport, newproject_button, newproject_width, newproject_height) {
+        toolbox_container.children().click(this.onToolboxClicked.bind(this));
+        toolbox_container.children().hover(this.onToolboxHovered.bind(this),
+            this.onToolboxHoverLeft.bind(this));
+        viewport.mousedown(this.onMouseDown.bind(this));
+        viewport.mouseup(this.onMouseUp.bind(this));
+        viewport.mousemove(this.onMouseMove.bind(this));
+        viewport.mouseleave(this.onMouseUp.bind(this));
+        document.getElementById("viewport").addEventListener('wheel', this.onMouseWheel.bind(this));
+
+        newproject_button.click(function() {
+            this.newProject(new Vec2(<number> newproject_width.val(), <number> newproject_height.val()));
+        }.bind(this));
+
+        $(window).on('resize', (function(e) {
+            this.onWindowResize(new Vec2($(window).width(), $(window).height()));
+        }).bind(this));
+
+        this.onWindowResize(new Vec2($(window).width(), $(window).height()));
+
+    }
 }
 
 

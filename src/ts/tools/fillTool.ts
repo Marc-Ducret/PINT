@@ -27,7 +27,9 @@ export class FillTool extends Tool {
         this.addSetting({name: "threshold", descName: "Threshold", inputType: InputType.Number, defaultValue: 0});
     }
 
-
+    /**
+     * Reset tool data.
+     */
     reset () {
         this.pixels = null;
         this.newImage = null;

@@ -12,6 +12,7 @@ export class AutoSelectTool extends Tool {
     used: boolean;
     selection: Uint8ClampedArray;
     border: Array<Vec2>;
+    readonly overrideSelectionMask: boolean = true;
 
     /**
      * Instantiates the Tool with AutoSelectTool name.
@@ -21,6 +22,9 @@ export class AutoSelectTool extends Tool {
         this.addSetting({name: "threshold", descName: "Threshold", inputType: InputType.Number, defaultValue: 0});
     }
 
+    /**
+     * Reset tool data.
+     */
     reset() {
         this.image = null;
         this.used = false;

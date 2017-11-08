@@ -1,5 +1,5 @@
 import {Layer} from "./layer";
-import {Vec2} from "./vec2";
+import {Vec2} from "../vec2";
 
 /**
  * Handler of the final step of rendering.
@@ -15,7 +15,10 @@ export class Viewport {
 
     layerList: Array<Layer> = [];
 
-
+    /**
+     * Constructs the viewport handler. Should be unique.
+     * @param {JQuery<HTMLCanvasElement>} canvas Viewport canvas on which the rendering will be done.
+     */
     constructor (canvas: JQuery<HTMLCanvasElement>) {
         this.canvas = canvas[0];
         this.context = this.canvas.getContext('2d');
@@ -51,16 +54,36 @@ export class Viewport {
         this.layerList = newLayerList;
     };
 
+    /**
+     * Returns the scale of the rendering.
+     * @returns {number} Local-pixel to real-pixel ratio.
+     */
     getScale () : number {
         return this.currentScale;
     }
 
+    /**
+     * Sets the scale of the rendering.
+     * @param {number} scale Local-pixel to real-pixel ratio.
+     */
     setScale (scale: number) {
         this.currentScale = scale;
     }
 
+    /**
+     * Set the translation of the rendering, relative to the center of the viewport.
+     * @param {Vec2} translation Translation vector, in local scale.
+     */
     setTranslation (translation: Vec2) {
         this.currentTranslation = translation;
+    }
+
+    /**
+     * Returns the current translation of the canvas, relative to the center of the viewport.
+     * @returns {Vec2} Translation vector, in local scale.
+     */
+    getTranslation() {
+        return this.currentTranslation;
     }
 
     /**
@@ -136,9 +159,5 @@ export class Viewport {
         return position.add(this.currentTranslation,true)
             .divide(1/this.currentScale, true)
             .add(translation, true);
-    }
-
-    getTranslation() {
-        return this.currentTranslation;
     }
 }
