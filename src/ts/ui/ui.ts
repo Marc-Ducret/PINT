@@ -204,8 +204,13 @@ export class UIController {
         let ofsX = this.viewport.viewportDimensions.x/2 - event.offsetX;
         let ofsY = this.viewport.viewportDimensions.y/2 - event.offsetY;
 
+        let zoom_scale = 1;
+        if (event.deltaMode == 1) {
+            zoom_scale *= 17;
+        }
+
         let oldScale = this.viewport.getScale();
-        this.zoom(event.deltaY);
+        this.zoom(event.deltaY*zoom_scale);
         let newScale = this.viewport.getScale();
 
         let deltaX = -ofsX*(oldScale-newScale)/oldScale;
