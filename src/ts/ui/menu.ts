@@ -160,11 +160,13 @@ function menu_newproject_create(callback): HTMLElement {
     input.type = "number";
     input.value = "800";
     input.min = "1";
+    input.step = "1";
 
     let input2 = document.createElement("input");
     input2.type = "number";
     input2.value = "600";
     input2.min = "1";
+    input2.step = "1";
 
     let a = document.createElement("a");
     a.className = "btn-large";
@@ -179,7 +181,37 @@ function menu_newproject_create(callback): HTMLElement {
     let span2 = document.createElement("span");
     span2.innerText = " ";
 
+    let validateInput = function () {
+        let width = <number>$(input).val();
+        let height = <number>$(input2).val();
 
+        let surface = width * height;
+        if (surface < 32 * 1024 * 1024 && width > 0 && height > 0) {
+            // 32 Megapixel limit. Each canvas will consume 128Mo in memory, therefore at least 3*128Mo is consumed.
+            // We dont wan't the user to create unbelievably huge image and crash his PC.
+            a.className = "btn-large";
+            a.innerText = "New project";
+
+            input.className = "valid";
+            input2.className = "valid";
+        } else {
+            a.className = "btn-large disabled";
+
+            if (width <= 0) {
+                a.innerText = "New project";
+                input.className = "invalid";
+            } else if (height <= 0) {
+                input2.className = "invalid";
+            } else {
+                a.innerText = "Too big";
+                input.className = "invalid";
+                input2.className = "invalid";
+            }
+        }
+    };
+
+    input.addEventListener("input", validateInput);
+    input2.addEventListener("input", validateInput);
 
     p.appendChild(input);
     p.appendChild(span);
