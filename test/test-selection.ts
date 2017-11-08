@@ -65,7 +65,6 @@ describe('Shape selection', function () {
                                 result = false;
                             }
                         }
-                        if(result != expected) console.log('tested:', actual);
                         return {
                             pass: result == expected
                         };
