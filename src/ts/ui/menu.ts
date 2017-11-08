@@ -2,6 +2,7 @@
 import {UIController} from "./ui";
 import {Vec2} from "../vec2";
 import {cat} from "shelljs";
+import {Map} from "../map";
 
 export class MenuController {
     elements: Map<number, Array<HTMLElement>> = new Map();

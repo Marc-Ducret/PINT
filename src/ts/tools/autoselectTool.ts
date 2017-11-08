@@ -2,6 +2,7 @@ import {Tool} from "./tool";
 import {Vec2} from "../vec2";
 import {Project} from "../docState";
 import {colorSelect} from "../image_utils/connexComponent";
+import {InputType} from "../tool_settings/settingsRequester";
 
 /**
  * 'Magic wand' automatic selection tool, selects the connex component of the picture containing the clicked position.
@@ -18,6 +19,7 @@ export class AutoSelectTool extends Tool {
      */
     constructor () {
         super("AutoSelectTool", "Magic wand");
+        this.addSetting({name: "threshold", descName: "Threshold", inputType: InputType.Number, defaultValue: 0});
     }
 
     /**
@@ -40,7 +42,7 @@ export class AutoSelectTool extends Tool {
         this.image = img;
         this.used = true;
         project.currentSelection.reset();
-        project.currentSelection.addRegion(colorSelect(this.image, new Vec2(Math.floor(pos.x), Math.floor(pos.y))));
+        project.currentSelection.addRegion(colorSelect(this.image, new Vec2(Math.floor(pos.x), Math.floor(pos.y)), this.getSetting("threshold")));
         project.currentSelection.updateBorder();
     };
 

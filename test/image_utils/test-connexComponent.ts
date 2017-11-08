@@ -16,8 +16,7 @@ describe("Testing connex component features", function() {
         }
 
         describe('First connex component', function() {
-            let cc_1 = colorSelect(image, new Vec2(0,0));
-            console.log(cc_1);
+            let cc_1 = colorSelect(image, new Vec2(0,0), 0);
 
             it('(9,0) is in the first connex component', function() {
                 expect(isSelected(cc_1, 9, 0, 10, 10)).toBe(true);
@@ -31,7 +30,7 @@ describe("Testing connex component features", function() {
         });
 
         describe('Second connex component', function() {
-            let cc_2 = colorSelect(image, new Vec2(1,1));
+            let cc_2 = colorSelect(image, new Vec2(1,1), 0);
 
             it('(9,0) is not in the second connex component', function() {
                 expect(isSelected(cc_2, 9, 0, 10, 10)).toBe(false);
@@ -45,7 +44,7 @@ describe("Testing connex component features", function() {
         });
 
         describe('Thrid connex component', function() {
-            let cc_3 = colorSelect(image, new Vec2(2,2));
+            let cc_3 = colorSelect(image, new Vec2(2,2), 0);
 
             it('(9,0) is not in the third connex component', function() {
                 expect(isSelected(cc_3, 9, 0, 10, 10)).toBe(false);
