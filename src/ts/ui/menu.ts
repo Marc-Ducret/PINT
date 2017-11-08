@@ -39,6 +39,10 @@ export class MenuController {
     }
 
     switchCategory (category: number) {
+        if (this.displayedCategory == category) {
+            return;
+        }
+
         if (this.elements.get(this.displayedCategory) === undefined) {
             this.elements.set(this.displayedCategory, []);
         }
