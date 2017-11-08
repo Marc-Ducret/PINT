@@ -76,12 +76,10 @@ export class MenuController {
             let last_elem = to_hide.pop();
             for (let elem of to_hide) {
                 $(elem).parent().fadeOut(fadeDuration);
-                console.log("fadeout");
             }
 
             $(last_elem).parent().fadeOut(fadeDuration);
             setTimeout(function() {
-                console.log("fadein");
                 for (let elem of this.elements.get(category)) {
                     $(elem).parent().fadeIn(fadeDuration);
                 }
@@ -104,7 +102,7 @@ export function setup_menu(controller: UIController, base_element: HTMLElement) 
 
     let filename = menu_filename_create(
         function() {
-            controller.filenameUpdate((<HTMLInputElement>filename).value)
+            controller.filenameUpdate(this.value);
         });
 
     menu_controller.addElement(filename, 3);
@@ -151,7 +149,7 @@ function menu_filename_create(callback): HTMLElement {
     let input = document.createElement("input");
     input.type = "text";
     input.value = "Untitled";
-    input.addEventListener("change", callback);
+    input.addEventListener("input", callback);
     p.appendChild(input);
     return p;
 }
@@ -245,6 +243,10 @@ function menu_back_create(callback): HTMLElement {
     p.appendChild(a);
     return p;
 }
+
+/**
+ * TOOLBOX
+ */
 
 function create_tool_entry_icon(tool: string, icon: string): HTMLElement {
     let i = document.createElement("i");

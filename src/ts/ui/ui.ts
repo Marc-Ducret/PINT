@@ -29,6 +29,8 @@ export class UIController {
     menu_controller: MenuController;
     redraw: boolean;
 
+    project_name: string;
+
     constructor (){
         this.viewport = new Viewport(<JQuery<HTMLCanvasElement>> $("#viewport"));
         this.viewport.viewportDimensionsChanged();
@@ -38,6 +40,7 @@ export class UIController {
 
         this.menu_controller = setup_menu(this, document.getElementById("top-nav"));
 
+        this.project_name = "Untitled";
         this.redraw = true;
         window.requestAnimationFrame(this.onStep.bind(this));
     }
@@ -46,6 +49,7 @@ export class UIController {
         if (this.project != null) {
             this.project.name = new_title;
         }
+        this.project_name = new_title;
     }
 
     loadImageFromFile() {
@@ -79,7 +83,7 @@ export class UIController {
         this.menu_controller.switchCategory(1);
 
         this.redraw = true;
-        this.project = new Project(this, "Untitled", dimensions);
+        this.project = new Project(this, this.project_name, dimensions);
         this.viewport.setLayerList(this.project.layerList);
         $("#toolbox-container").children().removeClass("hovered"); // Unselect tools.
     }
