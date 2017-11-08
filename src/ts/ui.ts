@@ -79,10 +79,6 @@ export class UIController {
         return false;
     }
 
-    loadImageFromUrl() {
-
-    }
-
     backClicked () {
         if (this.menu_open) {
             $("#back_col").fadeOut(100);

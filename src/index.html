@@ -34,11 +34,6 @@
                 <a id="load_image_file_button" class="btn-large" onclick="controller.loadImageFromFile()">Load<br/> from file</a>
             </p>
         </div>
-        <div class="col s1" id="load_image_url_col">
-            <p id="load_image_url">
-                <a id="load_image_url_button" class="btn-large" onclick="controller.loadImageFromUrl()">Load<br/> from URL</a>
-            </p>
-        </div>
         <div class="col s1" style="display: none" id="back_col">
             <p id="back">
                 <a id="back_button" class="btn-large" onclick="controller.backClicked()">Back</a>
@@ -47,16 +42,22 @@
         <div class="col" id="toolbox_col" style="display: none">
             <p id="toolbox-container">
                 <!-- Sample icons offered by materializecss-->
-                <i class="medium material-icons" data-desc="(Undo)">undo</i>
-                <i class="medium material-icons" data-desc="(Redo)">redo</i>
-                <i class="medium material-icons" data-tool="HandTool">gamepad</i>
-                <i class="medium material-icons" data-tool="LineTool">mode_edit</i>
-                <i class="medium material-icons" data-tool="FreehandTool">brush</i>
-                <i class="medium material-icons" data-tool="ShapeTool">check_box_outline_blank</i>
+                <!--<i class="medium material-icons" data-desc="(Undo)">undo</i>
+                <i class="medium material-icons" data-desc="(Redo)">redo</i>-->
+                &nbsp;&nbsp;&nbsp;&nbsp
+                &nbsp;&nbsp;&nbsp;&nbsp
                 <i class="medium material-icons" data-function="this.project.saveProject();" data-desc="Save">save</i>
-                <i class="medium material-icons" data-tool="FillTool">format_color_fill</i>
-                <img src="assets/magic.png" data-tool="AutoSelectTool"/>
+                &nbsp;&nbsp;&nbsp;&nbsp
+                &nbsp;&nbsp;&nbsp;&nbsp
+                <i class="medium material-icons" data-tool="HandTool">gamepad</i>
                 <i class="medium material-icons" data-tool="SelectionTool">photo_size_select_small</i>
+                <img src="assets/magic.png" data-tool="AutoSelectTool"/>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp
+                <i class="medium material-icons" data-tool="FreehandTool">brush</i>
+                <i class="medium material-icons" data-tool="LineTool">mode_edit</i>
+                <i class="medium material-icons" data-tool="ShapeTool">check_box_outline_blank</i>
+                <i class="medium material-icons" data-tool="FillTool">format_color_fill</i>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp
                 <i class="medium material-icons" data-function="this.zoom(50);" data-desc="Zoom in">zoom_in</i>
                 <i class="medium material-icons" data-function="this.zoom(-50);" data-desc="Zoom out">zoom_out</i>
             </p>
