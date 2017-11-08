@@ -14,18 +14,21 @@ export class Viewport {
     currentScale: number;
 
     layerList: Array<Layer> = [];
+    fallbackDisplay: HTMLImageElement;
 
     /**
      * Constructs the viewport handler. Should be unique.
      * @param {JQuery<HTMLCanvasElement>} canvas Viewport canvas on which the rendering will be done.
      */
-    constructor (canvas: JQuery<HTMLCanvasElement>) {
+    constructor (canvas: JQuery<HTMLCanvasElement>, fallbackDisplay: HTMLImageElement) {
         this.canvas = canvas[0];
         this.context = this.canvas.getContext('2d');
         this.layerDimensions = new Vec2(0, 0);
 
         this.currentScale = 1;
         this.currentTranslation = new Vec2(0, 0);
+
+        this.fallbackDisplay = fallbackDisplay;
     }
 
     /**
@@ -93,6 +96,17 @@ export class Viewport {
         // Reset canvas
         this.resetCanvas();
 
+        // fallback drawing a logo at the center of the picture.
+        if (this.layerList.length == 0) {
+
+            let scale = this.viewportDimensions.x/(2*this.fallbackDisplay.width);
+            this.context.scale(scale, scale);
+            this.context.globalAlpha = 0.2;
+            this.context.drawImage(this.fallbackDisplay,this.fallbackDisplay.width/2,(this.viewportDimensions.y/scale/2 - (this.fallbackDisplay.height/scale/2)));
+            this.context.setTransform(1, 0, 0, 1, 0, 0);
+            return;
+        }
+
         this.context.imageSmoothingEnabled = false;
         this.context.mozImageSmoothingEnabled = false;
         this.context.webkitImageSmoothingEnabled = false;
@@ -121,6 +135,8 @@ export class Viewport {
      * Reset drawing canvas.
      */
     resetCanvas () {
+        this.context.globalAlpha = 1;
+        this.context.globalCompositeOperation = "source-over";
         this.context.fillStyle = "#202020";
         this.context.strokeStyle = "#202020";
         this.context.fillRect(0,0,this.canvas.width,this.canvas.height);

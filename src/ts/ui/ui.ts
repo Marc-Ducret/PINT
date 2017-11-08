@@ -32,8 +32,12 @@ export class UIController {
     project_name: string;
 
     constructor (){
-        this.viewport = new Viewport(<JQuery<HTMLCanvasElement>> $("#viewport"));
-        this.viewport.viewportDimensionsChanged();
+        let fallbackImage = document.createElement("img");
+        this.viewport = new Viewport(<JQuery<HTMLCanvasElement>> $("#viewport"), fallbackImage);
+        fallbackImage.addEventListener("load", function() {
+            this.viewport.viewportDimensionsChanged();
+        }.bind(this));
+        fallbackImage.src= "assets/"+(1+Math.floor(Math.random()*10))+".png";
 
         this.settingsUI = new SettingsInterface(<JQuery<HTMLElement>> $("#toolsettings_container"));
         this.toolRegistry = new ToolRegistry();
