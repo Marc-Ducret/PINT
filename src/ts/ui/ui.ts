@@ -5,7 +5,7 @@ import {SettingsInterface} from "../tool_settings/settingsInterface";
 import {Viewport} from "./viewport";
 import {ToolRegistry} from "../tools/toolregistry";
 import {Vec2} from "../vec2";
-import {setup_menu} from "./menu";
+import {MenuController, setup_menu} from "./menu";
 
 /**
  * @file User interface handler
@@ -26,8 +26,8 @@ export class UIController {
     viewport: Viewport;
     settingsUI: SettingsInterface;
     toolRegistry: ToolRegistry;
+    menu_controller: MenuController;
     redraw: boolean;
-    menu_open: boolean;
 
     constructor (){
         this.viewport = new Viewport(<JQuery<HTMLCanvasElement>> $("#viewport"));
@@ -36,7 +36,7 @@ export class UIController {
         this.settingsUI = new SettingsInterface(<JQuery<HTMLElement>> $("#toolsettings_container"));
         this.toolRegistry = new ToolRegistry();
 
-        setup_menu(this, document.getElementById("top-nav"));
+        this.menu_controller = setup_menu(this, document.getElementById("top-nav"));
 
         this.redraw = true;
         window.requestAnimationFrame(this.onStep.bind(this));
@@ -74,28 +74,13 @@ export class UIController {
         return false;
     }
 
-    backClicked () {
-        if (this.menu_open) {
-            $("#back_col").fadeOut(100);
-            $("#load_image_url_col").fadeOut(100);
-            $("#load_image_file_col").fadeOut(100);
-            $("#newproject_container").fadeOut(100, function() {
-                $("#toolbox_col").fadeIn(100);
-                $("#filename-container").fadeIn(100);
-            });
-            this.menu_open = false;
-        }
-    }
 
     newProject (dimensions: Vec2) {
+        this.menu_controller.switchCategory(1);
+
         this.redraw = true;
         this.project = new Project(this, "Untitled", dimensions);
         this.viewport.setLayerList(this.project.layerList);
-
-        this.backClicked();
-
-        this.menu_open = false;
-        $("#filename-container input").val("Untitled"); // Reset title
         $("#toolbox-container").children().removeClass("hovered"); // Unselect tools.
     }
 

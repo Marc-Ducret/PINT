@@ -62,21 +62,26 @@ export class MenuController {
             }
         }
 
+        const fadeDuration = 150;
+
         if (to_hide.length == 0) {
             for (let elem of this.elements.get(category)) {
-                $(elem).parent().fadeIn(100);
+                $(elem).parent().fadeIn(fadeDuration);
             }
         } else {
             let last_elem = to_hide.pop();
             for (let elem of to_hide) {
-                $(elem).parent().fadeOut(100);
+                $(elem).parent().fadeOut(fadeDuration);
+                console.log("fadeout");
             }
 
-            $(last_elem).parent().fadeOut(100, function() {
+            $(last_elem).parent().fadeOut(fadeDuration);
+            setTimeout(function() {
+                console.log("fadein");
                 for (let elem of this.elements.get(category)) {
-                    $(elem).parent().fadeIn(100);
+                    $(elem).parent().fadeIn(fadeDuration);
                 }
-            }.bind(this));
+            }.bind(this), fadeDuration);
         }
         this.displayedCategory = category;
     }
@@ -103,14 +108,12 @@ export function setup_menu(controller: UIController, base_element: HTMLElement) 
 
     let newproject = menu_newproject_create(function (dimensions) {
         controller.newProject(dimensions);
-        menu_controller.switchCategory(1);
     });
     menu_controller.addElement(newproject, 3);
     menu_controller.addElementToCategory(newproject, 0);
 
     let load_image_file = menu_load_image_file_create(function() {
         controller.loadImageFromFile();
-        menu_controller.switchCategory(1);
     });
     menu_controller.addElement(load_image_file, 1);
     menu_controller.addElementToCategory(load_image_file, 0);
