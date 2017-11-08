@@ -281,9 +281,8 @@ function create_tool_entry_icon(tool: string, icon: string): HTMLElement {
 
 function create_tool_entry_picture(tool: string, asset: string): HTMLElement {
     let img = document.createElement("img");
-    img.className = "medium material-icons";
     img.dataset.tool = tool;
-    img.dataset.src = asset;
+    img.src = asset;
     return img;
 }
 
@@ -311,7 +310,7 @@ function menu_toolbox_create(): HTMLElement {
     p.appendChild(create_separator());
     p.appendChild(create_tool_entry_icon("HandTool","gamepad"));
     p.appendChild(create_tool_entry_icon("SelectionTool", "photo_size_select_small"));
-    p.appendChild(create_tool_entry_picture("AutoSelectTool", "asssets/magic.png"));
+    p.appendChild(create_tool_entry_picture("AutoSelectTool", "assets/magic.png"));
     p.appendChild(create_separator());
     p.appendChild(create_tool_entry_icon("FreehandTool","brush"));
     p.appendChild(create_tool_entry_icon("LineTool","mode_edit"));

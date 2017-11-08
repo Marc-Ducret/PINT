@@ -19,7 +19,7 @@ export class AutoSelectTool extends Tool {
      */
     constructor () {
         super("AutoSelectTool", "Magic wand");
-        this.addSetting({name: "threshold", descName: "Threshold", inputType: InputType.Number, defaultValue: 0});
+        this.addSetting({name: "wand_threshold", descName: "Threshold", inputType: InputType.Number, defaultValue: 50});
     }
 
     /**
@@ -42,7 +42,7 @@ export class AutoSelectTool extends Tool {
         this.image = img;
         this.used = true;
         project.currentSelection.reset();
-        project.currentSelection.addRegion(colorSelect(this.image, new Vec2(Math.floor(pos.x), Math.floor(pos.y)), this.getSetting("threshold")));
+        project.currentSelection.addRegion(colorSelect(this.image, new Vec2(Math.floor(pos.x), Math.floor(pos.y)), this.getSetting("wand_threshold")));
         project.currentSelection.updateBorder();
     };
 
