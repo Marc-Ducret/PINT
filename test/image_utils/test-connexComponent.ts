@@ -17,7 +17,6 @@ describe("Testing connex component features", function() {
 
         describe('First connex component', function() {
             let cc_1 = colorSelect(image, new Vec2(0,0), 0);
-            console.log(cc_1);
 
             it('(9,0) is in the first connex component', function() {
                 expect(isSelected(cc_1, 9, 0, 10, 10)).toBe(true);
