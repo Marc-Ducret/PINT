@@ -6,6 +6,7 @@
 import {Vec2} from "../vec2";
 import {drawSelection} from "./selectionRender";
 import {computeBorder} from "./selectionUtils";
+import {Layer} from "../ui/layer";
 
 
 export class PixelSelectionHandler {
@@ -14,11 +15,18 @@ export class PixelSelectionHandler {
     private values: Uint8ClampedArray;
     private border: Array<Vec2>;
 
+    private mask: Layer;
+
+
     constructor(w, h) {
         this.width = w;
         this.height = h;
         this.values = new Uint8ClampedArray(w*h);
         this.border = [];
+
+        this.mask = new Layer(new Vec2(w,h));
+        this.mask.reset();
+        this.mask.fill();
 
         // select all at the beginning.
         for (let i=0;i<w*h;i++) {
@@ -26,6 +34,9 @@ export class PixelSelectionHandler {
         }
     }
 
+    getMask() : HTMLCanvasElement {
+        return this.mask.getHTMLElement();
+    }
 
     getValues(): Uint8ClampedArray {
         return this.values;
@@ -38,7 +49,14 @@ export class PixelSelectionHandler {
      *@param {number} intensity (between 0 and 1)
      */
     add (p: Vec2, intensity: number) {
-	    this.values[Math.floor(p.x) + Math.floor(p.y)*this.width] = Math.min(0xFF, this.values[p.x + p.y*this.width] + intensity);
+        let i = Math.floor(p.x) + Math.floor(p.y)*this.width;
+
+        let data = this.mask.getContext().getImageData(0, 0, this.width, this.height);
+	    this.values[i] = Math.min(0xFF, this.values[i] + intensity);
+
+        data[4*i+3] = this.values[i];
+        data[4*i] = this.values[i];
+        this.mask.getContext().putImageData(data, 0, 0);
     }
 
     /**
@@ -55,9 +73,12 @@ export class PixelSelectionHandler {
      * @param {Uint8ClampedArray} sel the region to add
      */
     addRegion(sel: Uint8ClampedArray) {
+        let imagedata = this.mask.getContext().getImageData(0, 0, this.width, this.height);
         sel.forEach((val, i) => {
             this.values[i] = Math.min(0xFF, this.values[i] + val);
+            imagedata.data[4*i+3] = this.values[i];
         });
+        this.mask.getContext().putImageData(imagedata, 0, 0);
     }
 
     /**
@@ -79,6 +100,7 @@ export class PixelSelectionHandler {
      */
     reset() {
         this.values = new Uint8ClampedArray(this.width*this.height);
+        this.mask.reset();
         this.border = [];
     }
 

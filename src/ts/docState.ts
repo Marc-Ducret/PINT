@@ -114,7 +114,7 @@ export class Project {
             this.currentTool.drawPreview(this.previewLayer.getContext());
 
             if (!this.currentTool.overrideSelectionMask) {
-                this.previewLayer.applyMask(this.currentSelection.getValues());
+                this.previewLayer.applyMask(this.currentSelection);
             }
 
             this.redraw = true;
@@ -136,7 +136,7 @@ export class Project {
                 this.previewLayer.reset();
                 this.currentTool.drawPreview(this.previewLayer.getContext());
                 if (!this.currentTool.overrideSelectionMask) {
-                    this.previewLayer.applyMask(this.currentSelection.getValues());
+                    this.previewLayer.applyMask(this.currentSelection);
                 }
 
                 this.currentLayer.getContext()
