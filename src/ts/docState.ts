@@ -55,7 +55,7 @@ export class Project {
          * pixels (initialized with number of pixels of current layer)
          * @todo : standardize selection dimention - layers ...
          */
-        this.currentSelection = new PixelSelectionHandler(this.dimensions.x, this.dimensions.y);
+        this.currentSelection = new PixelSelectionHandler(this.selectionLayer.getContext(), this.dimensions.x, this.dimensions.y);
 
         this.currentLayer.fill();
     }
@@ -120,7 +120,7 @@ export class Project {
             this.redraw = true;
         }
 
-        this.currentSelection.draw(ctx);
+        this.currentSelection.draw();
         return true;
     };
 
@@ -155,7 +155,7 @@ export class Project {
     renderSelection () : boolean {
         if (this.currentSelection.getBorder().length > 0) {
             this.selectionLayer.reset();
-            this.currentSelection.draw(this.selectionLayer.getContext());
+            this.currentSelection.draw();
             return true;
         } else {
             return false;

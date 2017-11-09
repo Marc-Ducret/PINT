@@ -4,7 +4,7 @@
  *@params {number, number} size in pixels
  */
 import {Vec2} from "../vec2";
-import {drawSelection} from "./selectionRender";
+import {drawSelection, resetBorder} from "./selectionRender";
 import {computeBorder} from "./selectionUtils";
 import {Layer} from "../ui/layer";
 
@@ -17,8 +17,10 @@ export class PixelSelectionHandler {
 
     private mask: Layer;
 
+    private animation_image_data: ImageData;
+    private animation_context: CanvasRenderingContext2D;
 
-    constructor(w, h) {
+    constructor(context: CanvasRenderingContext2D, w: number, h:number) {
         this.width = w;
         this.height = h;
         this.values = new Uint8ClampedArray(w*h);
@@ -27,6 +29,10 @@ export class PixelSelectionHandler {
         this.mask = new Layer(new Vec2(w,h));
         this.mask.reset();
         this.mask.fill();
+
+        this.animation_context = context;
+        this.animation_image_data = context.getImageData(0, 0, w, h);
+
 
         // select all at the beginning.
         for (let i=0;i<w*h;i++) {
@@ -85,14 +91,15 @@ export class PixelSelectionHandler {
      * Call to update the graphical representation of the selection
      */
     updateBorder() {
+        resetBorder(this.animation_image_data, this.border, this.width, this.height);
         this.border = computeBorder(this.values, this.width, this.height);
     }
     /**
-     * Call to draw the selection using the given context
-     * @param {CanvasRenderingContext2D} ctx
+     * Call to draw the selection
      */
-    draw(ctx: CanvasRenderingContext2D) {
-        drawSelection(this.border, ctx, this.width, this.height);
+    draw() {
+        drawSelection(this.animation_image_data, this.border, this.width, this.height);
+        this.animation_context.putImageData(this.animation_image_data, 0, 0);
     }
 
     /**
@@ -101,6 +108,7 @@ export class PixelSelectionHandler {
     reset() {
         this.values = new Uint8ClampedArray(this.width*this.height);
         this.mask.reset();
+        resetBorder(this.animation_image_data, this.border, this.width, this.height);
         this.border = [];
     }
 
