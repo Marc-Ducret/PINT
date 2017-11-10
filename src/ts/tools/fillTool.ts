@@ -24,7 +24,15 @@ export class FillTool extends Tool {
     constructor() {
         super("FillTool", "Fill");
         this.addSetting({name: "fillColor", descName: "Fill color", inputType: InputType.Color, defaultValue: "#000000"});
-        this.addSetting({name: "fillAlpha", descName: "Fill transparency", inputType: InputType.Number, defaultValue: 100});
+        this.addSetting({
+            name: "fillAlpha",
+            descName: "Fill transparency",
+            inputType: InputType.Range,
+            defaultValue: 100,
+            options: [
+                {name:"maxValue", desc: "100"},
+                {name:"minValue", desc: "0"}
+                ]});
         this.addSetting({name: "threshold", descName: "Threshold", inputType: InputType.Number, defaultValue: 0});
     }
 

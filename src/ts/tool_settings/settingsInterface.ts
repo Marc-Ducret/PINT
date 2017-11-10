@@ -2,6 +2,7 @@ import * as $ from "jquery";
 
 import {Tool} from "../tools/tool";
 import {Option, InputType} from "./settingsRequester";
+import {isNullOrUndefined} from "util";
 
 /**
  * Manages HTML elements to display settings to user and transmit parameters to the requester tool.
@@ -24,14 +25,18 @@ export class SettingsInterface {
      * @param {InputType} type Type of input.
      * @param {string} id Name of HTML element.
      * @param defaultValue Default value given to input.
+     * @param options
      * @returns {JQuery<TElement extends Node>}
      */
-    private static createInputElement(type: InputType, id: string, defaultValue: any) {
+    private static createInputElement(type: InputType, id: string, defaultValue: any, options: Array<Option>) {
         let input = $("<input/>");
 
         let type_string: string;
 
         switch (type) {
+            case InputType.Range:
+                type_string = "range";
+                break;
             case InputType.Number:
                 type_string = "number";
                 break;
@@ -51,6 +56,16 @@ export class SettingsInterface {
 
         if (type === InputType.Number) {
             input.attr("min", 0);
+        }
+
+        if (options != undefined) {
+            for (let opt of options) {
+                if (opt.name === "maxValue") {
+                    input.attr("max", opt.desc);
+                } else if (opt.name === "minValue") {
+                    input.attr("min", opt.desc);
+                }
+            }
         }
         return input;
     }
@@ -103,17 +118,23 @@ export class SettingsInterface {
             label.attr("for",name);
             label.html(desc);
 
+            if (request.inputType == InputType.Range) {
+                label.html(desc + " : " + request.defaultValue);
+            }
+
             /*
             Create input element.
              */
             let input: JQuery<Node> = null;
             switch (request.inputType) {
+                case InputType.Range:
                 case InputType.Number:
                 case InputType.Color:
                     input = SettingsInterface.createInputElement(
                         request.inputType,
                         request.name,
-                        request.defaultValue);
+                        request.defaultValue,
+                        request.options);
                     break;
                 case InputType.Select:
                     input = SettingsInterface.createSelectElement(
@@ -130,6 +151,12 @@ export class SettingsInterface {
             input.on("input",(function(name) {
                 self.savedSettings[name] = this.val();
             }).bind(input, request.name));
+
+            if (request.inputType == InputType.Range) {
+                input.on("input",(function() {
+                    label.html(desc + " : " + this.val());
+                }).bind(input));
+            }
 
             tool.settingsSetGetter(request.name, (function(name) {return this.savedSettings[name]}).bind(this, request.name));
 
