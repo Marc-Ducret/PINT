@@ -127,7 +127,7 @@ export class SettingsInterface {
             Bind value change to SettingsRequester.
              */
             self.savedSettings[request.name] = request.defaultValue;
-            input.change((function(name) {
+            input.on("input",(function(name) {
                 self.savedSettings[name] = this.val();
             }).bind(input, request.name));
 

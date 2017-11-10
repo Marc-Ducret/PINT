@@ -24,6 +24,7 @@ export class FillTool extends Tool {
     constructor() {
         super("FillTool", "Fill");
         this.addSetting({name: "fillColor", descName: "Fill color", inputType: InputType.Color, defaultValue: "#000000"});
+        this.addSetting({name: "fillAlpha", descName: "Fill transparency", inputType: InputType.Number, defaultValue: 100});
         this.addSetting({name: "threshold", descName: "Threshold", inputType: InputType.Number, defaultValue: 0});
     }
 
@@ -47,6 +48,7 @@ export class FillTool extends Tool {
         let width: number = img.width;
         let height: number = img.height;
         let color_hex: string = this.getSetting("fillColor");
+        let color_alpha: number = this.getSetting("fillAlpha");
 
         let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(color_hex);
         let color = result ? {
@@ -64,7 +66,7 @@ export class FillTool extends Tool {
                     data[4*(y*width+x)    ] = color.r;// R
                     data[4*(y*width+x) + 1] = color.g;// G
                     data[4*(y*width+x) + 2] = color.b;// B
-                    data[4*(y*width+x) + 3] = alpha;// A
+                    data[4*(y*width+x) + 3] = alpha*color_alpha/100;// A
                 }
             }
         }
