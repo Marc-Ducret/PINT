@@ -87,29 +87,34 @@ describe('Shape selection', function () {
 
             proj.currentSelection.reset();
 
-            tool.settingsSetGetter('shape', () => 'circle');
-
             tool.startUse(null, randPos(), proj);
             tool.endUse(randPos());
 
-            let row = new Uint8ClampedArray(w);
-            for(let y = 0; y < h; y++) {
-                if(Math.random() < 1) {
-                    for(let x = 0; x < w; x++) {
-                        row[x] = proj.currentSelection.getValues()[x + y*proj.dimensions.x];
+            let testShape = function(shape) {
+                tool.settingsSetGetter('shape', () => shape);
+
+                let row = new Uint8ClampedArray(w);
+                for(let y = 0; y < h; y++) {
+                    if(Math.random() < 1) {
+                        for(let x = 0; x < w; x++) {
+                            row[x] = proj.currentSelection.getValues()[x + y*proj.dimensions.x];
+                        }
+                        expect(row).isConvex(true);
                     }
-                    expect(row).isConvex(true);
                 }
-            }
-            let col = new Uint8ClampedArray(h);
-            for(let x = 0; x < w; x++) {
-                if(Math.random() < 1) {
-                    for(let y = 0; y < h; y++) {
-                        col[y] = proj.currentSelection.getValues()[x + y*proj.dimensions.x];
+                let col = new Uint8ClampedArray(h);
+                for(let x = 0; x < w; x++) {
+                    if(Math.random() < 1) {
+                        for(let y = 0; y < h; y++) {
+                            col[y] = proj.currentSelection.getValues()[x + y*proj.dimensions.x];
+                        }
+                        expect(col).isConvex(true);
                     }
-                    expect(col).isConvex(true);
                 }
-            }
+            };
+
+            testShape('circle');
+            testShape('square');
         }
     });
 });
