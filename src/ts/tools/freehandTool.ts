@@ -19,6 +19,15 @@ export class FreehandTool extends Tool {
         super("FreehandTool", "Pencil");
 
         this.addSetting({name: "strokeColor", descName: "Stroke color", inputType: InputType.Color, defaultValue: "#000000"});
+        this.addSetting({
+            name: "strokeAlpha",
+            descName: "Stroke transparency",
+            inputType: InputType.Range,
+            defaultValue: 100,
+            options: [
+                {name:"maxValue", desc: "100"},
+                {name:"minValue", desc: "0"}
+            ]});
         this.addSetting({name: "lineWidth", descName: "Stroke width", inputType: InputType.Number, defaultValue: "5"});
 
     }
@@ -65,9 +74,11 @@ export class FreehandTool extends Tool {
      * @param {CanvasRenderingContext2D} ctx Canvas context.
      */
     drawPreview (ctx) {
+        let alpha_chan = Math.round(this.getSetting("strokeAlpha")*255/100).toString(16);
+
         ctx.lineWidth = this.getSetting("lineWidth");
-        ctx.strokeStyle = this.getSetting("strokeColor");
-        ctx.fillStyle = this.getSetting("strokeColor");
+        ctx.strokeStyle = this.getSetting("strokeColor") + alpha_chan;
+        ctx.fillStyle = this.getSetting("strokeColor") + alpha_chan;
         ctx.lineCap = "round";
         ctx.lineJoin = "round";
         if (this.positions.length > 0) {
