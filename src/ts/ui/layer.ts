@@ -2,6 +2,8 @@ import * as $ from "jquery";
 import {Vec2} from "../vec2";
 import {PixelSelectionHandler} from "../selection/selection";
 
+
+
 /**
  * Interface for a virtual HTML Canvas element.
  */
@@ -51,5 +53,12 @@ export class Layer {
         this.context.globalCompositeOperation = 'destination-in';
         this.context.drawImage(selection.getMask(), 0, 0);
         this.context.globalCompositeOperation = 'source-over';
+    }
+
+    isBlank() {
+        let blank = ($("<canvas></canvas>") as JQuery<HTMLCanvasElement>)[0];
+        blank.width = this.width;
+        blank.height = this.height;
+        return this.getHTMLElement().toDataURL() === blank.toDataURL();
     }
 }

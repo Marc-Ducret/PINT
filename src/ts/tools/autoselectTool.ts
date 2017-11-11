@@ -48,7 +48,7 @@ export class AutoSelectTool extends Tool {
 
     endUse (pos) {
         this.used = false;
-        return false;
+        return null;
     };
 
     continueUse (pos) {

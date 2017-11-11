@@ -1,10 +1,22 @@
+import {Project} from "../../docState";
+
 export class HistoryEntry {
 
-    doAction;
-    undoAction;
+    doFunction;
+    undoFunction;
+    data;
 
-    constructor(doAction, undoAction) {
-        this.doAction = doAction;
-        this.undoAction = undoAction;
-    }
+    constructor(doFunction, undoFunction, data) {
+        this.doFunction = doFunction;
+        this.undoFunction = undoFunction;
+        this.data = data;
+    };
+
+    doAction(project: Project) {
+        this.doFunction(this.data, project);
+    };
+
+    undoAction(project: Project) {
+        this.undoFunction(this.data, project);
+    };
 }

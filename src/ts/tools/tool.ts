@@ -1,6 +1,8 @@
 import {SettingRequest, SettingsRequester} from "../tool_settings/settingsRequester";
 import {Vec2} from "../vec2";
+import {HistoryEntry} from "./history/historyEntry";
 import {Project} from "../docState";
+import {Layer} from "../ui/layer";
 
 export abstract class Tool {
     private name: string;
@@ -42,13 +44,36 @@ export abstract class Tool {
      * Called on mouse release.
      * @param {Vec2} pos Mouse position on release.
      */
-    abstract endUse(pos: Vec2);
+    abstract endUse(pos: Vec2): HistoryEntry ;
 
     /**
      * Here the tool should draw its pending changes on the preview canvas layer.
      * @param {CanvasRenderingContext2D} context Preview canvas.
      */
     abstract drawPreview (context: CanvasRenderingContext2D);
+
+    defaultHistoryEntry(project: Project): HistoryEntry {
+        let doLayer: Layer = new Layer(project.dimensions);
+        doLayer.reset();
+        this.drawPreview(doLayer.getContext());
+        if (!this.overrideSelectionMask) {
+            doLayer.applyMask(project.currentSelection);
+        }
+        if(doLayer.isBlank()) return null;
+        let undoLayer: Layer = new Layer(project.dimensions);
+        undoLayer.reset();
+        undoLayer.getContext().drawImage(project.currentLayer.getHTMLElement(), 0, 0);
+        let doAction = (layers, project) => {
+            project.currentLayer.getContext()
+                .drawImage(layers[0].getHTMLElement(), 0, 0);
+        };
+        let undoAction = (layers, project) => {
+            project.currentLayer.getContext()
+                .drawImage(layers[1].getHTMLElement(), 0, 0);
+        };
+
+        return new HistoryEntry(doAction, undoAction, [doLayer, undoLayer]);
+    }
 
     /**
      * Called by the inherited classes when they need a custom parameter that the UI should provide.

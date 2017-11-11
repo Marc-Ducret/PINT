@@ -55,7 +55,7 @@ export class HandTool extends Tool {
      */
     endUse(pos) {
         this.continueUse(pos);
-        return false;
+        return null;
     };
 
     /**
