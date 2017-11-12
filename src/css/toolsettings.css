@@ -56,6 +56,13 @@
     float: right;
 }
 
+#toolsettings_container input[type="range"] {
+    border: none;
+    padding-right: 25px;
+    padding-left: 15px;
+    margin:0;
+}
+
 #toolsettings_container select {
     width: fit-content;
     color: black;
