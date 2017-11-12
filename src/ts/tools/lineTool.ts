@@ -52,12 +52,13 @@ export class LineTool extends Tool {
         }
 
 
-        let alpha_chan = Math.round(this.getSetting("strokeAlpha")*255/100).toString(16);
-        ctx.strokeStyle = this.getSetting('strokeColor') + alpha_chan;
+        ctx.globalAlpha = this.getSetting("strokeAlpha") / 100;
+        ctx.strokeStyle = this.getSetting('strokeColor');
         ctx.lineWidth = this.getSetting('lineWidth');
         ctx.beginPath();
         ctx.moveTo(this.firstCorner.x, this.firstCorner.y);
         ctx.lineTo(this.lastCorner.x, this.lastCorner.y);
         ctx.stroke();
+        ctx.globalAlpha = 1;
     };
 }

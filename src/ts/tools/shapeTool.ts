@@ -67,11 +67,9 @@ export class ShapeTool extends Tool {
             return;
         }
 
-        let alpha_chan_stroke = Math.round(this.getSetting("strokeAlpha")*255/100).toString(16);
-        let alpha_chan_fill = Math.round(this.getSetting("fillAlpha")*255/100).toString(16);
 
-        ctx.fillStyle = this.getSetting('fillColor') + alpha_chan_fill;
-        ctx.strokeStyle = this.getSetting('strokeColor') + alpha_chan_stroke;
+        ctx.fillStyle = this.getSetting('fillColor');
+        ctx.strokeStyle = this.getSetting('strokeColor');
         ctx.lineWidth = this.getSetting('lineWidth');
 
         switch (this.getSetting('shape')) {
@@ -82,14 +80,10 @@ export class ShapeTool extends Tool {
                     w = Math.abs(this.firstCorner.x - this.lastCorner.x),
                     h = Math.abs(this.firstCorner.y - this.lastCorner.y);
                 ctx.rect(x,y,w,h);
-                ctx.fill();
-                ctx.stroke();
                 break;
             case "circle":
                 ctx.beginPath();
                 ctx.arc(this.firstCorner.x, this.firstCorner.y, this.firstCorner.distance(this.lastCorner), 0, 2 * Math.PI, false);
-                ctx.fill();
-                ctx.stroke();
                 break;
             case "ellipse":
                 const xdep = this.lastCorner.x/2 + this.firstCorner.x/2,
@@ -98,13 +92,15 @@ export class ShapeTool extends Tool {
                     ylen = Math.abs(this.lastCorner.y/2 - this.firstCorner.y/2);
                 ctx.beginPath();
                 ctx.ellipse(xdep, ydep, xlen, ylen, 0, 0, 2 * Math.PI);
-                ctx.fill();
-                ctx.stroke();
                 break;
             default:
                 console.error("No shape selected.");
                 break;
         }
-
+        ctx.globalAlpha = this.getSetting("strokeAlpha")/100;
+        ctx.stroke();
+        ctx.globalAlpha = this.getSetting("fillAlpha")/100;
+        ctx.fill();
+        ctx.globalAlpha = 1;
     };
 }

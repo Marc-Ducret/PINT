@@ -59,7 +59,6 @@ export class FreehandTool extends Tool {
      * @returns {any} null means redraw according to the preview canvas.
      */
     endUse (pos) {
-        this.continueUse(pos);
         return this.defaultHistoryEntry(this.project);
     };
 
@@ -78,11 +77,10 @@ export class FreehandTool extends Tool {
      * @param {CanvasRenderingContext2D} ctx Canvas context.
      */
     drawPreview (ctx) {
-        let alpha_chan = Math.round(this.getSetting("strokeAlpha")*255/100).toString(16);
-
+        ctx.globalAlpha = this.getSetting("strokeAlpha") / 100;
         ctx.lineWidth = this.getSetting("lineWidth");
-        ctx.strokeStyle = this.getSetting("strokeColor") + alpha_chan;
-        ctx.fillStyle = this.getSetting("strokeColor") + alpha_chan;
+        ctx.strokeStyle = this.getSetting("strokeColor");
+        ctx.fillStyle = this.getSetting("strokeColor");
         ctx.lineCap = "round";
         ctx.lineJoin = "round";
         if (this.positions.length > 0) {
@@ -98,5 +96,6 @@ export class FreehandTool extends Tool {
             }
         }
         ctx.stroke();
+        ctx.globalAlpha = 1;
     };
 }
