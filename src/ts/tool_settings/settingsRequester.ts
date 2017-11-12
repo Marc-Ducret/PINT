@@ -26,10 +26,6 @@ export enum InputType {
      */
     Number,
     /**
-     * An integer in a specified range.
-     */
-    Range,
-    /**
      * A string in a list of strings.
      */
     Select,

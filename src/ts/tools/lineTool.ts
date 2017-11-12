@@ -14,15 +14,6 @@ export class LineTool extends Tool {
     constructor () {
         super("LineTool", "Line");
         this.addSetting({name: "strokeColor", descName: "Stroke color", inputType: InputType.Color, defaultValue: "#000000"});
-        this.addSetting({
-            name: "strokeAlpha",
-            descName: "Stroke transparency",
-            inputType: InputType.Range,
-            defaultValue: 100,
-            options: [
-                {name:"maxValue", desc: "100"},
-                {name:"minValue", desc: "0"}
-            ]});
         this.addSetting({name: "lineWidth", descName: "Line width", inputType: InputType.Number, defaultValue: "5"});
     }
 
@@ -51,9 +42,7 @@ export class LineTool extends Tool {
             return;
         }
 
-
-        let alpha_chan = Math.round(this.getSetting("strokeAlpha")*255/100).toString(16);
-        ctx.strokeStyle = this.getSetting('strokeColor') + alpha_chan;
+        ctx.strokeStyle = this.getSetting('strokeColor');
         ctx.lineWidth = this.getSetting('lineWidth');
         ctx.beginPath();
         ctx.moveTo(this.firstCorner.x, this.firstCorner.y);

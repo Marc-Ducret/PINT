@@ -14,27 +14,7 @@ export class ShapeTool extends Tool {
     constructor () {
         super("ShapeTool", "Shape");
         this.addSetting({name: "strokeColor", descName: "Stroke color", inputType: InputType.Color, defaultValue: "#ffffff"});
-        this.addSetting({
-            name: "strokeAlpha",
-            descName: "Stroke transparency",
-            inputType: InputType.Range,
-            defaultValue: 100,
-            options: [
-                {name:"maxValue", desc: "100"},
-                {name:"minValue", desc: "0"}
-            ]});
-
         this.addSetting({name: "fillColor", descName: "Fill color", inputType: InputType.Color, defaultValue: "#000000"});
-        this.addSetting({
-            name: "fillAlpha",
-            descName: "Fill transparency",
-            inputType: InputType.Range,
-            defaultValue: 100,
-            options: [
-                {name:"maxValue", desc: "100"},
-                {name:"minValue", desc: "0"}
-            ]});
-
         this.addSetting({name: "lineWidth", descName: "Line width", inputType: InputType.Number, defaultValue: "5"});
         this.addSetting({name: "shape", descName: "Shape", inputType: InputType.Select, defaultValue: "square",
                                 options: [{name: "square", desc: "Square"},
@@ -67,11 +47,8 @@ export class ShapeTool extends Tool {
             return;
         }
 
-        let alpha_chan_stroke = Math.round(this.getSetting("strokeAlpha")*255/100).toString(16);
-        let alpha_chan_fill = Math.round(this.getSetting("fillAlpha")*255/100).toString(16);
-
-        ctx.fillStyle = this.getSetting('fillColor') + alpha_chan_fill;
-        ctx.strokeStyle = this.getSetting('strokeColor') + alpha_chan_stroke;
+        ctx.fillStyle = this.getSetting('fillColor');
+        ctx.strokeStyle = this.getSetting('strokeColor');
         ctx.lineWidth = this.getSetting('lineWidth');
 
         switch (this.getSetting('shape')) {
