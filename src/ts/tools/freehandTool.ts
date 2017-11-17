@@ -4,12 +4,16 @@
 import {Tool} from "./tool";
 import {Vec2} from "../vec2";
 import {InputType} from "../tool_settings/settingsRequester";
+import {HistoryEntry} from "./history/historyEntry";
+import {Project} from "../docState";
+import {Layer} from "../ui/layer";
 
 /**
  * Freehand drawing tool.
  */
 export class FreehandTool extends Tool {
     positions: Array<Vec2> = [];
+    project: Project;
 
     /**
      * Instantiates the tool with name FreehandTool.
@@ -29,7 +33,6 @@ export class FreehandTool extends Tool {
                 {name:"minValue", desc: "0"}
             ]});
         this.addSetting({name: "lineWidth", descName: "Stroke width", inputType: InputType.Number, defaultValue: "5"});
-
     }
 
     /**
@@ -46,6 +49,7 @@ export class FreehandTool extends Tool {
      * @param {Project} project Ignored.
      */
     startUse (img, pos, project) {
+        this.project = project;
         this.continueUse(pos);
     };
 
@@ -55,8 +59,7 @@ export class FreehandTool extends Tool {
      * @returns {any} null means redraw according to the preview canvas.
      */
     endUse (pos) {
-        this.continueUse(pos);
-        return null;
+        return this.defaultHistoryEntry(this.project);
     };
 
     /**
@@ -74,11 +77,10 @@ export class FreehandTool extends Tool {
      * @param {CanvasRenderingContext2D} ctx Canvas context.
      */
     drawPreview (ctx) {
-        let alpha_chan = Math.round(this.getSetting("strokeAlpha")*255/100).toString(16);
-
+        ctx.globalAlpha = this.getSetting("strokeAlpha") / 100;
         ctx.lineWidth = this.getSetting("lineWidth");
-        ctx.strokeStyle = this.getSetting("strokeColor") + alpha_chan;
-        ctx.fillStyle = this.getSetting("strokeColor") + alpha_chan;
+        ctx.strokeStyle = this.getSetting("strokeColor");
+        ctx.fillStyle = this.getSetting("strokeColor");
         ctx.lineCap = "round";
         ctx.lineJoin = "round";
         if (this.positions.length > 0) {
@@ -94,5 +96,6 @@ export class FreehandTool extends Tool {
             }
         }
         ctx.stroke();
+        ctx.globalAlpha = 1;
     };
 }

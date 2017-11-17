@@ -1,6 +1,7 @@
 import {Tool} from "./tool";
 import {Vec2} from "../vec2";
 import {InputType} from "../tool_settings/settingsRequester";
+import {Project} from "../docState";
 
 /**
  * Draw a shape tool.
@@ -8,6 +9,7 @@ import {InputType} from "../tool_settings/settingsRequester";
 export class LineTool extends Tool {
     firstCorner: Vec2;
     lastCorner: Vec2;
+    project: Project;
 
     constructor () {
         super("LineTool", "Line");
@@ -32,6 +34,7 @@ export class LineTool extends Tool {
     startUse (img, pos, project) {
         this.firstCorner = pos;
         this.lastCorner = pos;
+        this.project = project;
     };
 
     continueUse (pos) {
@@ -40,7 +43,7 @@ export class LineTool extends Tool {
 
     endUse (pos) {
         this.continueUse(pos);
-        return null;
+        return this.defaultHistoryEntry(this.project);
     };
 
     drawPreview (ctx) {
@@ -49,12 +52,13 @@ export class LineTool extends Tool {
         }
 
 
-        let alpha_chan = Math.round(this.getSetting("strokeAlpha")*255/100).toString(16);
-        ctx.strokeStyle = this.getSetting('strokeColor') + alpha_chan;
+        ctx.globalAlpha = this.getSetting("strokeAlpha") / 100;
+        ctx.strokeStyle = this.getSetting('strokeColor');
         ctx.lineWidth = this.getSetting('lineWidth');
         ctx.beginPath();
         ctx.moveTo(this.firstCorner.x, this.firstCorner.y);
         ctx.lineTo(this.lastCorner.x, this.lastCorner.y);
         ctx.stroke();
+        ctx.globalAlpha = 1;
     };
 }

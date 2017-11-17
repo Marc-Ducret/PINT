@@ -9,6 +9,8 @@ import {Vec2} from "./vec2";
 import {PixelSelectionHandler} from "./selection/selection";
 import {UIController} from "./ui/ui";
 import {mask} from "./selection/selectionUtils";
+import {History} from "./tools/history/history";
+import {HistoryEntry} from "./tools/history/historyEntry";
 
 /**
  * Project manager.
@@ -24,6 +26,7 @@ export class Project {
     currentSelection: PixelSelectionHandler;
     ui: UIController;
     redraw: boolean;
+    history: History;
 
     /**
      * Instantiates a project.
@@ -58,6 +61,8 @@ export class Project {
         this.currentSelection = new PixelSelectionHandler(this.selectionLayer.getContext(), this.dimensions.x, this.dimensions.y);
 
         this.currentLayer.fill();
+
+        this.history = new History(this);
     }
 
     /**
@@ -130,17 +135,12 @@ export class Project {
      * Then clears the pre-rendering canvas and ask the renderer to redraw.
      * @param {Vec2} vect coordinates in the canvas
      */
-    mouseRelease (vect: Vec2){
-        if (this.currentTool !== null){
-            if(this.currentTool.endUse(vect) === null) {
-                this.previewLayer.reset();
-                this.currentTool.drawPreview(this.previewLayer.getContext());
-                if (!this.currentTool.overrideSelectionMask) {
-                    this.previewLayer.applyMask(this.currentSelection);
-                }
+    mouseRelease (vect: Vec2) {
+        if (this.currentTool !== null) {
+            let entry: HistoryEntry = this.currentTool.endUse(vect);
+            if(entry !== null) {
+                this.history.doAction(entry);
 
-                this.currentLayer.getContext()
-                    .drawImage(this.previewLayer.getHTMLElement(),0,0);
             }
             this.currentTool.reset();
             this.previewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);

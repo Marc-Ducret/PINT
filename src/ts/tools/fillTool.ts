@@ -16,6 +16,7 @@ export class FillTool extends Tool {
 
     pixels: Uint8ClampedArray;
     newImage: ImageData;
+    project: Project;
 
     /**
      * Instantiate the tool with FillTool name.
@@ -51,8 +52,9 @@ export class FillTool extends Tool {
      * @param {Project} project Document state
      */
     startUse (img: ImageData, pos: Vec2, project: Project) {
+        this.project = project;
         this.pixels = colorSelect(img, new Vec2(Math.floor(pos.x), Math.floor(pos.y)), this.getSetting("threshold"));
-
+        
         let width: number = img.width;
         let height: number = img.height;
         let color_hex: string = this.getSetting("fillColor");
@@ -83,7 +85,7 @@ export class FillTool extends Tool {
     };
 
     endUse (pos) {
-        return null;
+        return this.defaultHistoryEntry(this.project);
     };
 
     continueUse (pos) {
@@ -92,7 +94,7 @@ export class FillTool extends Tool {
 
     drawPreview (ctx: CanvasRenderingContext2D) {
         if (this.newImage != null) {
-            ctx.putImageData(this.newImage,0,0);
+            ctx.putImageData(this.newImage, 0, 0);
         }
     };
 }
