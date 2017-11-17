@@ -1,5 +1,6 @@
 import {Layer} from "./layer";
 import {Vec2} from "../vec2";
+import {PixelSelectionHandler} from "../selection/selection";
 
 /**
  * Handler of the final step of rendering.
@@ -120,12 +121,22 @@ export class Viewport {
             //.add(this.currentTranslation, true);
 
         // Set appropriate scale and translation.
-        this.context.translate(translation.x, translation.y);
-        this.context.scale(this.currentScale, this.currentScale);
+
+        let crop_dimensions = this.viewportDimensions.divide(this.currentScale, true);
+        let translation_base = translation.divide(this.currentScale, true);
 
         // Render elements.
         for (let i in this.layerList) {
-            this.context.drawImage(this.layerList[i].getHTMLElement(),this.currentTranslation.x,this.currentTranslation.y);
+            this.context.drawImage(
+                this.layerList[i].getHTMLElement(),
+                -this.currentTranslation.x-translation_base.x,
+                -this.currentTranslation.y-translation_base.y,
+                crop_dimensions.x,
+                crop_dimensions.y,
+                0,
+                0,
+                this.viewportDimensions.x,
+                this.viewportDimensions.y);
         }
 
         this.context.setTransform(1, 0, 0, 1, 0, 0);
@@ -175,5 +186,35 @@ export class Viewport {
         return position.add(this.currentTranslation,true)
             .divide(1/this.currentScale, true)
             .add(translation, true);
+    }
+
+    applyMask(layer: Layer, selection: PixelSelectionHandler) {
+        let viewport_local_width = this.viewportDimensions.x / this.currentScale;
+        let viewport_local_height = this.viewportDimensions.y / this.currentScale;
+
+        let layer_width = this.layerDimensions.x;
+        let layer_height = this.layerDimensions.y;
+
+        let begin_x = viewport_local_width/2 - layer_width/2 - this.currentTranslation.x;
+        let begin_y = viewport_local_height/2 - layer_height/2 - this.currentTranslation.y;
+
+        let end_x = 3*viewport_local_width/2 - layer_width/2 - this.currentTranslation.x;
+        let end_y = 3*viewport_local_height/2 - layer_height/2 - this.currentTranslation.y;
+
+        let size_x = Math.min(end_x-begin_x, layer_width-begin_x);
+        let size_y = Math.min(end_y-begin_y, layer_height-begin_y);
+
+        this.context.globalCompositeOperation = 'destination-in';
+        this.context.drawImage(selection.getMask(),
+            begin_x,
+            begin_y,
+            size_x,
+            size_y,
+            begin_x,
+            begin_y,
+            size_x,
+            size_y,
+            );
+        this.context.globalCompositeOperation = 'source-over';
     }
 }

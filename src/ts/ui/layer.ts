@@ -49,6 +49,10 @@ export class Layer {
         return this.height;
     }
 
+    /***
+     * @deprecated
+     * @param {PixelSelectionHandler} selection
+     */
     applyMask(selection: PixelSelectionHandler) {
         this.context.globalCompositeOperation = 'destination-in';
         this.context.drawImage(selection.getMask(), 0, 0);
