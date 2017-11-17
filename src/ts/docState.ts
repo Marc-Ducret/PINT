@@ -119,7 +119,7 @@ export class Project {
             this.currentTool.drawPreview(this.previewLayer.getContext());
 
             if (!this.currentTool.overrideSelectionMask) {
-                this.previewLayer.applyMask(this.currentSelection);
+                this.ui.viewport.applyMask(this.previewLayer, this.currentSelection);
             }
 
             this.redraw = true;
