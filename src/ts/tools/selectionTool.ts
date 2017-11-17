@@ -64,7 +64,7 @@ export class SelectionTool extends Tool {
                 for (let y = Math.floor(this.firstCorner.y - radius) - 2; y <= this.firstCorner.y + radius + 2; y++) {
                     for (let x = Math.floor(this.firstCorner.x - radius) - 2; x <= this.firstCorner.x + radius + 2; x++) {
                         if(x >= 0 && x < this.project.dimensions.x && y >= 0 && y < this.project.dimensions.y) {
-                            let d = (x - this.firstCorner.x) ** 2 + (y - this.firstCorner.y) ** 2;
+                            let d = (x - this.firstCorner.x - .5) ** 2 + (y - this.firstCorner.y  - .5) ** 2;
                             if(d <= radius ** 2) {
                                 selection[x + y * this.project.dimensions.x] = 0xFF;
                             } else if(d <= (radius + 1) ** 2) {
