@@ -15,9 +15,10 @@ export class GradientTool extends Tool {
 
     constructor () {
         super("GradientTool", "Gradient");
-        // define the two colors of the gradient :
+        // define the two colors of the gradient:
         this.addSetting({name: "color1", descName: "from", inputType: InputType.Color, defaultValue: "#000000"});
         this.addSetting({name: "color2", descName: "to", inputType: InputType.Color, defaultValue: "#FFFFFF"});
+        // set transparency settings:
         this.addSetting({
             name: "transparencyAlpha",
             descName: "transparency",
