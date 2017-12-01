@@ -3,37 +3,48 @@ module.exports = function(grunt) {
         pkg: grunt.file.readJSON("package.json"),
         ts: {
             dev: {
-                src: ['src/ts/**/*.ts', 'src/main.ts'],
-                dest: 'build/',
+                src: ['src/client/ts/**/*.ts', 'src/client/main.ts'],
+                dest: 'build/html/',
                 options: {
                     target: 'es6',
                     module: 'amd',
                     moduleResolution: 'node',
-                    rootDir: 'src/',
+                    rootDir: 'src/client/',
+                    fast: 'always'
+                }
+            },
+            server: {
+                src: ['src/server/*.ts'],
+                dest: 'build/',
+                options: {
+                    target: 'es6',
+                    module: 'commonjs',
+                    moduleResolution: 'node',
+                    rootDir: 'src/server/',
                     fast: 'always'
                 }
             },
             release: {
-                src: ['src/ts/**/*.ts', 'src/main.ts'],
-                dest: 'build/main.js',
+                src: ['src/client/ts/**/*.ts', 'src/client/main.ts'],
+                dest: 'build/html/main.js',
                 options: {
                     target: 'es6',
                     module: 'amd',
                     moduleResolution: 'node',
-                    rootDir: 'src/'
+                    rootDir: 'src/client/'
                 }
             }
         },
         concat: {
             css_dev: {
                 src: ["node_modules/materialize-css/dist/css/materialize.css",
-                    "src/css/*.css"],
-                dest: "build/main.css"
+                    "src/client/css/*.css"],
+                dest: "build/html/main.css"
             },
             css: {
                 src: ["node_modules/materialize-css/dist/css/materialize.min.css",
-                    "src/css/*.css"],
-                dest: "build/main.css"
+                    "src/client/css/*.css"],
+                dest: "build/html/main.css"
             }
         },
         htmlmin: {
@@ -43,26 +54,26 @@ module.exports = function(grunt) {
                     collapseWhitespace: true
                 },
                 files: {
-                    "build/index.html": ["src/index.html"]
+                    "build/html/index.html": ["src/client/index.html"]
                 }
             }
         },
         cssmin: {
             main: {
-                src: "build/main.css",
-                dest: "build/main.css"
+                src: "build/html/main.css",
+                dest: "build/html/main.css"
             }
         },
         jasmine: {
             main: {
-                src: ["build/main.js", "node_modules/jquery/dist/jquery.min.js", "node_modules/jasmine-jquery/lib/jasmine-jquery.js"],
+                src: ["build/html/main.js", "node_modules/jquery/dist/jquery.min.js", "node_modules/jasmine-jquery/lib/jasmine-jquery.js"],
                 options: {
                     specs: "test/*.js"
                 }
             }
         },
         clean: {
-            main: ["build/**/*.js", "build/**/*.map", "!build/main.js", "!build/jquery.js", "!build/require.js", ".tscache"]
+            main: ["build/**/*", ".tscache"]
         },
         cleanempty: {
             options: {
@@ -72,7 +83,7 @@ module.exports = function(grunt) {
         },
         jsdoc : {
             dist : {
-                src: ['src/ts/*.ts', 'README.md'],
+                src: ['src/client/ts/*.ts', 'README.md'],
                 options: {
                     destination : 'doc',
                     template : "node_modules/ink-docstrap/template",
@@ -83,21 +94,21 @@ module.exports = function(grunt) {
         copy: {
             jquery_dev: {
                 src: 'node_modules/jquery/dist/jquery.js',
-                dest: 'build/jquery.js',
+                dest: 'build/html/jquery.js',
             },
             jquery_release: {
                 src: 'node_modules/jquery/dist/jquery.min.js',
-                dest: 'build/jquery.js',
+                dest: 'build/html/jquery.js',
             },
             requirejs: {
                 src: 'node_modules/requirejs/require.js',
-                dest: 'build/require.js',
+                dest: 'build/html/require.js',
             },
             img: {
                 expand: true,
-                cwd: 'src/assets/',
+                cwd: 'src/client/assets/',
                 src: '*',
-                dest: 'build/assets/'
+                dest: 'build/html/assets/'
             }
         },
         requirejs: {
@@ -105,7 +116,7 @@ module.exports = function(grunt) {
                 options: {
                     baseUrl: 'build/js',
                     name: 'main',
-                    out: 'build/main.js',
+                    out: 'build/html/main.js',
                     optimize: 'uglify2',
                     generateSourceMaps: true,
                     preserveLicenseComments: false,
@@ -135,9 +146,9 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-exec');
 
     // Default task: dev build with source maps
-    grunt.registerTask('default', ['ts:dev', 'copy:img', 'copy:jquery_dev', 'copy:requirejs', 'concat:css_dev', 'htmlmin']);
+    grunt.registerTask('default', ['ts:server', 'ts:dev', 'copy:img', 'copy:jquery_dev', 'copy:requirejs', 'concat:css_dev', 'htmlmin']);
     // Release task: compress js, html, css, remove source maps.
-    grunt.registerTask('release', ['ts:release', 'copy:img', 'copy:jquery_release', 'copy:requirejs', 'concat:css', 'htmlmin', 'cssmin', 'clean', 'cleanempty']);
+    grunt.registerTask('release', ['ts:server', 'ts:release', 'copy:img', 'copy:jquery_release', 'copy:requirejs', 'concat:css', 'htmlmin', 'cssmin', 'clean', 'cleanempty']);
     // Generate documentation.
     grunt.registerTask('doc',['exec:make_doc']);
     // Tests executed with npm test

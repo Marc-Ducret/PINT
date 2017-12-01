@@ -1,5 +1,5 @@
-import {Vec2} from '../src/ts/vec2';
-import {Layer} from '../src/ts/ui/layer';
+import {Vec2} from '../src/client/ts/vec2';
+import {Layer} from '../src/client/ts/ui/layer';
 
 describe('Layer ', function () {
 

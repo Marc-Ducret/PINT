@@ -19,6 +19,7 @@
   "dependencies": {
     "@types/jasmine": "^2.6.0",
     "@types/jquery": "^3.2.13",
+    "express": "^4.16.2",
     "grunt": "~0.4.5",
     "grunt-cleanempty": "^1.0.4",
     "grunt-contrib-clean": "^1.1.0",
@@ -33,6 +34,7 @@
     "jquery": "^3.2.1",
     "materialize-css": "^0.100.2",
     "requirejs": "^2.3.5",
+    "ts-express": "^1.0.3",
     "typedoc": "^0.9.0",
     "typescript": "^2.5.3"
   },

@@ -1,5 +1,5 @@
 
-import {giveMeTheAnswer, randomModification} from "../src/ts/test-file";
+import {giveMeTheAnswer, randomModification} from "../src/client/ts/test-file";
 
 declare global {
     export namespace jasmine {
