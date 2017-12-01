@@ -4,7 +4,9 @@
   "description": "PINT is a drawing software",
   "main": "index.js",
   "scripts": {
-    "test": "karma start"
+    "test": "karma start",
+    "heroku-prebuild": "npm install -g grunt && grunt",
+    "start": "node build/index.js"
   },
   "repository": {
     "type": "git",
