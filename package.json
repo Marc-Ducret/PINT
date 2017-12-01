@@ -22,6 +22,8 @@
     "@types/jasmine": "^2.6.0",
     "@types/jquery": "^3.2.13",
     "@types/serve-static": "^1.13.1",
+    "@types/socket.io": "^1.4.31",
+    "@types/socket.io-client": "^1.4.32",
     "express": "^4.16.2",
     "grunt": "~0.4.5",
     "grunt-cleanempty": "^1.0.4",
@@ -39,6 +41,7 @@
     "path": "^0.12.7",
     "requirejs": "^2.3.5",
     "serve-static": "^1.13.1",
+    "socket.io": "^2.0.4",
     "ts-express": "^1.0.3",
     "typedoc": "^0.9.0",
     "typescript": "^2.5.3"
