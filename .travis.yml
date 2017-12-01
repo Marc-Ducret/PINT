@@ -17,13 +17,6 @@ deploy:
     on:
       repo: VengeurK/PINT
       branch: server
-
-  - provider: pages
-    local_dir: build
-    skip_cleanup: true
-    github_token: $GITHUB_TOKEN
-    on:
-      branch: master
 before_install:
 - export CHROME_BIN=chromium-browser
 - export DISPLAY=:99.0
