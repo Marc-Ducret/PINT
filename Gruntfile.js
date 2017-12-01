@@ -129,10 +129,6 @@ module.exports = function(grunt) {
                 command: 'node_modules/typedoc/bin/typedoc --mode file --module amd --out doc/ src/ts/'
             }
         }
-
-
-
-
     });
 
     grunt.loadNpmTasks('grunt-contrib-concat');
