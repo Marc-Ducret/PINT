@@ -3,7 +3,9 @@
 
 PINT is a revolutionary painting Web-app rocking on JavaScript and HTML5 canvas.
 
-The latest build is [available online](https://vengeurk.github.io/PINT/).
+The latest builds are available:
+* [master](https://vengeurk.github.io/PINT/).
+* [server](https://pintjs.herokuapp.com/).
 
 ## Installation 
 Requirements:
@@ -18,6 +20,7 @@ Project setup:
 Build commands:
 * Dev build: ``grunt``
 * Release build: ``grunt release``
+* Start server: ```npm start```
 * Documentation: ``grunt doc``
 * Tests: ``npm test``
 * Clean: ``grunt clean``
