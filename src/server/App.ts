@@ -1,21 +1,17 @@
 import * as express from 'express';
+import * as serveStatic from 'serve-static';
+import * as path from 'path';
 
 class App {
     public express;
 
     constructor () {
         this.express = express();
-        this.mountRoutes();
+        this.mountStaticServer();
     }
 
-    private mountRoutes (): void {
-        const router = express.Router();
-        router.get('/', (req, res) => {
-            res.json({
-                message: 'Hello world!'
-            })
-        });
-        this.express.use('/', router);
+    private mountStaticServer (): void {
+        this.express.use(serveStatic(path.join(__dirname, 'html')));
     }
 }
 
