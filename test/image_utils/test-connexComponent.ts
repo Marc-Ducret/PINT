@@ -1,6 +1,6 @@
-import {colorSelect} from "../../src/ts/image_utils/connexComponent";
-import {Vec2} from "../../src/ts/vec2";
-import {isSelected} from "../../src/ts/selection/selectionUtils";
+import {colorSelect} from "../../src/client/ts/image_utils/connexComponent";
+import {Vec2} from "../../src/client/ts/vec2";
+import {isSelected} from "../../src/client/ts/selection/selectionUtils";
 
 describe("Testing connex component features", function() {
     describe("Testing color select feature on 10x10 picture.", function() {
