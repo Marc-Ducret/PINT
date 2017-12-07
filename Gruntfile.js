@@ -3,35 +3,14 @@ module.exports = function(grunt) {
         pkg: grunt.file.readJSON("package.json"),
         ts: {
             dev: {
-                src: ['src/client/ts/**/*.ts', 'src/client/main.ts'],
-                dest: 'build/html/',
-                options: {
-                    target: 'es6',
-                    module: 'amd',
-                    moduleResolution: 'node',
-                    rootDir: 'src/client/',
-                    fast: 'always'
-                }
-            },
-            server: {
-                src: ['src/server/*.ts'],
+                src: ['src/**/*.ts'],
                 dest: 'build/',
                 options: {
                     target: 'es6',
-                    module: 'commonjs',
-                    moduleResolution: 'node',
-                    rootDir: 'src/server/',
-                    fast: 'always'
-                }
-            },
-            release: {
-                src: ['src/client/ts/**/*.ts', 'src/client/main.ts'],
-                dest: 'build/html/main.js',
-                options: {
-                    target: 'es6',
                     module: 'amd',
                     moduleResolution: 'node',
-                    rootDir: 'src/client/'
+                    rootDir: 'src/',
+                    fast: 'always'
                 }
             },
             convnet: {
@@ -49,12 +28,16 @@ module.exports = function(grunt) {
             css_dev: {
                 src: ["node_modules/materialize-css/dist/css/materialize.css",
                     "src/client/css/*.css"],
-                dest: "build/html/main.css"
+                dest: "build/client/main.css"
             },
             css: {
                 src: ["node_modules/materialize-css/dist/css/materialize.min.css",
                     "src/client/css/*.css"],
-                dest: "build/html/main.css"
+                dest: "build/client/main.css"
+            },
+            js_server_header: {
+                src: ["src/server/header.js", "build/server/index.js"],
+                dest: "build/server/main.js"
             }
         },
         htmlmin: {
@@ -64,19 +47,19 @@ module.exports = function(grunt) {
                     collapseWhitespace: true
                 },
                 files: {
-                    "build/html/index.html": ["src/client/index.html"]
+                    "build/client/index.html": ["src/client/index.html"]
                 }
             }
         },
         cssmin: {
             main: {
-                src: "build/html/main.css",
-                dest: "build/html/main.css"
+                src: "build/client/main.css",
+                dest: "build/client/main.css"
             }
         },
         jasmine: {
             main: {
-                src: ["build/html/main.js", "node_modules/jquery/dist/jquery.min.js", "node_modules/jasmine-jquery/lib/jasmine-jquery.js"],
+                src: ["build/client/main.js", "node_modules/jquery/dist/jquery.min.js", "node_modules/jasmine-jquery/lib/jasmine-jquery.js"],
                 options: {
                     specs: "test/*.js"
                 }
@@ -104,21 +87,21 @@ module.exports = function(grunt) {
         copy: {
             jquery_dev: {
                 src: 'node_modules/jquery/dist/jquery.js',
-                dest: 'build/html/jquery.js',
+                dest: 'build/client/jquery.js',
             },
             jquery_release: {
                 src: 'node_modules/jquery/dist/jquery.min.js',
-                dest: 'build/html/jquery.js',
+                dest: 'build/client/jquery.js',
             },
             requirejs: {
                 src: 'node_modules/requirejs/require.js',
-                dest: 'build/html/require.js',
+                dest: 'build/client/require.js',
             },
             img: {
                 expand: true,
                 cwd: 'src/client/assets/',
                 src: '*',
-                dest: 'build/html/assets/'
+                dest: 'build/client/assets/'
             }
         },
         requirejs: {
@@ -126,7 +109,7 @@ module.exports = function(grunt) {
                 options: {
                     baseUrl: 'build/js',
                     name: 'main',
-                    out: 'build/html/main.js',
+                    out: 'build/client/main.js',
                     optimize: 'uglify2',
                     generateSourceMaps: true,
                     preserveLicenseComments: false,
@@ -152,9 +135,9 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-exec');
 
     // Default task: dev build with source maps
-    grunt.registerTask('default', ['ts:server', 'ts:dev', 'copy:img', 'copy:jquery_dev', 'copy:requirejs', 'concat:css_dev', 'htmlmin']);
+    grunt.registerTask('default', ['ts:dev', 'concat:js_server_header', 'copy:img', 'copy:jquery_dev', 'copy:requirejs', 'concat:css_dev', 'htmlmin']);
     // Release task: compress js, html, css, remove source maps.
-    grunt.registerTask('release', ['ts:server', 'ts:release', 'copy:img', 'copy:jquery_release', 'copy:requirejs', 'concat:css', 'htmlmin', 'cssmin', 'clean', 'cleanempty']);
+    grunt.registerTask('release', ['ts:dev', 'copy:img', 'copy:jquery_release', 'copy:requirejs', 'concat:css', 'htmlmin', 'cssmin', 'clean', 'cleanempty']);
     // Generate documentation.
     grunt.registerTask('doc',['exec:make_doc']);
     // Tests executed with npm test

@@ -6,6 +6,7 @@ import {Viewport} from "./viewport";
 import {ToolRegistry} from "../tools/toolregistry";
 import {Vec2} from "../vec2";
 import {MenuController, setup_menu} from "./menu";
+import * as io from 'socket.io-client';
 import {LayerMenuController, setup_layer_menu} from "./layermenu"
 
 /**
@@ -32,8 +33,11 @@ export class UIController {
     redraw: boolean;
 
     project_name: string;
+    socket: SocketIOClient.Socket;
 
     constructor (){
+        this.socket = io.connect('//');
+
         let fallbackImage = document.createElement("img");
         this.viewport = new Viewport(<JQuery<HTMLCanvasElement>> $("#viewport"), fallbackImage);
         fallbackImage.addEventListener("load", function() {
@@ -48,6 +52,15 @@ export class UIController {
 
         this.project_name = "Untitled";
         this.redraw = true;
+
+        // On connect, allow load from server.
+        this.socket.on("connect", function() {
+            this.loadServerHosted("main");
+        }.bind(this));
+
+        this.socket.on("joined", this.loadServerHostedCallback.bind(this));
+        this.socket.on("action", this.actionCallback.bind(this));
+
         window.requestAnimationFrame(this.onStep.bind(this));
     }
 
@@ -84,6 +97,22 @@ export class UIController {
         return false;
     }
 
+
+    loadServerHosted (name: string) {
+        this.socket.emit('join', name);
+    }
+
+
+    /// Data contains project dimensions, image data
+    loadServerHostedCallback (data) {
+        this.newProject(data.dimensions);
+        this.project.currentLayer.getContext().putImageData(data.data, 0, 0);
+    }
+
+    /// Cancellable object.
+    actionCallback (data) {
+
+    }
 
     newProject (dimensions: Vec2) {
         this.menu_controller.switchCategory(1);
