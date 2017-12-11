@@ -23,20 +23,9 @@ module.exports = function(grunt) {
                     rootDir: 'src/'
                 }
             },
-            dev_convnet: {
+            convnet: {
                 src: ['node_modules/convnetjs-ts/src/*.ts'],
-                dest: 'build/',
-                options: {
-                    target: 'es6',
-                    module: 'amd',
-                    moduleResolution: 'node',
-                    rootDir: 'node_modules/convnetjs-ts/src/',
-                    fast: 'always'
-                }
-            },
-            release_convnet: {
-                src: ['node_modules/convnetjs-ts/src/*.ts'],
-                dest: 'build/',
+                dest: 'build/convnetjs-ts.js',
                 options: {
                     target: 'es6',
                     module: 'amd',
@@ -83,7 +72,7 @@ module.exports = function(grunt) {
             }
         },
         clean: {
-            main: ["build/**/*.js", "build/**/*.map", "!build/main.js", "!build/jquery.js", "!build/require.js", ".tscache"]
+            main: ["build/**/*.js", "build/**/*.map", "!build/main.js", "!build/jquery.js", "!build/require.js", "!build/convnetjs-ts.js", ".tscache"]
         },
         cleanempty: {
             options: {
@@ -119,10 +108,6 @@ module.exports = function(grunt) {
                 cwd: 'src/assets/',
                 src: '*',
                 dest: 'build/assets/'
-            },
-            convnet: {
-                src: 'build/index.js',
-                dest: 'build/convnetjs-ts.js'
             }
         },
         requirejs: {
@@ -156,9 +141,9 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-exec');
 
     // Default task: dev build with source maps
-    grunt.registerTask('default', ['ts:dev', 'ts:dev_convnet', 'copy:convnet', 'copy:img', 'copy:jquery_dev', 'copy:requirejs', 'concat:css_dev', 'htmlmin']);
+    grunt.registerTask('default', ['ts:dev', 'copy:img', 'copy:jquery_dev', 'copy:requirejs', 'concat:css_dev', 'htmlmin']);
     // Release task: compress js, html, css, remove source maps.
-    grunt.registerTask('release', ['ts:release', 'ts:release_convnet', 'copy:convnet', 'copy:img', 'copy:jquery_release', 'copy:requirejs', 'concat:css', 'htmlmin', 'cssmin', 'clean', 'cleanempty']);
+    grunt.registerTask('release', ['ts:release', 'copy:img', 'copy:jquery_release', 'copy:requirejs', 'concat:css', 'htmlmin', 'cssmin', 'clean', 'cleanempty']);
     // Generate documentation.
     grunt.registerTask('doc',['exec:make_doc']);
     // Tests executed with npm test
