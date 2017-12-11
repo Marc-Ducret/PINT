@@ -22,7 +22,18 @@ module.exports = function(grunt) {
                     moduleResolution: 'node',
                     rootDir: 'src/'
                 }
-            }
+            },
+            dev_convnet: {
+                src: ['node_modules/convnetjs-ts/src/*.ts'],
+                dest: 'build/',
+                options: {
+                    target: 'es6',
+                    module: 'amd',
+                    moduleResolution: 'node',
+                    rootDir: 'node_modules/convnetjs-ts/src/',
+                    fast: 'always'
+                }
+            },
         },
         concat: {
             css_dev: {
@@ -98,6 +109,10 @@ module.exports = function(grunt) {
                 cwd: 'src/assets/',
                 src: '*',
                 dest: 'build/assets/'
+            },
+            convnet: {
+                src: 'build/index.js',
+                dest: 'build/convnetjs-ts.js'
             }
         },
         requirejs: {
@@ -118,10 +133,6 @@ module.exports = function(grunt) {
                 command: 'node_modules/typedoc/bin/typedoc --mode file --module amd --out doc/ src/ts/'
             }
         }
-
-
-
-
     });
 
     grunt.loadNpmTasks('grunt-contrib-concat');
@@ -135,7 +146,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-exec');
 
     // Default task: dev build with source maps
-    grunt.registerTask('default', ['ts:dev', 'copy:img', 'copy:jquery_dev', 'copy:requirejs', 'concat:css_dev', 'htmlmin']);
+    grunt.registerTask('default', ['ts:dev', 'ts:dev_convnet', 'copy:convnet', 'copy:img', 'copy:jquery_dev', 'copy:requirejs', 'concat:css_dev', 'htmlmin']);
     // Release task: compress js, html, css, remove source maps.
     grunt.registerTask('release', ['ts:release', 'copy:img', 'copy:jquery_release', 'copy:requirejs', 'concat:css', 'htmlmin', 'cssmin', 'clean', 'cleanempty']);
     // Generate documentation.
