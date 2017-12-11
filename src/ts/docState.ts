@@ -44,7 +44,7 @@ export class Project {
             this.dimensions = dimensions;
         }
         this.previewLayer = new Layer(this.dimensions);
-        this.previewLayer.getContext().translate(0.5, 0.5);
+        this.previewLayer.getContext().translate(0.5, 0.5); // why translating of 0.5, 0.5 ?
 
         this.currentLayer = new Layer(this.dimensions);
         this.selectionLayer = new Layer(this.dimensions);
@@ -120,7 +120,7 @@ export class Project {
             this.currentTool.drawPreview(this.previewLayer.getContext());
 
             if (!this.currentTool.overrideSelectionMask) {
-                this.previewLayer.applyMask(this.currentSelection);
+                this.ui.viewport.applyMask(this.previewLayer, this.currentSelection);
             }
 
             this.redraw = true;
@@ -164,10 +164,19 @@ export class Project {
     }
 
     /**
-     * Add a Layer at the end of the layerList
+     * Getter for layerList (for layerManager)
+     */
+    getLayerList () : Array<Layer> {
+        return this.layerList
+    };
+
+    /**
+     * Add a Layer in the layerList, just before the previewLayer and the selectionLayer
      */
     addLayer (){
-	    this.layerList.push(new Layer(this.dimensions));
+	    //this.layerList.push(new Layer(this.dimensions));
+        this.layerList.splice(this.layerList.length - 3, 0, new Layer(this.dimensions));
+        this.currentLayer = this.layerList[this.layerList.length - 3];
     };
 
     /**

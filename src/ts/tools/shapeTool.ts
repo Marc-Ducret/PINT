@@ -75,8 +75,8 @@ export class ShapeTool extends Tool {
         switch (this.getSetting('shape')) {
             case "square":
                 ctx.beginPath();
-                const x = Math.min(this.firstCorner.x, this.lastCorner.x),
-                    y = Math.min(this.firstCorner.y, this.lastCorner.y),
+                const x = Math.min(this.firstCorner.x, this.lastCorner.x) + .5,
+                    y = Math.min(this.firstCorner.y, this.lastCorner.y) + .5,
                     w = Math.abs(this.firstCorner.x - this.lastCorner.x),
                     h = Math.abs(this.firstCorner.y - this.lastCorner.y);
                 ctx.rect(x,y,w,h);
@@ -97,10 +97,10 @@ export class ShapeTool extends Tool {
                 console.error("No shape selected.");
                 break;
         }
-        ctx.globalAlpha = this.getSetting("strokeAlpha")/100;
-        ctx.stroke();
         ctx.globalAlpha = this.getSetting("fillAlpha")/100;
         ctx.fill();
+        ctx.globalAlpha = this.getSetting("strokeAlpha")/100;
+        ctx.stroke();
         ctx.globalAlpha = 1;
     };
 }
