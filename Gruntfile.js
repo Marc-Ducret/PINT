@@ -34,6 +34,16 @@ module.exports = function(grunt) {
                     fast: 'always'
                 }
             },
+            release_convnet: {
+                src: ['node_modules/convnetjs-ts/src/*.ts'],
+                dest: 'build/',
+                options: {
+                    target: 'es6',
+                    module: 'amd',
+                    moduleResolution: 'node',
+                    rootDir: 'node_modules/convnetjs-ts/src/'
+                }
+            },
         },
         concat: {
             css_dev: {
@@ -148,7 +158,7 @@ module.exports = function(grunt) {
     // Default task: dev build with source maps
     grunt.registerTask('default', ['ts:dev', 'ts:dev_convnet', 'copy:convnet', 'copy:img', 'copy:jquery_dev', 'copy:requirejs', 'concat:css_dev', 'htmlmin']);
     // Release task: compress js, html, css, remove source maps.
-    grunt.registerTask('release', ['ts:release', 'copy:img', 'copy:jquery_release', 'copy:requirejs', 'concat:css', 'htmlmin', 'cssmin', 'clean', 'cleanempty']);
+    grunt.registerTask('release', ['ts:release', 'ts:release_convnet', 'copy:convnet', 'copy:img', 'copy:jquery_release', 'copy:requirejs', 'concat:css', 'htmlmin', 'cssmin', 'clean', 'cleanempty']);
     // Generate documentation.
     grunt.registerTask('doc',['exec:make_doc']);
     // Tests executed with npm test
