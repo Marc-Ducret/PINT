@@ -7,6 +7,7 @@ import {ToolRegistry} from "../tools/toolregistry";
 import {Vec2} from "../vec2";
 import {MenuController, setup_menu} from "./menu";
 import * as io from 'socket.io-client';
+import {LayerMenuController, setup_layer_menu} from "./layermenu"
 
 /**
  * @file User interface handler
@@ -26,6 +27,7 @@ export class UIController {
     project: Project = null;
     viewport: Viewport;
     settingsUI: SettingsInterface;
+    layer_menu_controller: LayerMenuController;
     toolRegistry: ToolRegistry;
     menu_controller: MenuController;
     redraw: boolean;
@@ -119,6 +121,20 @@ export class UIController {
         this.project = new Project(this, this.project_name, dimensions);
         this.viewport.setLayerList(this.project.layerList);
         $("#toolbox-container").children().removeClass("hovered"); // Unselect tools.
+
+        // display the layer menu:
+        this.layer_menu_controller = setup_layer_menu(this, document.getElementById("layerManager_container"));
+
+    }
+
+    /**
+     * @brief: add a layer to the project (in ending position)
+     */
+    addLayer () {
+        // add a layer to the current project:
+        this.project.addLayer();
+        // update the layer manager menu:
+        this.layer_menu_controller = setup_layer_menu(this, document.getElementById("layerManager_container"));
     }
 
     /**
@@ -300,8 +316,9 @@ export class UIController {
 
     /**
      * Given the UI DOM elements as an input, bind events to the controller.
+     * @TODO : add layer_container argument wherever bindEvents is called
      */
-    bindEvents (toolbox_container, viewport, newproject_button, newproject_width, newproject_height) {
+    bindEvents (/*layer_container, */toolbox_container, viewport, newproject_button, newproject_width, newproject_height) {
         toolbox_container.children().click(this.onToolboxClicked.bind(this));
         toolbox_container.children().hover(this.onToolboxHovered.bind(this),
             this.onToolboxHoverLeft.bind(this));

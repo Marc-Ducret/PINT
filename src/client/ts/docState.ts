@@ -11,6 +11,7 @@ import {UIController} from "./ui/ui";
 import {mask} from "./selection/selectionUtils";
 import {History} from "./tools/history/history";
 import {HistoryEntry} from "./tools/history/historyEntry";
+import * as squareRecon from "./image_utils/squareRecon";
 
 /**
  * Project manager.
@@ -43,7 +44,7 @@ export class Project {
             this.dimensions = dimensions;
         }
         this.previewLayer = new Layer(this.dimensions);
-        this.previewLayer.getContext().translate(0.5, 0.5);
+        this.previewLayer.getContext().translate(0.5, 0.5); // why translating of 0.5, 0.5 ?
 
         this.currentLayer = new Layer(this.dimensions);
         this.selectionLayer = new Layer(this.dimensions);
@@ -163,10 +164,19 @@ export class Project {
     }
 
     /**
-     * Add a Layer at the end of the layerList
+     * Getter for layerList (for layerManager)
+     */
+    getLayerList () : Array<Layer> {
+        return this.layerList
+    };
+
+    /**
+     * Add a Layer in the layerList, just before the previewLayer and the selectionLayer
      */
     addLayer (){
-	    this.layerList.push(new Layer(this.dimensions));
+	    //this.layerList.push(new Layer(this.dimensions));
+        this.layerList.splice(this.layerList.length - 3, 0, new Layer(this.dimensions));
+        this.currentLayer = this.layerList[this.layerList.length - 3];
     };
 
     /**
@@ -210,5 +220,9 @@ export class Project {
         document.body.appendChild(fake_link);
         fake_link.click();
         document.body.removeChild(fake_link);
+    }
+
+    testSquare() {
+        console.log("square: "+squareRecon.hasSquare(this.currentLayer.getContext().getImageData(0, 0, this.dimensions.x, this.dimensions.y)));
     }
 }

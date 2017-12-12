@@ -17,13 +17,24 @@
     </div>
 
     <div class="row z-depth-3">
-        <div class="col s10" id="viewport-container">
+
+        <!-- horizontal bar to display the layer Manager : -->
+        <div class="col s2" id="left_pane">
+            <h2 id="name_layer_container"></h2>
+            <div id="layerManager_container"></div>
+        </div>
+
+        <!-- area of the pinted canvas : -->
+        <div class="col s8" id="viewport-container">
             <canvas id="viewport"></canvas>
         </div>
+
+        <!-- horizontal bar to display tool settings : -->
         <div class="col s2" id="right_pane">
             <h2 id="name_container"></h2>
             <div id="toolsettings_container"></div>
         </div>
+
     </div>
 </div>
 
