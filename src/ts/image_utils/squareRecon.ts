@@ -221,17 +221,24 @@ export function initClassifierByTraining() {
 function downgreyscale(img: ImageData) {
     let size = 32;
     let imgOut = [];
-    for(let y = 0; y < size; y++) {
-        for(let x = 0; x < size; x++) {
+    let counts = [];
+    for(let i = 0; i < size*size; i++) {
+        imgOut.push(0);
+        counts.push(0);
+    }
+    for(let y = 0; y < img.height; y++) {
+        for(let x = 0; x < img.width; x++) {
             let comps = 3;
-            let value = 0;
-            let x_in = Math.floor(x * img.width / size);
-            let y_in = Math.floor(y * img.height / size);
+            let x_o = Math.floor(x * size / img.width);
+            let y_o = Math.floor(y * size / img.height);
             for(let i = 0; i < comps; i++) {
-                value += img.data[(y_in * img.width + x_in) * (comps+1) + i] / 0xFF / comps;
+                imgOut[y_o * size + x_o] += img.data[(y * img.width + x) * (comps+1) + i] / 0xFF;
+                counts[y_o * size + x_o] += 1;
             }
-            imgOut.push(value);
         }
+    }
+    for(let i = 0; i < size ** 2; i++) {
+        imgOut[i] /= counts[i];
     }
     return imgOut;
 }
