@@ -1,13 +1,16 @@
 import {SettingRequest, SettingsRequester} from "../tool_settings/settingsRequester";
 import {Vec2} from "../vec2";
-import {HistoryEntry} from "./history/historyEntry";
+import {HistoryEntry} from "../history/historyEntry";
 import {Project} from "../docState";
 import {Layer} from "../ui/layer";
+import {ActionInterface, ActionType} from "../../../common/actionInterface";
+
 
 export abstract class Tool {
     private name: string;
     private desc: string;
     private settings: SettingsRequester;
+    protected data: ActionInterface;
     readonly overrideSelectionMask: boolean = false;
 
     /**
@@ -19,20 +22,24 @@ export abstract class Tool {
         this.name = name;
         this.desc = desc;
         this.settings = new SettingsRequester();
+        this.data = {
+            type: ActionType.ToolUse,
+            toolName: this.name,
+            actionData: {}
+        };
     }
 
     /**
-     * Reset the state of the tool.
+     * Reset internal state of the tool.
      */
     abstract reset();
 
     /**
      * Function called on first click using the tool.
      * @param {ImageData} img Canvas content on tool click.
-     * @param {Vec2} pos Mouse position on click.
-     * @param {Project} project Document instance.
+     * @param {Vec2} pos Mouse position on click..
      */
-    abstract startUse(img: ImageData, pos: Vec2, project: Project);
+    abstract startUse(img: ImageData, pos: Vec2);
 
     /**
      * Called on mouse move.
@@ -44,7 +51,7 @@ export abstract class Tool {
      * Called on mouse release.
      * @param {Vec2} pos Mouse position on release.
      */
-    abstract endUse(pos: Vec2): HistoryEntry ;
+    abstract endUse(pos: Vec2): ActionInterface;
 
     /**
      * Here the tool should draw its pending changes on the preview canvas layer.
@@ -52,29 +59,21 @@ export abstract class Tool {
      */
     abstract drawPreview (context: CanvasRenderingContext2D);
 
-    defaultHistoryEntry(project: Project): HistoryEntry {
-        let doLayer: Layer = new Layer(project.dimensions);
-        doLayer.getContext().translate(0.5, 0.5);
-        doLayer.reset();
-        this.drawPreview(doLayer.getContext());
-        if (!this.overrideSelectionMask) {
-            doLayer.applyMask(project.currentSelection);
+    updateData (data: ActionInterface) {
+        if (this.name == data.toolName && data.actionData == ActionType.ToolUse) {
+            this.data = data;
+        } else {
+            console.warn("Update data on wrong tool.");
         }
-        if(doLayer.isBlank()) return null;
-        let undoLayer: Layer = new Layer(project.dimensions);
-        undoLayer.reset();
-        undoLayer.getContext().drawImage(project.currentLayer.getHTMLElement(), 0, 0);
-        let doAction = (layers, project) => {
-            project.currentLayer.getContext()
-                .drawImage(layers[0].getHTMLElement(), 0, 0);
-        };
-        let undoAction = (layers, project) => {
-            project.currentLayer.getContext()
-                .drawImage(layers[1].getHTMLElement(), 0, 0);
-        };
-
-        return new HistoryEntry(doAction, undoAction, [doLayer, undoLayer]);
     }
+
+    /**
+     *
+     * @param {ActionInterface} data
+     * @param {CanvasRenderingContext2D} context
+     * @returns {HistoryEntry}
+     */
+    abstract applyTool(context: CanvasRenderingContext2D): HistoryEntry;
 
     /**
      * Called by the inherited classes when they need a custom parameter that the UI should provide.
