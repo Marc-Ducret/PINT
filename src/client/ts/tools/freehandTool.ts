@@ -7,7 +7,7 @@ import {InputType} from "../tool_settings/settingsRequester";
 import {HistoryEntry} from "../history/historyEntry";
 import {Project} from "../docState";
 import {Layer} from "../ui/layer";
-import {ActionInterface} from "../../../common/actionInterface";
+import {ActionInterface} from "./actionInterface";
 
 /**
  * Freehand drawing tool.

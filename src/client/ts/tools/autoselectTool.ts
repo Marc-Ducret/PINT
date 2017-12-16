@@ -4,7 +4,7 @@ import {Project} from "../docState";
 import {colorSelect} from "../image_utils/connexComponent";
 import {InputType} from "../tool_settings/settingsRequester";
 import {HistoryEntry} from "../history/historyEntry";
-import {ActionInterface} from "../../../common/actionInterface";
+import {ActionInterface} from "./actionInterface";
 
 /**
  * 'Magic wand' automatic selection tool, selects the connex component of the picture containing the clicked position.
