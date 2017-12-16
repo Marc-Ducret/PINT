@@ -59,7 +59,6 @@ export class UIController {
         }.bind(this));
 
         this.socket.on("joined", this.loadServerHostedCallback.bind(this));
-        this.socket.on("action", this.actionCallback.bind(this));
 
         window.requestAnimationFrame(this.onStep.bind(this));
     }
@@ -106,13 +105,15 @@ export class UIController {
     /// Data contains project dimensions, image data
     loadServerHostedCallback (data) {
         this.newProject(data.dimensions);
-        this.project.currentLayer.getContext().putImageData(data.data, 0, 0);
+
+        /// TODO: Work with multiple layers.
+        let img = new Image;
+        img.onload = function(){
+            this.project.currentLayer.getContext().drawImage(img,0,0);
+        };
+        img.src = data.data;
     }
 
-    /// Cancellable object.
-    actionCallback (data) {
-
-    }
 
     newProject (dimensions: Vec2) {
         this.menu_controller.switchCategory(1);

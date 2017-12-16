@@ -9,8 +9,8 @@ import {Vec2} from "./vec2";
 import {PixelSelectionHandler} from "./selection/selection";
 import {UIController} from "./ui/ui";
 import {mask} from "./selection/selectionUtils";
-import {History} from "./tools/history/history";
-import {HistoryEntry} from "./tools/history/historyEntry";
+import {History} from "./history/history";
+import {HistoryEntry} from "./history/historyEntry";
 import * as squareRecon from "./image_utils/squareRecon";
 
 /**
@@ -88,6 +88,10 @@ export class Project {
      */
     changeTool (tool: Tool){
 	    this.currentTool = tool;
+	    /// A tool can request to update the selection setting.
+        /// TODO: IDE tells me it's suspicious.
+        this.currentTool.settingsSetGetter("project_selection", (() => {return this}).bind(this.currentSelection));
+        this.currentTool.settingsSetGetter("user_interface", (() => {return this}).bind(this.getUI()));
     };
 
     /**
