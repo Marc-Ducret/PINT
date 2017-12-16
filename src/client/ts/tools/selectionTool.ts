@@ -42,51 +42,7 @@ export class SelectionTool extends Tool {
 
     endUse(pos) {
         this.continueUse(pos);
-
-        let width = this.data.actionData.width;
-        let height = this.data.actionData.height;
-
-        let firstCorner = this.data.actionData.firstCorner;
-        let lastCorner = this.data.actionData.lastCorner;
-
-        let selection = new Uint8ClampedArray(width * height);
-        switch (this.getSetting("shape")) {
-            case "square":
-                for (let y = Math.floor(Math.min(firstCorner.y, lastCorner.y)); y < Math.max(firstCorner.y, lastCorner.y); y++) {
-                    for (let x = Math.floor(Math.min(firstCorner.x, lastCorner.x)); x < Math.max(firstCorner.x, lastCorner.x); x++) {
-                        if(x >= 0 && y >= 0 && x < width && y < height) {
-                            selection[x + y * width] = 0xFF;
-                        }
-                    }
-                }
-                break;
-            case "circle":
-                let radius = Math.ceil(firstCorner.distance(lastCorner));
-                for (let y = Math.floor(firstCorner.y - radius) - 2; y <= firstCorner.y + radius + 2; y++) {
-                    for (let x = Math.floor(firstCorner.x - radius) - 2; x <= firstCorner.x + radius + 2; x++) {
-                        if(x >= 0 && x < width && y >= 0 && y < height) {
-                            let d = (x - firstCorner.x - .5) ** 2 + (y - firstCorner.y  - .5) ** 2;
-                            if(d <= radius ** 2) {
-                                selection[x + y * width] = 0xFF;
-                            } else if(d <= (radius + 1) ** 2) {
-                                selection[x + y * width] = Math.floor(0x100 * (radius + 1 - Math.sqrt(d)));
-                            }
-                        }
-                    }
-                }
-                break;
-            case "ellipse":
-                break;
-            case "arbitrary":
-                break;
-            default:
-                console.error("No shape selected.");
-                break;
-        }
-        this.getSetting('project_selection').reset();
-        this.getSetting('project_selection').addRegion(selection);
-        this.getSetting('project_selection').updateBorder();
-        return null;
+        return this.data;
     };
 
     drawPreview(ctx) {
@@ -130,7 +86,50 @@ export class SelectionTool extends Tool {
     };
 
     applyTool (context: CanvasRenderingContext2D): HistoryEntry {
-        this.drawPreview(context);
+        let width = this.data.actionData.width;
+        let height = this.data.actionData.height;
+
+        let firstCorner = this.data.actionData.firstCorner;
+        let lastCorner = this.data.actionData.lastCorner;
+
+        let selection = new Uint8ClampedArray(width * height);
+        switch (this.getSetting("shape")) {
+            case "square":
+                for (let y = Math.floor(Math.min(firstCorner.y, lastCorner.y)); y < Math.max(firstCorner.y, lastCorner.y); y++) {
+                    for (let x = Math.floor(Math.min(firstCorner.x, lastCorner.x)); x < Math.max(firstCorner.x, lastCorner.x); x++) {
+                        if(x >= 0 && y >= 0 && x < width && y < height) {
+                            selection[x + y * width] = 0xFF;
+                        }
+                    }
+                }
+                break;
+            case "circle":
+                let radius = Math.ceil(firstCorner.distance(lastCorner));
+                for (let y = Math.floor(firstCorner.y - radius) - 2; y <= firstCorner.y + radius + 2; y++) {
+                    for (let x = Math.floor(firstCorner.x - radius) - 2; x <= firstCorner.x + radius + 2; x++) {
+                        if(x >= 0 && x < width && y >= 0 && y < height) {
+                            let d = (x - firstCorner.x - .5) ** 2 + (y - firstCorner.y  - .5) ** 2;
+                            if(d <= radius ** 2) {
+                                selection[x + y * width] = 0xFF;
+                            } else if(d <= (radius + 1) ** 2) {
+                                selection[x + y * width] = Math.floor(0x100 * (radius + 1 - Math.sqrt(d)));
+                            }
+                        }
+                    }
+                }
+                break;
+            case "ellipse":
+                break;
+            case "arbitrary":
+                break;
+            default:
+                console.error("No shape selected.");
+                break;
+        }
+        this.getSetting('project_selection').reset();
+        this.getSetting('project_selection').addRegion(selection);
+        this.getSetting('project_selection').updateBorder();
+
         return new HistoryEntry(()=>{},()=>{}, []);
     }
 }
