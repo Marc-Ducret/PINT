@@ -29,6 +29,7 @@ export class Project {
     ui: UIController;
     redraw: boolean; // UIcontroller check this.redraw to now if it has to update the drawing
     history: History;
+    private usingTool: boolean;
 
     /**
      * Instantiates a project.
@@ -48,6 +49,8 @@ export class Project {
         this.previewLayer.getContext().translate(0.5, 0.5); // why translating of 0.5, 0.5 ?
 
         this.currentLayer = new Layer(this.dimensions);
+        this.currentLayer.getContext().translate(0.5, 0.5);
+        
         this.selectionLayer = new Layer(this.dimensions);
         this.layerList = [this.currentLayer, this.previewLayer, this.selectionLayer]; // The renderer draw layers in order.
         this.currentTool = null;
@@ -101,6 +104,8 @@ export class Project {
      */
     mouseClick (vect: Vec2){
         if (this.currentTool !== null) {
+            this.usingTool = true;
+
             let img = this.currentLayer.getContext().getImageData(0, 0, this.dimensions.x, this.dimensions.y);
             if (!this.currentTool.overrideSelectionMask) {
                 img = mask(this.currentSelection.getValues(), img);
@@ -117,9 +122,7 @@ export class Project {
      * @returns true if the function updated one of the layers, else returns false.
      */
     mouseMove (vect: Vec2){
-        let ctx = this.previewLayer.getContext();
-
-        if (this.currentTool !== null){
+        if (this.currentTool !== null && this.usingTool === true){
             this.currentTool.continueUse(vect);
 
             this.previewLayer.reset();
@@ -143,7 +146,8 @@ export class Project {
      * @param {Vec2} vect coordinates in the canvas
      */
     mouseRelease (vect: Vec2) {
-        if (this.currentTool !== null) {
+        if (this.currentTool !== null && this.usingTool === true) {
+            this.usingTool = false;
             /// TODO: Work on it.
             let entry: ActionInterface = this.currentTool.endUse(vect);
             let history_entry: HistoryEntry = this.currentTool.applyTool(this.currentLayer.getContext());
