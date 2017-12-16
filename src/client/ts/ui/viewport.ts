@@ -204,8 +204,8 @@ export class Viewport {
         let size_x = Math.min(end_x-begin_x, layer_width-begin_x);
         let size_y = Math.min(end_y-begin_y, layer_height-begin_y);
 
-        this.context.globalCompositeOperation = 'destination-in';
-        this.context.drawImage(selection.getMask(),
+        layer.getContext().globalCompositeOperation = 'destination-in';
+        layer.getContext().drawImage(selection.getMask(),
             begin_x,
             begin_y,
             size_x,
@@ -215,6 +215,6 @@ export class Viewport {
             size_x,
             size_y,
             );
-        this.context.globalCompositeOperation = 'source-over';
+        layer.getContext().globalCompositeOperation = 'source-over';
     }
 }
