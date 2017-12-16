@@ -19,7 +19,8 @@ server.listen(port, function() {
     console.log('Server listening on port %d', port);
 });
 
-app.use(serveStatic(path.join(__dirname, '../client/')));
+app.use('/src/', serveStatic(path.join(__dirname, '../../src/')));
+app.use('/', serveStatic(path.join(__dirname, '../client/')));
 
 
 let project = new Project(this, "0", new Vec2(800,600));
@@ -31,8 +32,13 @@ io.on("connection", function (socket: SocketIO.Socket) {
 
         let data = {
             dimensions: project.dimensions,
-            data: project.currentLayer.getContext().getImageData(0, 0, project.dimensions.x, project.dimensions.y),
+            data: project.currentLayer.getHTMLElement().toDataURL(),
         };
         socket.emit("joined", data);
+    });
+
+
+    socket.on("action", function (data) {
+        console.log("Client action");
     })
 });
