@@ -50,7 +50,7 @@ export class Project {
 
         this.currentLayer = new Layer(this.dimensions);
         this.currentLayer.getContext().translate(0.5, 0.5);
-        
+
         this.selectionLayer = new Layer(this.dimensions);
         this.layerList = [this.currentLayer, this.previewLayer, this.selectionLayer]; // The renderer draw layers in order.
         this.currentTool = null;
@@ -94,8 +94,8 @@ export class Project {
 	    this.currentTool = tool;
 	    /// A tool can request to update the selection setting.
         /// TODO: IDE tells me it's suspicious.
-        this.currentTool.settingsSetGetter("project_selection", (() => {return this}).bind(this.currentSelection));
-        this.currentTool.settingsSetGetter("user_interface", (() => {return this}).bind(this.getUI()));
+        this.currentTool.settingsSetGetter("project_selection", (function () {return this.currentSelection}).bind(this));
+        this.currentTool.settingsSetGetter("user_interface", (function () {return this.getUI()}).bind(this));
     };
 
     /**
@@ -129,6 +129,7 @@ export class Project {
             this.currentTool.drawPreview(this.previewLayer.getContext());
 
             if (!this.currentTool.overrideSelectionMask) {
+                console.log("masking");
                 this.ui.viewport.applyMask(this.previewLayer, this.currentSelection);
             }
 
@@ -150,7 +151,16 @@ export class Project {
             this.usingTool = false;
             /// TODO: Work on it.
             let entry: ActionInterface = this.currentTool.endUse(vect);
-            let history_entry: HistoryEntry = this.currentTool.applyTool(this.currentLayer.getContext());
+            this.previewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
+
+            if (!this.currentTool.overrideSelectionMask) { /// Applying selection mask.
+                let history_entry: HistoryEntry = this.currentTool.applyTool(this.previewLayer.getContext());
+
+                this.ui.viewport.applyMask(this.previewLayer, this.currentSelection);
+                this.currentLayer.getContext().drawImage(this.previewLayer.getHTMLElement(), -0.5, -0.5);
+            } else { /// Or not.
+                let history_entry: HistoryEntry = this.currentTool.applyTool(this.currentLayer.getContext());
+            }
 
             this.currentTool.reset();
             this.previewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);

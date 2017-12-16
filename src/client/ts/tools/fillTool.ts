@@ -63,9 +63,7 @@ export class FillTool extends Tool {
 
 
     drawPreview (ctx: CanvasRenderingContext2D) {
-        if (this.newImage != null) {
-            ctx.putImageData(this.newImage, 0, 0);
-        } else {
+        if (this.newImage == null) {
             let selection = this.getSetting("project_selection");
 
             let width:number = this.data.actionData.width;
@@ -96,6 +94,7 @@ export class FillTool extends Tool {
 
             this.newImage = new ImageData(data, width, height);
         }
+        ctx.putImageData(this.newImage, 0, 0);
     };
 
 
