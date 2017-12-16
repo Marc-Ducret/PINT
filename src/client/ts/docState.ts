@@ -129,7 +129,6 @@ export class Project {
             this.currentTool.drawPreview(this.previewLayer.getContext());
 
             if (!this.currentTool.overrideSelectionMask) {
-                console.log("masking");
                 this.ui.viewport.applyMask(this.previewLayer, this.currentSelection);
             }
 
