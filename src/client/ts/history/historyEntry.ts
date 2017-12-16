@@ -1,4 +1,4 @@
-import {Project} from "../../docState";
+import {Project} from "../docState";
 
 export class HistoryEntry {
 

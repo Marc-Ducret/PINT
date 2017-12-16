@@ -2,17 +2,13 @@ import {Tool} from "./tool";
 import {Vec2} from "../vec2";
 import {InputType} from "../tool_settings/settingsRequester";
 import {Project} from "../docState";
+import {ActionInterface} from "../../../common/actionInterface";
+import {HistoryEntry} from "../history/historyEntry";
 
 /**
  * Draw a linear gradient of two colors.
  */
 export class GradientTool extends Tool {
-    firstCorner: Vec2;
-    lastCorner: Vec2;
-    project: Project;
-    width: number;
-    height: number;
-
     constructor () {
         super("GradientTool", "Gradient");
         // define the two colors of the gradient:
@@ -30,44 +26,41 @@ export class GradientTool extends Tool {
             ]});
     }
 
-    reset () {
-        this.firstCorner = null;
-        this.lastCorner = null;
-    }
+    reset () {}
 
-    startUse (img, pos, project) {
-        this.firstCorner = pos; // starting point of the gradient
-        this.lastCorner = pos; // ending point of the gradient
-        this.project = project;
-        this.width = img.width; // width of the canvas
-        this.height = img.height; // height of the canvas
+    startUse (img, pos) {
+        this.data.actionData = {
+            firstCorner: pos,
+            lastCorner: pos,
+            width: img.width,
+            height: img.height,
+        };
+
     };
 
     continueUse (pos) {
-        this.lastCorner = pos;
+        this.data.actionData.lastCorner = pos;
     };
 
-    endUse (pos) {
+    endUse (pos): ActionInterface {
         this.continueUse(pos);
-        return this.defaultHistoryEntry(this.project);
+        return this.data;
     };
 
     drawPreview (ctx) {
-        if (this.firstCorner == null || this.lastCorner == null) {
-            return;
-        }
+        ctx.globalAlpha = this.getSetting('transparencyAlpha') / 100;
 
-
-        ctx.globalAlpha = this.getSetting("transparencyAlpha") / 100;
-        let color1 = this.getSetting('color1');
-        let color2 = this.getSetting('color2');
-        // definition of the gradient from 'from' to 'to'
-        let gradient = ctx.createLinearGradient(this.firstCorner.x, this.firstCorner.y,
-                                                this.lastCorner.x, this.lastCorner.y);
-        gradient.addColorStop(0, color1);
-        gradient.addColorStop(1, color2);
+        let gradient = ctx.createLinearGradient(this.data.actionData.firstCorner.x, this.data.actionData.firstCorner.y,
+                                                this.data.actionData.lastCorner.x, this.data.actionData.lastCorner.y);
+        gradient.addColorStop(0, this.getSetting('color1'));
+        gradient.addColorStop(1, this.getSetting('color2'));
         ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, this.width, this.height);
+        ctx.fillRect(0, 0, this.data.actionData.width, this.data.actionData.height);
         ctx.globalAlpha = 1;
     };
+
+    applyTool (context: CanvasRenderingContext2D): HistoryEntry {
+        this.drawPreview(context);
+        return new HistoryEntry(()=>{},()=>{}, []);
+    }
 }

@@ -6,15 +6,12 @@
 import {Tool} from "./tool";
 import {Vec2} from "../vec2";
 import {Project} from "../docState";
+import {HistoryEntry} from "../history/historyEntry";
 
 /**
  * Hand tool, allows the user to translate the canvas in the viewport.
  */
 export class HandTool extends Tool {
-    firstCorner: Vec2;
-    lastCorner: Vec2;
-    project: Project;
-
     constructor() {
         super("HandTool", "Move");
     }
@@ -22,10 +19,7 @@ export class HandTool extends Tool {
     /**
      * Reset tool data.
      */
-    reset () {
-        this.firstCorner = null;
-        this.lastCorner = null;
-    }
+    reset () {}
 
     /**
      * Save positions as global coordinates.
@@ -33,10 +27,11 @@ export class HandTool extends Tool {
      * @param {Vec2} pos Starting position in local coordinates.
      * @param {Project} project Saved in order to compute global coordinates.
      */
-    startUse(img: ImageData, pos: Vec2, project: Project) {
-        this.firstCorner = project.getUI().viewport.localToGlobalPosition(pos);
-        this.lastCorner = project.getUI().viewport.localToGlobalPosition(pos);
-        this.project = project;
+    startUse(img: ImageData, pos: Vec2) {
+        this.data.actionData = {
+            firstCorner: this.getSetting("user_interface").viewport.localToGlobalPosition(pos),
+            lastCorner: this.getSetting("user_interface").viewport.localToGlobalPosition(pos),
+        }
     };
 
     /**
@@ -44,8 +39,8 @@ export class HandTool extends Tool {
      * @param {Vec2} pos Position in local coordinates.
      */
     continueUse(pos) {
-        this.firstCorner = this.lastCorner;
-        this.lastCorner = this.project.getUI().viewport.localToGlobalPosition(pos);
+        this.data.actionData.firstCorner = this.data.actionData.lastCorner;
+        this.data.actionData.lastCorner = this.getSetting("user_interface").viewport.localToGlobalPosition(pos);
     };
 
     /**
@@ -63,9 +58,14 @@ export class HandTool extends Tool {
      * @param {CanvasRenderingContext2D} ctx Ignored
      */
     drawPreview(ctx) {
-        if (this.firstCorner == null || this.lastCorner == null) {
+        if (this.data.actionData.firstCorner == null || this.data.actionData.lastCorner == null) {
             return;
         }
-        this.project.getUI().translate(this.lastCorner.subtract(this.firstCorner, true));
+        this.getSetting("user_interface").translate(this.data.actionData.lastCorner.subtract(this.data.actionData.firstCorner, true));
     };
+
+    applyTool (context: CanvasRenderingContext2D): HistoryEntry {
+        this.drawPreview(context);
+        return new HistoryEntry(()=>{},()=>{}, []);
+    }
 }

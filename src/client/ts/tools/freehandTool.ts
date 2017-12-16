@@ -4,17 +4,15 @@
 import {Tool} from "./tool";
 import {Vec2} from "../vec2";
 import {InputType} from "../tool_settings/settingsRequester";
-import {HistoryEntry} from "./history/historyEntry";
+import {HistoryEntry} from "../history/historyEntry";
 import {Project} from "../docState";
 import {Layer} from "../ui/layer";
+import {ActionInterface} from "../../../common/actionInterface";
 
 /**
  * Freehand drawing tool.
  */
 export class FreehandTool extends Tool {
-    positions: Array<Vec2> = [];
-    project: Project;
-
     /**
      * Instantiates the tool with name FreehandTool.
      * Takes two settings: stroke color and line width.
@@ -38,9 +36,7 @@ export class FreehandTool extends Tool {
     /**
      * Reset tool data.
      */
-    reset () {
-        this.positions = [];
-    }
+    reset () {}
 
     /**
      * Starting from a reset state, ignore parameters and add the first mouse position to position table.
@@ -48,8 +44,11 @@ export class FreehandTool extends Tool {
      * @param {Vec2} pos Mouse position.
      * @param {Project} project Ignored.
      */
-    startUse (img, pos, project) {
-        this.project = project;
+    startUse (img, pos) {
+        this.data.actionData = {
+            positions: [],
+        };
+
         this.continueUse(pos);
     };
 
@@ -58,8 +57,9 @@ export class FreehandTool extends Tool {
      * @param {Vec2} pos Mouse position
      * @returns {any} null means redraw according to the preview canvas.
      */
-    endUse (pos) {
-        return this.defaultHistoryEntry(this.project);
+    endUse (pos): ActionInterface {
+        this.continueUse(pos);
+        return this.data;
     };
 
     /**
@@ -67,8 +67,11 @@ export class FreehandTool extends Tool {
      * @param {Vec2} pos Mouse position
      */
     continueUse (pos) {
-        if(this.positions.length == 0 || pos.distance(this.positions[this.positions.length-1]) > 0) {
-            this.positions.push(pos);
+        let n_elem = this.data.actionData.positions.length;
+        if(n_elem == 0
+            || pos.distance(this.data.actionData.positions[n_elem - 1]) > 0)
+        {
+            this.data.actionData.positions.push(pos);
         }
     };
 
@@ -83,19 +86,27 @@ export class FreehandTool extends Tool {
         ctx.fillStyle = this.getSetting("strokeColor");
         ctx.lineCap = "round";
         ctx.lineJoin = "round";
-        if (this.positions.length > 0) {
-            ctx.fillRect(this.positions[0].x-0.5,this.positions[0].y-0.5,1,1);
+
+        if (this.data.actionData.positions.length > 0) {
+            ctx.fillRect(this.data.actionData.positions[0].x-0.5,this.data.actionData.positions[0].y-0.5,1,1);
         }
         ctx.beginPath();
-        for (let i = 0; i < this.positions.length; i++) {
-            let pos = this.positions[i];
+        for (let i = 0; i < this.data.actionData.positions.length; i++) {
+            let pos = this.data.actionData.positions[i];
             if(i === 0) {
                 ctx.moveTo(pos.x, pos.y);
             } else {
                 ctx.lineTo(pos.x, pos.y);
             }
         }
+
         ctx.stroke();
         ctx.globalAlpha = 1;
     };
+
+    applyTool(context: CanvasRenderingContext2D): HistoryEntry {
+        this.drawPreview(context);
+        return new HistoryEntry(() => {}, () => {}, {});
+    }
+
 }

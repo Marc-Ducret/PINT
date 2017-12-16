@@ -2,15 +2,13 @@ import {Tool} from "./tool";
 import {Vec2} from "../vec2";
 import {InputType} from "../tool_settings/settingsRequester";
 import {Project} from "../docState";
+import {HistoryEntry} from "../history/historyEntry";
+import {ActionInterface} from "../../../common/actionInterface";
 
 /**
  * Draw a shape tool.
  */
 export class LineTool extends Tool {
-    firstCorner: Vec2;
-    lastCorner: Vec2;
-    project: Project;
-
     constructor () {
         super("LineTool", "Line");
         this.addSetting({name: "strokeColor", descName: "Stroke color", inputType: InputType.Color, defaultValue: "#000000"});
@@ -26,39 +24,37 @@ export class LineTool extends Tool {
         this.addSetting({name: "lineWidth", descName: "Line width", inputType: InputType.Number, defaultValue: "5"});
     }
 
-    reset () {
-        this.firstCorner = null;
-        this.lastCorner = null;
-    }
+    reset () {}
 
-    startUse (img, pos, project) {
-        this.firstCorner = pos;
-        this.lastCorner = pos;
-        this.project = project;
+    startUse (img, pos) {
+        this.data.actionData = {
+            firstCorner: pos,
+            lastCorner: pos,
+        };
     };
 
     continueUse (pos) {
-        this.lastCorner = pos;
+        this.data.actionData.lastCorner = pos;
     };
 
-    endUse (pos) {
+    endUse (pos): ActionInterface {
         this.continueUse(pos);
-        return this.defaultHistoryEntry(this.project);
+        return this.data.actionData;
     };
 
     drawPreview (ctx) {
-        if (this.firstCorner == null || this.lastCorner == null) {
-            return;
-        }
-
-
         ctx.globalAlpha = this.getSetting("strokeAlpha") / 100;
         ctx.strokeStyle = this.getSetting('strokeColor');
         ctx.lineWidth = this.getSetting('lineWidth');
         ctx.beginPath();
-        ctx.moveTo(this.firstCorner.x, this.firstCorner.y);
-        ctx.lineTo(this.lastCorner.x, this.lastCorner.y);
+        ctx.moveTo(this.data.actionData.firstCorner.x, this.data.actionData.firstCorner.y);
+        ctx.lineTo(this.data.actionData.lastCorner.x, this.data.actionData.lastCorner.y);
         ctx.stroke();
         ctx.globalAlpha = 1;
     };
+
+    applyTool (context: CanvasRenderingContext2D): HistoryEntry {
+        this.drawPreview(context);
+        return new HistoryEntry(()=>{},()=>{}, []);
+    }
 }

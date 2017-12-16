@@ -3,15 +3,13 @@ import {Vec2} from "../vec2";
 import {Project} from "../docState";
 import {colorSelect} from "../image_utils/connexComponent";
 import {InputType} from "../tool_settings/settingsRequester";
+import {HistoryEntry} from "../history/historyEntry";
+import {ActionInterface} from "../../../common/actionInterface";
 
 /**
  * 'Magic wand' automatic selection tool, selects the connex component of the picture containing the clicked position.
  */
 export class AutoSelectTool extends Tool {
-    image: ImageData;
-    used: boolean;
-    selection: Uint8ClampedArray;
-    border: Array<Vec2>;
     readonly overrideSelectionMask: boolean = true;
 
     /**
@@ -22,15 +20,7 @@ export class AutoSelectTool extends Tool {
         this.addSetting({name: "wand_threshold", descName: "Threshold", inputType: InputType.Number, defaultValue: 50});
     }
 
-    /**
-     * Reset tool data.
-     */
-    reset() {
-        this.image = null;
-        this.used = false;
-        this.selection = null;
-        this.border = null;
-    }
+    reset() {}
 
     /**
      * On click, computes the connex component and update selection.
@@ -38,22 +28,25 @@ export class AutoSelectTool extends Tool {
      * @param {Vec2} pos Click position
      * @param {Project} project Document state
      */
-    startUse(img: ImageData, pos: Vec2, project: Project) {
-        this.image = img;
-        this.used = true;
-        project.currentSelection.reset();
-        project.currentSelection.addRegion(colorSelect(this.image, new Vec2(Math.floor(pos.x), Math.floor(pos.y)), this.getSetting("wand_threshold")));
-        project.currentSelection.updateBorder();
+    startUse(img: ImageData, pos: Vec2) {
+        this.data.actionData = colorSelect(img, new Vec2(Math.floor(pos.x), Math.floor(pos.y)), this.getSetting("wand_threshold"));
     };
 
-    endUse (pos) {
-        this.used = false;
-        return null;
+    endUse (pos): ActionInterface {
+        return this.data;
     };
 
-    continueUse (pos) {
-    };
+    continueUse (pos) {};
 
     drawPreview (ctx: CanvasRenderingContext2D) {
+        let selection = this.getSetting("project_selection");
+        selection.reset();
+        selection.addRegion(this.data.actionData);
+        selection.updateBorder();
     };
+
+    applyTool(context: CanvasRenderingContext2D): HistoryEntry {
+        this.drawPreview(context);
+        return new HistoryEntry(() => {}, () => {}, {});
+    }
 }
