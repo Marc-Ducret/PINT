@@ -3,7 +3,7 @@ import {Vec2} from "../vec2";
 import {HistoryEntry} from "../history/historyEntry";
 import {Project} from "../docState";
 import {Layer} from "../ui/layer";
-import {ActionInterface, ActionType} from "../../../common/actionInterface";
+import {ActionInterface, ActionType} from "./actionInterface";
 
 
 export abstract class Tool {

@@ -110,7 +110,7 @@ export class UIController {
         let img = new Image;
         img.onload = function(){
             this.project.currentLayer.getContext().drawImage(img,0,0);
-        };
+        }.bind(this);
         img.src = data.data;
     }
 

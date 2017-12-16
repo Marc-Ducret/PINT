@@ -12,6 +12,7 @@ import {mask} from "./selection/selectionUtils";
 import {History} from "./history/history";
 import {HistoryEntry} from "./history/historyEntry";
 import * as squareRecon from "./image_utils/squareRecon";
+import {ActionInterface} from "./tools/actionInterface";
 
 /**
  * Project manager.
@@ -104,7 +105,8 @@ export class Project {
             if (!this.currentTool.overrideSelectionMask) {
                 img = mask(this.currentSelection.getValues(), img);
             }
-            this.currentTool.startUse(img, vect, this);
+
+            this.currentTool.startUse(img, vect);
         }
     };
 
@@ -142,11 +144,10 @@ export class Project {
      */
     mouseRelease (vect: Vec2) {
         if (this.currentTool !== null) {
-            let entry: HistoryEntry = this.currentTool.endUse(vect);
-            if(entry !== null) {
-                this.history.doAction(entry);
+            /// TODO: Work on it.
+            let entry: ActionInterface = this.currentTool.endUse(vect);
+            let history_entry: HistoryEntry = this.currentTool.applyTool(this.currentLayer.getContext());
 
-            }
             this.currentTool.reset();
             this.previewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
             this.redraw = true;

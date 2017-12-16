@@ -3,7 +3,7 @@ import {Vec2} from "../vec2";
 import {InputType} from "../tool_settings/settingsRequester";
 import {Project} from "../docState";
 import {HistoryEntry} from "../history/historyEntry";
-import {ActionInterface} from "../../../common/actionInterface";
+import {ActionInterface} from "./actionInterface";
 
 /**
  * Draw a shape tool.

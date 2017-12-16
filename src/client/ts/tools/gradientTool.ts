@@ -2,7 +2,7 @@ import {Tool} from "./tool";
 import {Vec2} from "../vec2";
 import {InputType} from "../tool_settings/settingsRequester";
 import {Project} from "../docState";
-import {ActionInterface} from "../../../common/actionInterface";
+import {ActionInterface} from "./actionInterface";
 import {HistoryEntry} from "../history/historyEntry";
 
 /**
