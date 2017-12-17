@@ -207,7 +207,7 @@ export class Project {
             tool.reset();
             tool.getSettings().importParameters(action.toolSettings, selectionHandler, this.getUI());
             tool.updateData(action.actionData);
-            
+
             this.previewLayer.reset();
             tool.drawPreview(this.previewLayer.getContext());
 
