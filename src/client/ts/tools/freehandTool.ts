@@ -57,9 +57,8 @@ export class FreehandTool extends Tool {
      * @param {Vec2} pos Mouse position
      * @returns {any} null means redraw according to the preview canvas.
      */
-    endUse (pos): ActionInterface {
+    endUse (pos) {
         this.continueUse(pos);
-        return this.data;
     };
 
     /**

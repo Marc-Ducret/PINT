@@ -53,9 +53,8 @@ export class ShapeTool extends Tool {
 
     reset () {}
 
-    endUse (pos): ActionInterface {
+    endUse (pos) {
         this.continueUse(pos);
-        return this.data;
     };
 
     drawPreview (ctx) {
