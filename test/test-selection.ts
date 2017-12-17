@@ -87,7 +87,7 @@ describe('Shape selection', function () {
 
             proj.currentSelection.reset();
 
-            tool.startUse(null, randPos(), proj);
+            tool.startUse(new ImageData(w, h), randPos());
             tool.endUse(randPos());
 
             let testShape = function(shape) {

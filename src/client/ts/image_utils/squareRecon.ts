@@ -1,4 +1,4 @@
-import * as convnetjs from "../../lib/convnet/index";
+import * as convnetjs from "../lib/convnet/index";
 import {Vec2} from "../vec2";
 import {Layer} from "../ui/layer";
 
