@@ -50,7 +50,7 @@ export class FillTool extends Tool {
         this.reset();
 
         this.data = {
-            pixels: colorSelect(img,new Vec2(Math.floor(pos.x), Math.floor(pos.y)), this.getSetting("threshold")),
+            pixels: colorSelect(img, new Vec2(Math.floor(pos.x), Math.floor(pos.y)), this.getSetting("threshold")).buffer,
             width: img.width,
             height: img.height,
         };
@@ -79,10 +79,15 @@ export class FillTool extends Tool {
 
             this.newImage = ctx.createImageData(width, height);
 
+            let pixels = new Uint8ClampedArray(this.data.pixels, 0);
+
+            let nfilled = 0;
+
             for (let x=0; x<width; x++) {
                 for (let y=0; y<height; y++) {
-                    if (this.data.pixels[y*width+x] > 0 && selection.isSelected(new Vec2(x, y))) {
+                    if (pixels[y*width+x] > 0 && selection.isSelected(new Vec2(x, y))) {
                         let alpha = selection.getSelectionIntensity(new Vec2(x, y));
+                        nfilled += 1;
                         this.newImage.data[4*(y*width+x)    ] = color.r;// R
                         this.newImage.data[4*(y*width+x) + 1] = color.g;// G
                         this.newImage.data[4*(y*width+x) + 2] = color.b;// B
@@ -90,6 +95,8 @@ export class FillTool extends Tool {
                     }
                 }
             }
+
+            console.log("Fill tool: nfilled = "+nfilled);
         }
         ctx.putImageData(this.newImage, 0, 0);
     };
