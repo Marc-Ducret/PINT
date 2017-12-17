@@ -105,6 +105,7 @@ export class UIController {
     /// Data contains project dimensions, image data
     loadServerHostedCallback (data) {
         this.newProject(data.dimensions);
+        this.project.enableNetwork(this.socket);
 
         /// TODO: Work with multiple layers.
         let img = new Image;
