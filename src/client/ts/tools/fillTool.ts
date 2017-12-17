@@ -34,6 +34,7 @@ export class FillTool extends Tool {
                 {name:"minValue", desc: "0"}
                 ]});
         this.addSetting({name: "threshold", descName: "Threshold", inputType: InputType.Number, defaultValue: 0});
+        this.addSetting({name: "project_selection", descName: "", inputType: InputType.Special, defaultValue: 0});
     }
 
     reset () {
@@ -76,21 +77,19 @@ export class FillTool extends Tool {
                 b: parseInt(result[3], 16)
             } : null;
 
-            let data = new Uint8ClampedArray(4*width*height);
+            this.newImage = ctx.createImageData(width, height);
 
             for (let x=0; x<width; x++) {
                 for (let y=0; y<height; y++) {
                     if (this.data.pixels[y*width+x] > 0 && selection.isSelected(new Vec2(x, y))) {
                         let alpha = selection.getSelectionIntensity(new Vec2(x, y));
-                        data[4*(y*width+x)    ] = color.r;// R
-                        data[4*(y*width+x) + 1] = color.g;// G
-                        data[4*(y*width+x) + 2] = color.b;// B
-                        data[4*(y*width+x) + 3] = alpha*color_alpha/100;// A
+                        this.newImage.data[4*(y*width+x)    ] = color.r;// R
+                        this.newImage.data[4*(y*width+x) + 1] = color.g;// G
+                        this.newImage.data[4*(y*width+x) + 2] = color.b;// B
+                        this.newImage.data[4*(y*width+x) + 3] = alpha*color_alpha/100;// A
                     }
                 }
             }
-
-            this.newImage = new ImageData(data, width, height);
         }
         ctx.putImageData(this.newImage, 0, 0);
     };

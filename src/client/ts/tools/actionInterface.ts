@@ -2,6 +2,7 @@ export interface ActionInterface {
     type: ActionType;
     toolName: string;
     actionData: any;
+    toolSettings: {[name: string]: any };
 }
 
 
