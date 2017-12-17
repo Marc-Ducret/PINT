@@ -3,6 +3,7 @@ import * as $ from "jquery";
 import {Tool} from "../tools/tool";
 import {Option, InputType} from "./settingsRequester";
 import {isNullOrUndefined} from "util";
+import {Project} from "../docState";
 
 /**
  * Manages HTML elements to display settings to user and transmit parameters to the requester tool.
@@ -100,74 +101,83 @@ export class SettingsInterface {
      * Setups the interface and bindings for a given tool.
      * @param {Tool} tool
      */
-    public setupToolSettings (tool : Tool) {
+    public setupToolSettings (tool : Tool, project: Project) {
         this.container.empty();
         const self = this;
         for (let request of tool.settingsGetRequests()) {
-            const name = request.name;
-            const desc = request.descName;
+            if (request.inputType == InputType.Special) {
+                if (name === "project_selection") {
+                    /// A tool can request to update the selection setting.
+                    tool.settingsSetGetter("project_selection", (function () {return this.currentSelection}).bind(project));
+                } else if (name === "user_interface") {
+                    tool.settingsSetGetter("user_interface", (function () {return this.getUI()}).bind(project));
+                }
+            } else {
+                const name = request.name;
+                const desc = request.descName;
 
-            if (this.savedSettings[name] !== undefined) {
-                request.defaultValue = this.savedSettings[name]; /** @warning This assumes that settings request of the same name requires the same types. **/
+                if (this.savedSettings[name] !== undefined) {
+                    request.defaultValue = this.savedSettings[name]; /** @warning This assumes that settings request of the same name requires the same types. **/
+                }
+
+                /*
+                Create label element.
+                 */
+                let label: JQuery<Node> = $("<label></label>");
+                label.attr("for",name);
+                label.html(desc);
+
+                if (request.inputType == InputType.Range) {
+                    label.html(desc + " : " + request.defaultValue);
+                }
+
+                /*
+                Create input element.
+                 */
+                let input: JQuery<Node> = null;
+                switch (request.inputType) {
+                    case InputType.Range:
+                    case InputType.Number:
+                    case InputType.Color:
+                        input = SettingsInterface.createInputElement(
+                            request.inputType,
+                            request.name,
+                            request.defaultValue,
+                            request.options);
+                        break;
+                    case InputType.Select:
+                        input = SettingsInterface.createSelectElement(
+                            request.options,
+                            request.name,
+                            request.defaultValue);
+                        break;
+                }
+
+                /*
+                Bind value change to SettingsRequester.
+                 */
+                self.savedSettings[request.name] = request.defaultValue;
+                input.on("input",(function(name) {
+                    self.savedSettings[name] = this.val();
+                }).bind(input, request.name));
+
+                if (request.inputType == InputType.Range) {
+                    input.on("input",(function() {
+                        label.html(desc + " : " + this.val());
+                    }).bind(input));
+                }
+
+                tool.settingsSetGetter(request.name, (function(name) {return this.savedSettings[name]}).bind(this, request.name));
+
+                /*
+                Connect the different HTML elements.
+                */
+                let container: JQuery<Node> = $("<div>");
+                label.appendTo(<JQuery> container);
+                input.appendTo(<JQuery> container);
+
+                container.appendTo(<JQuery> this.container);
             }
-
-            /*
-            Create label element.
-             */
-            let label: JQuery<Node> = $("<label></label>");
-            label.attr("for",name);
-            label.html(desc);
-
-            if (request.inputType == InputType.Range) {
-                label.html(desc + " : " + request.defaultValue);
-            }
-
-            /*
-            Create input element.
-             */
-            let input: JQuery<Node> = null;
-            switch (request.inputType) {
-                case InputType.Range:
-                case InputType.Number:
-                case InputType.Color:
-                    input = SettingsInterface.createInputElement(
-                        request.inputType,
-                        request.name,
-                        request.defaultValue,
-                        request.options);
-                    break;
-                case InputType.Select:
-                    input = SettingsInterface.createSelectElement(
-                        request.options,
-                        request.name,
-                        request.defaultValue);
-                    break;
-            }
-
-            /*
-            Bind value change to SettingsRequester.
-             */
-            self.savedSettings[request.name] = request.defaultValue;
-            input.on("input",(function(name) {
-                self.savedSettings[name] = this.val();
-            }).bind(input, request.name));
-
-            if (request.inputType == InputType.Range) {
-                input.on("input",(function() {
-                    label.html(desc + " : " + this.val());
-                }).bind(input));
-            }
-
-            tool.settingsSetGetter(request.name, (function(name) {return this.savedSettings[name]}).bind(this, request.name));
-
-            /*
-            Connect the different HTML elements.
-            */
-            let container: JQuery<Node> = $("<div>");
-            label.appendTo(<JQuery> container);
-            input.appendTo(<JQuery> container);
-
-            container.appendTo(<JQuery> this.container);
         }
     };
 }
