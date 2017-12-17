@@ -2,6 +2,9 @@
  * A couple of (Internal name, Display name), used to represent
  * multiple options in a Select.
  */
+import {isNullOrUndefined} from "util";
+import {PixelSelectionHandler} from "../selection/selection";
+
 export interface Option {
     /**
      * Internal name.
@@ -17,6 +20,7 @@ export interface Option {
  * Describes a parameter type.
  */
 export enum InputType {
+    Special,
     /**
      * A hexademical string describing a color.
      */
@@ -67,8 +71,9 @@ export interface SettingRequest {
  * corresponding to the requested parameters.
  */
 export class SettingsRequester {
-    requests: Array<SettingRequest> = [];
-    data: {[name: string] : () => any} = {};
+    private requests: Array<SettingRequest> = [];
+    private data: {[name: string] : () => any} = {};
+    private cbson: boolean = true;
 
     /**
      * Does nothing as the requested parameters will be populated later on.
@@ -81,8 +86,15 @@ export class SettingsRequester {
      * @param {SettingRequest} req Object representing a tool parameter.
      */
     add (req: SettingRequest) {
+        if (req.inputType == InputType.Special) {
+            if (req.name === "user_interface") {
+                this.cbson = false;
+            }
+        } else {
+            this.setGetter(req.name, () => req.defaultValue);
+        }
+
         this.requests.push(req);
-        this.setGetter(req.name, () => req.defaultValue);
     }
 
     /**
@@ -100,7 +112,39 @@ export class SettingsRequester {
      * @returns {any}
      */
     get (name: string) {
-        return this.data[name]();
+        if (this.data[name] === undefined) {
+            console.log("Parameter '"+name+"' has not been requested.");
+        } else {
+            return this.data[name]();
+        }
     }
 
+    getRequests() {
+        return this.requests;
+    }
+
+    canBeSentOverNetwork() {
+        return this.cbson;
+    }
+
+    exportParameters(): {[name: string]: any} {
+        let data = {};
+        for (let req of this.requests) {
+            if (req.inputType !== InputType.Special) {
+                data[req.name] = this.data[req.name]();
+            }
+        }
+
+        return data;
+    }
+
+    importParameters(settings: { [p: string]: any }, selectionHandler: PixelSelectionHandler) {
+        for (let req of this.requests) {
+            if (req.inputType !== InputType.Special) {
+                this.data[req.name] = (function () {return this}).bind(settings[req.name]);
+            } else if (req.name == "project_selection") {
+                this.data[req.name] = (function () {return this}).bind(selectionHandler);
+            }
+        }
+    }
 }
