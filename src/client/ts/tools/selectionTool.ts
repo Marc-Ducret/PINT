@@ -42,7 +42,6 @@ export class SelectionTool extends Tool {
 
     endUse(pos) {
         this.continueUse(pos);
-        return this.data;
     };
 
     drawPreview(ctx) {

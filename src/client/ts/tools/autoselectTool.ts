@@ -32,9 +32,7 @@ export class AutoSelectTool extends Tool {
         this.data = colorSelect(img, new Vec2(Math.floor(pos.x), Math.floor(pos.y)), this.getSetting("wand_threshold"));
     };
 
-    endUse (pos): ActionInterface {
-        return this.data;
-    };
+    endUse (pos) {};
 
     continueUse (pos) {};
 

@@ -47,7 +47,7 @@ export abstract class Tool {
      * Called on mouse release.
      * @param {Vec2} pos Mouse position on release.
      */
-    abstract endUse(pos: Vec2): ActionInterface;
+    abstract endUse(pos: Vec2);
 
     /**
      * Here the tool should draw its pending changes on the preview canvas layer.
@@ -112,5 +112,9 @@ export abstract class Tool {
      */
     public settingsGetRequests() {
         return this.settings.requests;
+    }
+
+    getData() {
+        return this.data;
     }
 }

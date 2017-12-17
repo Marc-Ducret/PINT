@@ -57,9 +57,7 @@ export class FillTool extends Tool {
 
     continueUse (pos) {};
 
-    endUse (pos): ActionInterface {
-        return this.data;
-    };
+    endUse (pos) {};
 
 
     drawPreview (ctx: CanvasRenderingContext2D) {
