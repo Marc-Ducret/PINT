@@ -29,7 +29,7 @@ export class GradientTool extends Tool {
     reset () {}
 
     startUse (img, pos) {
-        this.data.actionData = {
+        this.data = {
             firstCorner: pos,
             lastCorner: pos,
             width: img.width,
@@ -39,7 +39,7 @@ export class GradientTool extends Tool {
     };
 
     continueUse (pos) {
-        this.data.actionData.lastCorner = pos;
+        this.data.lastCorner = pos;
     };
 
     endUse (pos): ActionInterface {
@@ -50,12 +50,12 @@ export class GradientTool extends Tool {
     drawPreview (ctx) {
         ctx.globalAlpha = this.getSetting('transparencyAlpha') / 100;
 
-        let gradient = ctx.createLinearGradient(this.data.actionData.firstCorner.x, this.data.actionData.firstCorner.y,
-                                                this.data.actionData.lastCorner.x, this.data.actionData.lastCorner.y);
+        let gradient = ctx.createLinearGradient(this.data.firstCorner.x, this.data.firstCorner.y,
+                                                this.data.lastCorner.x, this.data.lastCorner.y);
         gradient.addColorStop(0, this.getSetting('color1'));
         gradient.addColorStop(1, this.getSetting('color2'));
         ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, this.data.actionData.width, this.data.actionData.height);
+        ctx.fillRect(0, 0, this.data.width, this.data.height);
         ctx.globalAlpha = 1;
     };
 

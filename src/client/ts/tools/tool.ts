@@ -10,7 +10,7 @@ export abstract class Tool {
     private name: string;
     private desc: string;
     private settings: SettingsRequester;
-    protected data: ActionInterface;
+    protected data: any;
     readonly overrideSelectionMask: boolean = false;
 
     /**
@@ -22,11 +22,7 @@ export abstract class Tool {
         this.name = name;
         this.desc = desc;
         this.settings = new SettingsRequester();
-        this.data = {
-            type: ActionType.ToolUse,
-            toolName: this.name,
-            actionData: {}
-        };
+        this.data = {};
     }
 
     /**
@@ -59,12 +55,8 @@ export abstract class Tool {
      */
     abstract drawPreview (context: CanvasRenderingContext2D);
 
-    updateData (data: ActionInterface) {
-        if (this.name == data.toolName && data.actionData == ActionType.ToolUse) {
-            this.data = data;
-        } else {
-            console.warn("Update data on wrong tool.");
-        }
+    updateData (data: any) {
+        this.data = data;
     }
 
     /**

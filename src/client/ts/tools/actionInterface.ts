@@ -10,5 +10,6 @@ export enum ActionType {
     Redo,
     Load,
     Resize,
-    ToolUse
+    ToolPreview,
+    ToolApply,
 }

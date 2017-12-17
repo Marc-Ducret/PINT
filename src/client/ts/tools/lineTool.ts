@@ -27,19 +27,19 @@ export class LineTool extends Tool {
     reset () {}
 
     startUse (img, pos) {
-        this.data.actionData = {
+        this.data = {
             firstCorner: pos,
             lastCorner: pos,
         };
     };
 
     continueUse (pos) {
-        this.data.actionData.lastCorner = pos;
+        this.data.lastCorner = pos;
     };
 
     endUse (pos): ActionInterface {
         this.continueUse(pos);
-        return this.data.actionData;
+        return this.data;
     };
 
     drawPreview (ctx) {
@@ -47,8 +47,8 @@ export class LineTool extends Tool {
         ctx.strokeStyle = this.getSetting('strokeColor');
         ctx.lineWidth = this.getSetting('lineWidth');
         ctx.beginPath();
-        ctx.moveTo(this.data.actionData.firstCorner.x, this.data.actionData.firstCorner.y);
-        ctx.lineTo(this.data.actionData.lastCorner.x, this.data.actionData.lastCorner.y);
+        ctx.moveTo(this.data.firstCorner.x, this.data.firstCorner.y);
+        ctx.lineTo(this.data.lastCorner.x, this.data.lastCorner.y);
         ctx.stroke();
         ctx.globalAlpha = 1;
     };
