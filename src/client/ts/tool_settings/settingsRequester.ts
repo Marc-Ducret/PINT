@@ -4,6 +4,7 @@
  */
 import {isNullOrUndefined} from "util";
 import {PixelSelectionHandler} from "../selection/selection";
+import {UIController} from "../ui/ui";
 
 export interface Option {
     /**
@@ -138,12 +139,18 @@ export class SettingsRequester {
         return data;
     }
 
-    importParameters(settings: { [p: string]: any }, selectionHandler: PixelSelectionHandler) {
+    importParameters(settings: { [p: string]: any }, selectionHandler: PixelSelectionHandler, ui: UIController) {
         for (let req of this.requests) {
             if (req.inputType !== InputType.Special) {
                 this.data[req.name] = (function () {return this}).bind(settings[req.name]);
             } else if (req.name == "project_selection") {
                 this.data[req.name] = (function () {return this}).bind(selectionHandler);
+            } else if (req.name === "user_interface") {
+                if (ui == null) {
+                    console.warn("Requested UI on server side.");
+                    return;
+                }
+                this.data[req.name] = (function () {return this}).bind(ui);
             }
         }
     }

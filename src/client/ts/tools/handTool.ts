@@ -70,9 +70,6 @@ export class HandTool extends Tool {
      * @param {CanvasRenderingContext2D} ctx Ignored
      */
     drawPreview(ctx) {
-        if (this.data.firstCorner == null || this.data.lastCorner == null) {
-            return;
-        }
         this.getSetting("user_interface").translate(new Vec2(this.data.lcx - this.data.fcx, this.data.lcy - this.data.fcy));
     };
 

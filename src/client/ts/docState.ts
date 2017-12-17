@@ -181,7 +181,7 @@ export class Project {
         if (action.type == ActionType.ToolApply) {
             let tool = this.toolRegistry.getToolByName(action.toolName);
             tool.reset();
-            tool.getSettings().importParameters(action.toolSettings, selectionHandler);
+            tool.getSettings().importParameters(action.toolSettings, selectionHandler, this.getUI());
             tool.updateData(action.actionData);
 
             this.previewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
@@ -205,9 +205,9 @@ export class Project {
 
             let tool = this.toolRegistry.getToolByName(action.toolName);
             tool.reset();
-            tool.getSettings().importParameters(action.toolSettings, selectionHandler);
+            tool.getSettings().importParameters(action.toolSettings, selectionHandler, this.getUI());
             tool.updateData(action.actionData);
-
+            
             this.previewLayer.reset();
             tool.drawPreview(this.previewLayer.getContext());
 
