@@ -93,7 +93,6 @@ export class Project {
     changeTool (tool: Tool){
 	    this.currentTool = tool;
 	    /// A tool can request to update the selection setting.
-        /// TODO: IDE tells me it's suspicious.
         this.currentTool.settingsSetGetter("project_selection", (function () {return this.currentSelection}).bind(this));
         this.currentTool.settingsSetGetter("user_interface", (function () {return this.getUI()}).bind(this));
     };
