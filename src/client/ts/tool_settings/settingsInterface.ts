@@ -106,6 +106,7 @@ export class SettingsInterface {
         const self = this;
         for (let request of tool.settingsGetRequests()) {
             if (request.inputType == InputType.Special) {
+                let name = request.name;
                 if (name === "project_selection") {
                     /// A tool can request to update the selection setting.
                     tool.settingsSetGetter("project_selection", (function () {return this.currentSelection}).bind(project));
