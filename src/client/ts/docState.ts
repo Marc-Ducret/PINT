@@ -180,6 +180,7 @@ export class Project {
     applyAction (action: ActionInterface, selectionHandler: PixelSelectionHandler) {
         if (action.type == ActionType.ToolApply) {
             let tool = this.toolRegistry.getToolByName(action.toolName);
+            tool.reset();
             tool.getSettings().importParameters(action.toolSettings, selectionHandler);
             tool.updateData(action.actionData);
 
@@ -188,11 +189,8 @@ export class Project {
             if (!tool.overrideSelectionMask) { /// Applying selection mask.
                 tool.applyTool(this.previewLayer.getContext());
 
-                if (this.ui == null) { // Global masking.
-                    this.previewLayer.applyMask(selectionHandler);
-                } else { // Optimized masking according to what is displayed.
-                    this.ui.viewport.applyMask(this.previewLayer, selectionHandler);
-                }
+                this.previewLayer.applyMask(selectionHandler);
+
                 this.currentLayer.getContext().drawImage(this.previewLayer.getHTMLElement(), -0.5, -0.5);
             } else { /// Or not.
                 tool.applyTool(this.currentLayer.getContext());
@@ -201,7 +199,12 @@ export class Project {
             this.previewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
             this.redraw = true;
         } else if (action.type == ActionType.ToolPreview) {
+            if (this.ui == null) {
+                return; // No work on server side for preview.
+            }
+
             let tool = this.toolRegistry.getToolByName(action.toolName);
+            tool.reset();
             tool.getSettings().importParameters(action.toolSettings, selectionHandler);
             tool.updateData(action.actionData);
 
@@ -209,12 +212,8 @@ export class Project {
             tool.drawPreview(this.previewLayer.getContext());
 
             if (!tool.overrideSelectionMask) {
-
-                if (this.ui == null) { // Global masking.
-                    this.previewLayer.applyMask(selectionHandler);
-                } else { // Optimized masking according to what is displayed.
-                    this.ui.viewport.applyMask(this.previewLayer, selectionHandler);
-                }
+                // Optimized masking according to what is displayed.
+                this.ui.viewport.applyMask(this.previewLayer, selectionHandler);
             }
 
             this.redraw = true;
