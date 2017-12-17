@@ -105,9 +105,6 @@ export class Project {
      */
     changeTool (tool: Tool){
 	    this.currentTool = tool;
-	    /// A tool can request to update the selection setting.
-        this.currentTool.settingsSetGetter("project_selection", (function () {return this.currentSelection}).bind(this));
-        this.currentTool.settingsSetGetter("user_interface", (function () {return this.getUI()}).bind(this));
     };
 
     /**
@@ -141,9 +138,10 @@ export class Project {
                 toolName: this.currentTool.getName(),
                 actionData: this.currentTool.getData(),
                 type: ActionType.ToolPreview,
+                toolSettings: this.currentTool.getSettings().exportParameters(),
             };
 
-            this.applyAction(action);
+            this.applyAction(action, this.currentSelection);
         }
 
         this.currentSelection.draw();
@@ -166,10 +164,11 @@ export class Project {
                 toolName: this.currentTool.getName(),
                 actionData: this.currentTool.getData(),
                 type: ActionType.ToolApply,
+                toolSettings: this.currentTool.getSettings().exportParameters(),
             };
 
-            if (this.netlink === null) {
-                this.applyAction(action);
+            if (this.netlink === null || this.currentTool.getSettings().canBeSentOverNetwork() === false) {
+                this.applyAction(action, this.currentSelection);
             } else {
                 this.netlink.sendAction(action);
             }
@@ -178,42 +177,21 @@ export class Project {
     };
 
 
-    applyAction (action: ActionInterface) {
+    applyAction (action: ActionInterface, selectionHandler: PixelSelectionHandler) {
         if (action.type == ActionType.ToolApply) {
             let tool = this.toolRegistry.getToolByName(action.toolName);
-            /// TODO: Give the other guy's selection.
-            tool.settingsSetGetter("project_selection", (function () {return this.currentSelection}).bind(this));
-
-            if (this.ui == null) {
-                /// Temporary, so that the server doesn't crash.
-                let dummyUI = {
-                    viewport: {
-                        localToGlobalPosition: function () {
-                            return new Vec2(0, 0);
-                        }
-                    },
-                    translate: function () {}
-                };
-
-                tool.settingsSetGetter("user_interface", (function () {
-                    return dummyUI
-                }));
-            } else {
-                tool.settingsSetGetter("user_interface", (function () {return this.getUI()}).bind(this));
-            }
-
+            tool.getSettings().importParameters(action.toolSettings, selectionHandler);
             tool.updateData(action.actionData);
-
 
             this.previewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
 
             if (!tool.overrideSelectionMask) { /// Applying selection mask.
                 tool.applyTool(this.previewLayer.getContext());
 
-                if (this.ui == null) {
-                    this.previewLayer.applyMask(this.currentSelection);
-                } else {
-                    this.ui.viewport.applyMask(this.previewLayer, this.currentSelection);
+                if (this.ui == null) { // Global masking.
+                    this.previewLayer.applyMask(selectionHandler);
+                } else { // Optimized masking according to what is displayed.
+                    this.ui.viewport.applyMask(this.previewLayer, selectionHandler);
                 }
                 this.currentLayer.getContext().drawImage(this.previewLayer.getHTMLElement(), -0.5, -0.5);
             } else { /// Or not.
@@ -224,28 +202,7 @@ export class Project {
             this.redraw = true;
         } else if (action.type == ActionType.ToolPreview) {
             let tool = this.toolRegistry.getToolByName(action.toolName);
-            /// TODO: Give the other guy's selection.
-            tool.settingsSetGetter("project_selection", (function () {return this.currentSelection}).bind(this));
-            if (this.ui == null) {
-                /// Temporary, so that the server doesn't crash.
-                let dummyUI = {
-                    viewport: {
-                        localToGlobalPosition: function () {
-                            return new Vec2(0, 0);
-                        }
-                    },
-                    translate: function () {}
-                };
-
-                tool.settingsSetGetter("user_interface", (function () {
-                    return dummyUI
-                }));
-            } else {
-                tool.settingsSetGetter("user_interface", (function () {
-                    return this.getUI()
-                }).bind(this));
-            }
-
+            tool.getSettings().importParameters(action.toolSettings, selectionHandler);
             tool.updateData(action.actionData);
 
             this.previewLayer.reset();
@@ -253,10 +210,10 @@ export class Project {
 
             if (!tool.overrideSelectionMask) {
 
-                if (this.ui == null) {
-                    this.previewLayer.applyMask(this.currentSelection);
-                } else {
-                    this.ui.viewport.applyMask(this.previewLayer, this.currentSelection);
+                if (this.ui == null) { // Global masking.
+                    this.previewLayer.applyMask(selectionHandler);
+                } else { // Optimized masking according to what is displayed.
+                    this.ui.viewport.applyMask(this.previewLayer, selectionHandler);
                 }
             }
 
