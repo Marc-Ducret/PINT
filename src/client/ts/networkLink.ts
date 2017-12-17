@@ -1,5 +1,5 @@
 import {Project} from "./docState";
-import {ActionInterface} from "./tools/actionInterface";
+import {ActionInterface, ActionType} from "./tools/actionInterface";
 import {
     PixelSelectionHandler, PixelSelectionHandlerFromSerialized,
     SerializedPixelSelectionHandler
@@ -48,7 +48,14 @@ export class NetworkLink {
     }
 
     onAction(action: ActionNetworkPacket) {
-        console.log("Action from "+action.sender+" with tool "+action.data.toolName);
+        if (action.sender == this.me && action.data.type == ActionType.ToolPreview) {
+            return;
+        }
+
+        if (action.data.type != ActionType.ToolPreview) {
+            console.log("Action from "+action.sender+" with tool "+action.data.toolName);
+        }
+        
         this.project.applyAction(action.data, this.selectionHandlers[action.sender]);
     }
 

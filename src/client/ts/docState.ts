@@ -141,7 +141,13 @@ export class Project {
                 toolSettings: this.currentTool.getSettings().exportParameters(),
             };
 
+
             this.applyAction(action, this.currentSelection);
+
+            if (this.netlink === null || this.currentTool.getSettings().canBeSentOverNetwork() === false) {
+            } else {
+                this.netlink.sendAction(action);
+            }
         }
 
         this.currentSelection.draw();
