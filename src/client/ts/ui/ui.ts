@@ -154,7 +154,7 @@ export class UIController {
             if(tool !== null) {
                 if (this.project != null) {
                     this.project.changeTool(tool);
-                    this.settingsUI.setupToolSettings(tool);
+                    this.settingsUI.setupToolSettings(tool, this.project);
                     $("#toolbox-container").children().removeClass("hovered");
                     (<Element> event.target).className += " hovered";
                 }
