@@ -33,6 +33,11 @@ export class NetworkLink {
 
         this.socket.on("action", this.onAction.bind(this));
         this.socket.on("hello", this.onHello.bind(this));
+        this.socket.on("reconnect", function () {
+            delete this.selectionHandlers[this.me];
+            this.me = this.socket.id;
+            this.selectionHandlers[this.me] = this.project.currentSelection;
+        }.bind(this));
     }
 
     sendAction(action: ActionInterface) {
@@ -43,7 +48,7 @@ export class NetworkLink {
     }
 
     onAction(action: ActionNetworkPacket) {
-        console.log("Action from "+action.sender);
+        console.log("Action from "+action.sender+" with tool "+action.data.toolName);
         this.project.applyAction(action.data, this.selectionHandlers[action.sender]);
     }
 
