@@ -192,17 +192,20 @@ export class Viewport {
         let viewport_local_width = this.viewportDimensions.x / this.currentScale;
         let viewport_local_height = this.viewportDimensions.y / this.currentScale;
 
-        let layer_width = this.layerDimensions.x;
-        let layer_height = this.layerDimensions.y;
+        let layer_width = layer.getWidth();
+        let layer_height = layer.getHeight();
 
-        let begin_x = viewport_local_width/2 - layer_width/2 - this.currentTranslation.x;
-        let begin_y = viewport_local_height/2 - layer_height/2 - this.currentTranslation.y;
 
-        let end_x = 3*viewport_local_width/2 - layer_width/2 - this.currentTranslation.x;
-        let end_y = 3*viewport_local_height/2 - layer_height/2 - this.currentTranslation.y;
+        let begin_x = -Math.min(0, viewport_local_width/2 - layer_width/2 + this.currentTranslation.x);
+        let begin_y = -Math.min(0, viewport_local_height/2 - layer_height/2 + this.currentTranslation.y);
 
-        let size_x = Math.min(end_x-begin_x, layer_width-begin_x);
-        let size_y = Math.min(end_y-begin_y, layer_height-begin_y);
+        let end_x = Math.min(layer_width, layer_width/2 + viewport_local_width/2 - this.currentTranslation.x);
+        let end_y = Math.min(layer_height, layer_height/2 + viewport_local_height/2 - this.currentTranslation.y);
+
+        let size_x = Math.min(end_x - begin_x, layer.getWidth() - begin_x);
+        let size_y = Math.min(end_y - begin_y, layer.getHeight() - begin_y);
+
+        console.log("sx" + size_x + " |bx " + begin_x + " |ex " + end_x);
 
         layer.getContext().globalCompositeOperation = 'destination-in';
         layer.getContext().drawImage(selection.getMask(),
