@@ -12,7 +12,9 @@ import {mask} from "./selection/selectionUtils";
 import {History} from "./history/history";
 import {HistoryEntry} from "./history/historyEntry";
 import * as squareRecon from "./image_utils/squareRecon";
-import {ActionInterface} from "./tools/actionInterface";
+import {ActionInterface, ActionType} from "./tools/actionInterface";
+import {NetworkLink} from "./networkLink";
+import {ToolRegistry} from "./tools/toolregistry";
 
 /**
  * Project manager.
@@ -29,6 +31,9 @@ export class Project {
     ui: UIController;
     redraw: boolean;
     history: History;
+    toolRegistry: ToolRegistry;
+    private netlink: NetworkLink;
+
     private usingTool: boolean;
 
     /**
@@ -40,6 +45,7 @@ export class Project {
      */
     constructor (ui: UIController, name: string, dimensions: Vec2) {
         this.name = name;
+        this.toolRegistry = new ToolRegistry();
         if (dimensions == null) {
             this.dimensions = new Vec2(800,600);
         } else {
@@ -57,6 +63,8 @@ export class Project {
         this.ui = ui;
         this.redraw = false;
 
+        this.netlink = null;
+
         this.currentLayer.fill();
 
         /** selection is a table of int between 0 and 255 that represents selected
@@ -68,6 +76,11 @@ export class Project {
         this.currentLayer.fill();
 
         this.history = new History(this);
+    }
+
+
+    enableNetwork(socket: SocketIOClient.Socket) {
+        this.netlink = new NetworkLink(this, socket);
     }
 
     /**
@@ -124,14 +137,13 @@ export class Project {
         if (this.currentTool !== null && this.usingTool === true){
             this.currentTool.continueUse(vect);
 
-            this.previewLayer.reset();
-            this.currentTool.drawPreview(this.previewLayer.getContext());
+            let action = {
+                toolName: this.currentTool.getName(),
+                actionData: this.currentTool.getData(),
+                type: ActionType.ToolPreview,
+            };
 
-            if (!this.currentTool.overrideSelectionMask) {
-                this.ui.viewport.applyMask(this.previewLayer, this.currentSelection);
-            }
-
-            this.redraw = true;
+            this.applyAction(action);
         }
 
         this.currentSelection.draw();
@@ -148,23 +160,109 @@ export class Project {
         if (this.currentTool !== null && this.usingTool === true) {
             this.usingTool = false;
             /// TODO: Work on it.
-            let entry: ActionInterface = this.currentTool.endUse(vect);
-            this.previewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
+            this.currentTool.endUse(vect);
 
-            if (!this.currentTool.overrideSelectionMask) { /// Applying selection mask.
-                let history_entry: HistoryEntry = this.currentTool.applyTool(this.previewLayer.getContext());
+            let action = {
+                toolName: this.currentTool.getName(),
+                actionData: this.currentTool.getData(),
+                type: ActionType.ToolApply,
+            };
 
-                this.ui.viewport.applyMask(this.previewLayer, this.currentSelection);
-                this.currentLayer.getContext().drawImage(this.previewLayer.getHTMLElement(), -0.5, -0.5);
-            } else { /// Or not.
-                let history_entry: HistoryEntry = this.currentTool.applyTool(this.currentLayer.getContext());
+            if (this.netlink === null) {
+                this.applyAction(action);
+            } else {
+                this.netlink.sendAction(action);
             }
 
-            this.currentTool.reset();
-            this.previewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
-            this.redraw = true;
         }
     };
+
+
+    applyAction (action: ActionInterface) {
+        if (action.type == ActionType.ToolApply) {
+            let tool = this.toolRegistry.getToolByName(action.toolName);
+            /// TODO: Give the other guy's selection.
+            tool.settingsSetGetter("project_selection", (function () {return this.currentSelection}).bind(this));
+
+            if (this.ui == null) {
+                /// Temporary, so that the server doesn't crash.
+                let dummyUI = {
+                    viewport: {
+                        localToGlobalPosition: function () {
+                            return new Vec2(0, 0);
+                        }
+                    },
+                    translate: function () {}
+                };
+
+                tool.settingsSetGetter("user_interface", (function () {
+                    return dummyUI
+                }));
+            } else {
+                tool.settingsSetGetter("user_interface", (function () {return this.getUI()}).bind(this));
+            }
+
+            tool.updateData(action.actionData);
+
+
+            this.previewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
+
+            if (!tool.overrideSelectionMask) { /// Applying selection mask.
+                tool.applyTool(this.previewLayer.getContext());
+
+                if (this.ui == null) {
+                    this.previewLayer.applyMask(this.currentSelection);
+                } else {
+                    this.ui.viewport.applyMask(this.previewLayer, this.currentSelection);
+                }
+                this.currentLayer.getContext().drawImage(this.previewLayer.getHTMLElement(), -0.5, -0.5);
+            } else { /// Or not.
+                tool.applyTool(this.currentLayer.getContext());
+            }
+
+            this.previewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
+            this.redraw = true;
+        } else if (action.type == ActionType.ToolPreview) {
+            let tool = this.toolRegistry.getToolByName(action.toolName);
+            /// TODO: Give the other guy's selection.
+            tool.settingsSetGetter("project_selection", (function () {return this.currentSelection}).bind(this));
+            if (this.ui == null) {
+                /// Temporary, so that the server doesn't crash.
+                let dummyUI = {
+                    viewport: {
+                        localToGlobalPosition: function () {
+                            return new Vec2(0, 0);
+                        }
+                    },
+                    translate: function () {}
+                };
+
+                tool.settingsSetGetter("user_interface", (function () {
+                    return dummyUI
+                }));
+            } else {
+                tool.settingsSetGetter("user_interface", (function () {
+                    return this.getUI()
+                }).bind(this));
+            }
+
+            tool.updateData(action.actionData);
+
+            this.previewLayer.reset();
+            tool.drawPreview(this.previewLayer.getContext());
+
+            if (!tool.overrideSelectionMask) {
+
+                if (this.ui == null) {
+                    this.previewLayer.applyMask(this.currentSelection);
+                } else {
+                    this.ui.viewport.applyMask(this.previewLayer, this.currentSelection);
+                }
+            }
+
+            this.redraw = true;
+        }
+    }
 
     /**
      * Tells whether the selection layer should be redrawn.

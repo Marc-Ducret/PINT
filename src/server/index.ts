@@ -1,3 +1,5 @@
+import {ActionInterface} from "../client/ts/tools/actionInterface";
+
 require("amd-loader");
 
 import * as express from 'express';
@@ -23,7 +25,7 @@ app.use('/src/', serveStatic(path.join(__dirname, '../../src/')));
 app.use('/', serveStatic(path.join(__dirname, '../client/')));
 
 
-let project = new Project(this, "0", new Vec2(800,600));
+let project = new Project(null, "0", new Vec2(800,600));
 
 io.on("connection", function (socket: SocketIO.Socket) {
     socket.on("join", function (name: string) {
@@ -38,7 +40,9 @@ io.on("connection", function (socket: SocketIO.Socket) {
     });
 
 
-    socket.on("action", function (data) {
-        console.log("Client action");
+    socket.on("action", function (data: ActionInterface) {
+        io.sockets.emit("action", data);
+        console.log("broadcasted action by tool " + data.toolName);
+        project.applyAction(data);
     })
 });
