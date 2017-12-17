@@ -28,7 +28,7 @@ export class SelectionTool extends Tool {
     reset () {}
 
     startUse(img: ImageData, pos: Vec2) {
-        this.data.actionData = {
+        this.data = {
             firstCorner: pos,
             lastCorner: pos,
             width: img.width,
@@ -37,7 +37,7 @@ export class SelectionTool extends Tool {
     };
 
     continueUse(pos) {
-        this.data.actionData.lastCorner = pos;
+        this.data.lastCorner = pos;
     };
 
     endUse(pos) {
@@ -49,8 +49,8 @@ export class SelectionTool extends Tool {
         ctx.strokeStyle = '#000';
         ctx.lineWidth = 1;
 
-        let firstCorner = this.data.actionData.firstCorner;
-        let lastCorner = this.data.actionData.lastCorner;
+        let firstCorner = this.data.firstCorner;
+        let lastCorner = this.data.lastCorner;
 
         switch (this.getSetting("shape")) {
             case "square":
@@ -86,11 +86,11 @@ export class SelectionTool extends Tool {
     };
 
     applyTool (context: CanvasRenderingContext2D): HistoryEntry {
-        let width = this.data.actionData.width;
-        let height = this.data.actionData.height;
+        let width = this.data.width;
+        let height = this.data.height;
 
-        let firstCorner = this.data.actionData.firstCorner;
-        let lastCorner = this.data.actionData.lastCorner;
+        let firstCorner = this.data.firstCorner;
+        let lastCorner = this.data.lastCorner;
 
         let selection = new Uint8ClampedArray(width * height);
         switch (this.getSetting("shape")) {

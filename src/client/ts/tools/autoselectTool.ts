@@ -29,7 +29,7 @@ export class AutoSelectTool extends Tool {
      * @param {Project} project Document state
      */
     startUse(img: ImageData, pos: Vec2) {
-        this.data.actionData = colorSelect(img, new Vec2(Math.floor(pos.x), Math.floor(pos.y)), this.getSetting("wand_threshold"));
+        this.data = colorSelect(img, new Vec2(Math.floor(pos.x), Math.floor(pos.y)), this.getSetting("wand_threshold"));
     };
 
     endUse (pos): ActionInterface {
@@ -41,7 +41,7 @@ export class AutoSelectTool extends Tool {
     drawPreview (ctx: CanvasRenderingContext2D) {
         let selection = this.getSetting("project_selection");
         selection.reset();
-        selection.addRegion(this.data.actionData);
+        selection.addRegion(this.data);
         selection.updateBorder();
     };
 

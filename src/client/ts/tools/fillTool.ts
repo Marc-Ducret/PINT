@@ -48,7 +48,7 @@ export class FillTool extends Tool {
     startUse (img: ImageData, pos: Vec2) {
         this.reset();
 
-        this.data.actionData = {
+        this.data = {
             pixels: colorSelect(img,new Vec2(Math.floor(pos.x), Math.floor(pos.y)), this.getSetting("threshold")),
             width: img.width,
             height: img.height,
@@ -66,8 +66,8 @@ export class FillTool extends Tool {
         if (this.newImage == null) {
             let selection = this.getSetting("project_selection");
 
-            let width:number = this.data.actionData.width;
-            let height: number = this.data.actionData.height;
+            let width:number = this.data.width;
+            let height: number = this.data.height;
             let color_hex: string = this.getSetting("fillColor");
             let color_alpha: number = this.getSetting("fillAlpha");
 
@@ -82,7 +82,7 @@ export class FillTool extends Tool {
 
             for (let x=0; x<width; x++) {
                 for (let y=0; y<height; y++) {
-                    if (this.data.actionData.pixels[y*width+x] > 0 && selection.isSelected(new Vec2(x, y))) {
+                    if (this.data.pixels[y*width+x] > 0 && selection.isSelected(new Vec2(x, y))) {
                         let alpha = selection.getSelectionIntensity(new Vec2(x, y));
                         data[4*(y*width+x)    ] = color.r;// R
                         data[4*(y*width+x) + 1] = color.g;// G

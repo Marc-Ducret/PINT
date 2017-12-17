@@ -45,7 +45,7 @@ export class FreehandTool extends Tool {
      * @param {Project} project Ignored.
      */
     startUse (img, pos) {
-        this.data.actionData = {
+        this.data = {
             positions: [],
         };
 
@@ -67,11 +67,11 @@ export class FreehandTool extends Tool {
      * @param {Vec2} pos Mouse position
      */
     continueUse (pos) {
-        let n_elem = this.data.actionData.positions.length;
+        let n_elem = this.data.positions.length;
         if(n_elem == 0
-            || pos.distance(this.data.actionData.positions[n_elem - 1]) > 0)
+            || pos.distance(this.data.positions[n_elem - 1]) > 0)
         {
-            this.data.actionData.positions.push(pos);
+            this.data.positions.push(pos);
         }
     };
 
@@ -87,12 +87,12 @@ export class FreehandTool extends Tool {
         ctx.lineCap = "round";
         ctx.lineJoin = "round";
 
-        if (this.data.actionData.positions.length > 0) {
-            ctx.fillRect(this.data.actionData.positions[0].x-0.5,this.data.actionData.positions[0].y-0.5,1,1);
+        if (this.data.positions.length > 0) {
+            ctx.fillRect(this.data.positions[0].x-0.5,this.data.positions[0].y-0.5,1,1);
         }
         ctx.beginPath();
-        for (let i = 0; i < this.data.actionData.positions.length; i++) {
-            let pos = this.data.actionData.positions[i];
+        for (let i = 0; i < this.data.positions.length; i++) {
+            let pos = this.data.positions[i];
             if(i === 0) {
                 ctx.moveTo(pos.x, pos.y);
             } else {

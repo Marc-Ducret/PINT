@@ -41,14 +41,14 @@ export class ShapeTool extends Tool {
     }
 
     startUse (img, pos) {
-        this.data.actionData = {
+        this.data = {
             firstCorner: pos,
             lastCorner: pos,
         };
     };
 
     continueUse (pos) {
-        this.data.actionData.lastCorner = pos;
+        this.data.lastCorner = pos;
     };
 
     reset () {}
@@ -63,8 +63,8 @@ export class ShapeTool extends Tool {
         ctx.strokeStyle = this.getSetting('strokeColor');
         ctx.lineWidth = this.getSetting('lineWidth');
 
-        let firstCorner = this.data.actionData.firstCorner;
-        let lastCorner = this.data.actionData.lastCorner;
+        let firstCorner = this.data.firstCorner;
+        let lastCorner = this.data.lastCorner;
 
         switch (this.getSetting('shape')) {
             case "square":
