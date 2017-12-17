@@ -23,6 +23,7 @@ export class SelectionTool extends Tool {
             options: [{name: "square", desc: "Square"},
                 {name: "circle", desc: "Circle"}]
         });
+        this.addSetting({name: "project_selection", descName: "", inputType: InputType.Special, defaultValue: 0});
     }
 
     reset () {}

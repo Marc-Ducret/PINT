@@ -7,6 +7,7 @@ import {Tool} from "./tool";
 import {Vec2} from "../vec2";
 import {Project} from "../docState";
 import {HistoryEntry} from "../history/historyEntry";
+import {InputType} from "../tool_settings/settingsRequester";
 
 /**
  * Hand tool, allows the user to translate the canvas in the viewport.
@@ -14,6 +15,8 @@ import {HistoryEntry} from "../history/historyEntry";
 export class HandTool extends Tool {
     constructor() {
         super("HandTool", "Move");
+
+        this.addSetting({name: "user_interface", descName: "", inputType: InputType.Special, defaultValue: 0});
     }
 
     /**

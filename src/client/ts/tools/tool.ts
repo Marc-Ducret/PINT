@@ -111,10 +111,14 @@ export abstract class Tool {
      * @returns {Array<SettingRequest>}
      */
     public settingsGetRequests() {
-        return this.settings.requests;
+        return this.settings.getRequests();
     }
 
     getData() {
         return this.data;
+    }
+
+    getSettings() {
+        return this.settings;
     }
 }

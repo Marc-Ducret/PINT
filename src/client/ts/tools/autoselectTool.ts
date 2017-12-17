@@ -18,6 +18,7 @@ export class AutoSelectTool extends Tool {
     constructor () {
         super("AutoSelectTool", "Magic wand");
         this.addSetting({name: "wand_threshold", descName: "Threshold", inputType: InputType.Number, defaultValue: 50});
+        this.addSetting({name: "project_selection", descName: "", inputType: InputType.Special, defaultValue: 0});
     }
 
     reset() {}
@@ -29,7 +30,7 @@ export class AutoSelectTool extends Tool {
      * @param {Project} project Document state
      */
     startUse(img: ImageData, pos: Vec2) {
-        this.data = colorSelect(img, new Vec2(Math.floor(pos.x), Math.floor(pos.y)), this.getSetting("wand_threshold"));
+        this.data = colorSelect(img, new Vec2(Math.floor(pos.x), Math.floor(pos.y)), this.getSetting("wand_threshold")).buffer;
     };
 
     endUse (pos) {};
@@ -39,7 +40,7 @@ export class AutoSelectTool extends Tool {
     drawPreview (ctx: CanvasRenderingContext2D) {
         let selection = this.getSetting("project_selection");
         selection.reset();
-        selection.addRegion(this.data);
+        selection.addRegion(new Uint8ClampedArray(this.data, 0));
         selection.updateBorder();
     };
 
