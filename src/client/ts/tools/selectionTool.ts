@@ -49,8 +49,8 @@ export class SelectionTool extends Tool {
         ctx.strokeStyle = '#000';
         ctx.lineWidth = 1;
 
-        let firstCorner = this.data.firstCorner;
-        let lastCorner = this.data.lastCorner;
+        let firstCorner = new Vec2(this.data.firstCorner.x, this.data.firstCorner.y);
+        let lastCorner = new Vec2(this.data.lastCorner.x, this.data.lastCorner.y);
 
         switch (this.getSetting("shape")) {
             case "square":
@@ -89,8 +89,8 @@ export class SelectionTool extends Tool {
         let width = this.data.width;
         let height = this.data.height;
 
-        let firstCorner = this.data.firstCorner;
-        let lastCorner = this.data.lastCorner;
+        let firstCorner = new Vec2(this.data.firstCorner.x, this.data.firstCorner.y);
+        let lastCorner = new Vec2(this.data.lastCorner.x, this.data.lastCorner.y);
 
         let selection = new Uint8ClampedArray(width * height);
         switch (this.getSetting("shape")) {
