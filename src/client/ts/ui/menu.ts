@@ -104,7 +104,7 @@ export function setup_menu(controller: UIController, base_element: HTMLElement) 
         function() {
             menu_controller.switchCategory(0)
         });
-    menu_controller.addElement(title, {l: 2, m: 6, s: 12});
+    menu_controller.addElement(title, {l: 2, m: 12, s: 12});
     menu_controller.addElementToCategory(title, 0);
     menu_controller.addElementToCategory(title, 1);
 
@@ -113,19 +113,19 @@ export function setup_menu(controller: UIController, base_element: HTMLElement) 
             controller.filenameUpdate(this.value);
         });
 
-    menu_controller.addElement(filename, {l: 3, m: 6, s: 12});
+    menu_controller.addElement(filename, {l: 3, m: 12, s: 12});
     menu_controller.addElementToCategory(filename, 1);
 
     let newproject = menu_newproject_create(function (dimensions) {
         controller.newProject(dimensions);
     });
-    menu_controller.addElement(newproject, {l: 3, m: 6, s: 12});
+    menu_controller.addElement(newproject, {l: 3, m: 12, s: 12});
     menu_controller.addElementToCategory(newproject, 0);
 
     let load_image_file = menu_load_image_file_create(function() {
         controller.loadImageFromFile();
     });
-    menu_controller.addElement(load_image_file, {l: 1, m: 3, s: 6});
+    menu_controller.addElement(load_image_file, {l: 1, m: 6, s: 6});
     menu_controller.addElementToCategory(load_image_file, 0);
 
     let back = menu_back_create(
@@ -133,7 +133,7 @@ export function setup_menu(controller: UIController, base_element: HTMLElement) 
             menu_controller.switchCategory(1);
         }
     );
-    menu_controller.addElement(back, {l: 1, m: 3, s: 6});
+    menu_controller.addElement(back, {l: 1, m: 6, s: 6});
     menu_controller.addElementToCategory(back, 0);
     $(back).parent().hide();
 

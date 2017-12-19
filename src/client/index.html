@@ -11,34 +11,34 @@
 <body>
 <div>
     <!-- MENU BAR -->
-    <div class="row z-depth-3 side-nav fixed" id="top-nav">
+    <div class="row z-depth-3 side-nav" id="top-nav">
 
     </div>
 
-    <a href="#" data-activates="top-nav" class="button-collapse-left fixed-low-left btn-floating btn-large hide-on-large">
-        <i class="material-icons large">menu</i>
+    <a href="#" data-activates="top-nav" class="button-collapse-left fixed-low-left btn-floating btn-huge hide-on-large-only">
+        <i class="material-icons huge">menu</i>
     </a>
 
-    <a href="#" data-activates="right_pane" class="button-collapse-right fixed-low-right btn-floating btn-large hide-on-large">
-        <i class="material-icons large">build</i>
+    <a href="#" data-activates="right_pane" class="button-collapse-right fixed-low-right btn-floating btn-huge hide-on-large-only">
+        <i class="material-icons huge">build</i>
     </a>
 
 
     <div class="row z-depth-3">
 
         <!-- horizontal bar to display the layer Manager : -->
-        <div class="col m2 hide-on-small-only" id="left_pane">
+        <div class="col l2 hide-on-med-and-down" id="left_pane">
             <h2 id="name_layer_container"></h2>
             <div id="layerManager_container"></div>
         </div>
 
         <!-- area of the pinted canvas : -->
-        <div class="col m8 s12" id="viewport-container">
+        <div class="col l8 m12 s12" id="viewport-container">
             <canvas id="viewport"></canvas>
         </div>
 
         <!-- horizontal bar to display tool settings : -->
-        <div class="col m2 s0 side-nav fixed" id="right_pane">
+        <div class="col l2 side-nav fixed" id="right_pane">
             <h2 id="name_container"></h2>
             <div id="toolsettings_container"></div>
         </div>

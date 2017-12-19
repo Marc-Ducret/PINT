@@ -352,7 +352,6 @@ export class UIController {
 }
 
 function onTouch(evt: TouchEvent) {
-    console.log("ontouch");
     evt.preventDefault();
     if (evt.touches.length > 1 || (evt.type == "touchend" && evt.touches.length > 0))
         return;
