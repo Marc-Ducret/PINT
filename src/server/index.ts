@@ -46,7 +46,7 @@ io.on("connection", function (socket: SocketIO.Socket) {
         }
 
 
-        selectionHandlers[socket.id] = new PixelSelectionHandler(null, 800, 600);
+        selectionHandlers[socket.id] = new PixelSelectionHandler(800, 600);
 
         let hello: HelloNetworkPacket = {
             sender: socket.id,

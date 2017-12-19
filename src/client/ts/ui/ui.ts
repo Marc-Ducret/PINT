@@ -303,7 +303,12 @@ export class UIController {
         }
 
         if (this.redraw) {
-            this.viewport.renderLayers();
+            if (this.project != null) {
+                this.viewport.renderLayers([this.project.currentSelection]);
+            } else {
+                this.viewport.renderLayers([]);
+            }
+
         }
         this.redraw = false;
         window.requestAnimationFrame(this.onStep.bind(this));

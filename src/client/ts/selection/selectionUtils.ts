@@ -31,14 +31,19 @@ export function computeBorder(selection: Uint8ClampedArray, w: number, h: number
     let border: Array<Vec2> = [];
     for (let y = 0; y < h; y++) {
         for (let x = 0; x < w; x++) {
-            if(isSelected(selection, x, y, w, h)
-                && (!isSelected(selection, x-1, y, w, h)
-                    ||  !isSelected(selection, x, y-1, w, h)
-                    ||  !isSelected(selection, x+1, y, w, h)
-                    ||  !isSelected(selection, x, y+1, w, h))) {
+            if(inBorder(x, y, selection, w, h)) {
                 border.push(new Vec2(x, y));
             }
         }
     }
     return border;
+}
+
+
+export function inBorder(x: number, y: number, selection: Uint8ClampedArray, w: number, h: number) {
+    return (isSelected(selection, x, y, w, h)
+            && (!isSelected(selection, x-1, y, w, h)
+                ||  !isSelected(selection, x, y-1, w, h)
+                ||  !isSelected(selection, x+1, y, w, h)
+                ||  !isSelected(selection, x, y+1, w, h)));
 }
