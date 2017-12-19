@@ -106,6 +106,12 @@ module.exports = function(grunt) {
             mat: {
                 src: 'src/client/mat.js',
                 dest: 'build/client/mat.js',
+            },
+            materialize: {
+                expand: true,
+                cwd: 'node_modules/materialize-css/js',
+                src: '*',
+                dest: 'build/client/materialize/',
             }
         },
         requirejs: {
@@ -139,7 +145,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-exec');
 
     // Default task: dev build with source maps
-    grunt.registerTask('default', ['ts:dev', 'concat:js_server_header', 'ts:convnet', 'concat:js_server_header', 'copy:mat', 'copy:img', 'copy:jquery_dev', 'copy:requirejs', 'concat:css_dev', 'htmlmin']);
+    grunt.registerTask('default', ['ts:dev', 'concat:js_server_header', 'ts:convnet', 'copy:materialize', 'copy:mat', 'copy:img', 'copy:jquery_dev', 'copy:requirejs', 'concat:css_dev', 'htmlmin']);
     // Release task: compress js, html, css, remove source maps.
     grunt.registerTask('release', ['ts:dev', 'copy:img', 'copy:jquery_release', 'copy:requirejs', 'concat:css', 'htmlmin', 'cssmin', 'clean', 'cleanempty']);
     // Generate documentation.
