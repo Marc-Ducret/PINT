@@ -345,7 +345,9 @@ export class UIController {
         }).bind(this));
 
         this.onWindowResize(new Vec2($(window).width(), $(window).height()));
-
+        document.body.addEventListener('touchmove', function(event) {
+            event.preventDefault();
+        }, false);
     }
 }
 
