@@ -13,12 +13,19 @@ export class MenuController {
         this.menu_container = base_element;
     }
 
-    addElement (element: HTMLElement, dimensions: number) {
+    addElement (element: HTMLElement, dimensions: {l: number, m: number, s: number}) {
         let div = document.createElement("div");
 
         div.className = "col";
-        if (dimensions > 0) {// @todo check that it is an integer between 0 and 12.
-            div.className += " s"+dimensions;
+        // @todo check that it is an integer between 0 and 12.
+        if (dimensions.l > 0) {
+            div.className += " l"+dimensions.l;
+        }
+        if (dimensions.s > 0) {
+            div.className += " s"+dimensions.s;
+        }
+        if (dimensions.m > 0) {
+            div.className += " m"+dimensions.m;
         }
 
         div.appendChild(element);
@@ -97,7 +104,7 @@ export function setup_menu(controller: UIController, base_element: HTMLElement) 
         function() {
             menu_controller.switchCategory(0)
         });
-    menu_controller.addElement(title, 2);
+    menu_controller.addElement(title, {l: 2, m: 6, s: 12});
     menu_controller.addElementToCategory(title, 0);
     menu_controller.addElementToCategory(title, 1);
 
@@ -106,19 +113,19 @@ export function setup_menu(controller: UIController, base_element: HTMLElement) 
             controller.filenameUpdate(this.value);
         });
 
-    menu_controller.addElement(filename, 3);
+    menu_controller.addElement(filename, {l: 3, m: 6, s: 12});
     menu_controller.addElementToCategory(filename, 1);
 
     let newproject = menu_newproject_create(function (dimensions) {
         controller.newProject(dimensions);
     });
-    menu_controller.addElement(newproject, 3);
+    menu_controller.addElement(newproject, {l: 3, m: 6, s: 12});
     menu_controller.addElementToCategory(newproject, 0);
 
     let load_image_file = menu_load_image_file_create(function() {
         controller.loadImageFromFile();
     });
-    menu_controller.addElement(load_image_file, 1);
+    menu_controller.addElement(load_image_file, {l: 1, m: 3, s: 6});
     menu_controller.addElementToCategory(load_image_file, 0);
 
     let back = menu_back_create(
@@ -126,12 +133,12 @@ export function setup_menu(controller: UIController, base_element: HTMLElement) 
             menu_controller.switchCategory(1);
         }
     );
-    menu_controller.addElement(back, 1);
+    menu_controller.addElement(back, {l: 1, m: 3, s: 6});
     menu_controller.addElementToCategory(back, 0);
     $(back).parent().hide();
 
     let toolbox = menu_toolbox_create(controller);
-    menu_controller.addElement(toolbox, 0);
+    menu_controller.addElement(toolbox, {l: 0, m: 0, s: 0});
     menu_controller.addElementToCategory(toolbox, 1);
 
     return menu_controller;
