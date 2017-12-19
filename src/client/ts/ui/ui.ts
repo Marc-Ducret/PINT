@@ -290,17 +290,18 @@ export class UIController {
      */
     onStep (timestamp: number) {
         if (this.project != null) {
-            if (this.project.renderSelection()) {
-                this.redraw = true;
-            }
-
             if (this.project.redraw) {
                 this.redraw = true;
             }
         }
 
         if (this.redraw) {
-            this.viewport.renderLayers();
+            if (this.project != null) {
+                this.viewport.renderLayers([this.project.currentSelection]);
+            } else {
+                this.viewport.renderLayers([]);
+            }
+
         }
         this.redraw = false;
         window.requestAnimationFrame(this.onStep.bind(this));

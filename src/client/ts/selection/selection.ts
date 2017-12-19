@@ -17,7 +17,7 @@ export interface SerializedPixelSelectionHandler {
 export function PixelSelectionHandlerFromSerialized (serialized: SerializedPixelSelectionHandler): PixelSelectionHandler {
     let w = serialized.width;
     let h = serialized.height;
-    let obj = new PixelSelectionHandler(null, w, h);
+    let obj = new PixelSelectionHandler(w, h);
 
 
     let img = new Image;
@@ -40,9 +40,6 @@ export class PixelSelectionHandler {
 
     private mask: Layer;
 
-    private animation_image_data: ImageData;
-    private animation_context: CanvasRenderingContext2D;
-
     serialize(): SerializedPixelSelectionHandler {
         return {dataUrl: this.mask.getHTMLElement().toDataURL(),
                 width: this.width,
@@ -50,7 +47,7 @@ export class PixelSelectionHandler {
     }
 
 
-    constructor(context: CanvasRenderingContext2D, w: number, h: number) {
+    constructor(w: number, h: number) {
         this.width = w;
         this.height = h;
         this.values = new Uint8ClampedArray(w * h);
@@ -59,11 +56,6 @@ export class PixelSelectionHandler {
         this.mask = new Layer(new Vec2(w, h));
         this.mask.reset();
         this.mask.fill();
-
-        if (context != null) {
-            this.animation_context = context;
-            this.animation_image_data = context.getImageData(0, 0, w, h);
-        }
 
 
         // select all at the beginning.
@@ -123,22 +115,7 @@ export class PixelSelectionHandler {
      * Call to update the graphical representation of the selection
      */
     updateBorder() {
-        if (this.animation_image_data != null) {
-            resetBorder(this.animation_image_data, this.border, this.width, this.height);
-            this.border = computeBorder(this.values, this.width, this.height);
-        }
-    }
-
-    /**
-     * Call to draw the selection
-     */
-    draw() {
-        if (this.animation_context == null) {
-            console.warn("Drawing on a null context.");
-            return;
-        }
-        drawSelection(this.animation_image_data, this.border, this.width, this.height);
-        this.animation_context.putImageData(this.animation_image_data, 0, 0);
+        this.border = computeBorder(this.values, this.width, this.height);
     }
 
     /**
@@ -147,9 +124,6 @@ export class PixelSelectionHandler {
     reset() {
         this.values = new Uint8ClampedArray(this.width * this.height);
         this.mask.reset();
-        if (this.animation_image_data != null) {
-            resetBorder(this.animation_image_data, this.border, this.width, this.height);
-        }
         this.border = [];
     }
 
@@ -174,7 +148,7 @@ export class PixelSelectionHandler {
         }
     }
 
-    getBorder() {
+    getBorder(): Array<Vec2> {
         return this.border;
     }
 }

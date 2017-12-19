@@ -24,7 +24,7 @@ export class Project {
     dimensions: Vec2;
     previewLayer: Layer;
     currentLayer: Layer;
-    selectionLayer: Layer;
+
     layerList: Array<Layer>; // The renderer draw layers in order.
     currentTool: Tool;
     currentSelection: PixelSelectionHandler;
@@ -57,8 +57,7 @@ export class Project {
         this.currentLayer = new Layer(this.dimensions);
         this.currentLayer.getContext().translate(0.5, 0.5);
 
-        this.selectionLayer = new Layer(this.dimensions);
-        this.layerList = [this.currentLayer, this.previewLayer, this.selectionLayer]; // The renderer draw layers in order.
+        this.layerList = [this.currentLayer, this.previewLayer]; // The renderer draw layers in order.
         this.currentTool = null;
         this.ui = ui;
         this.redraw = false;
@@ -71,7 +70,7 @@ export class Project {
          * pixels (initialized with number of pixels of current layer)
          * @todo : standardize selection dimention - layers ...
          */
-        this.currentSelection = new PixelSelectionHandler(this.selectionLayer.getContext(), this.dimensions.x, this.dimensions.y);
+        this.currentSelection = new PixelSelectionHandler(this.dimensions.x, this.dimensions.y);
 
         this.currentLayer.fill();
 
@@ -150,7 +149,6 @@ export class Project {
             }
         }
 
-        this.currentSelection.draw();
         return true;
     };
 
@@ -232,8 +230,6 @@ export class Project {
      */
     renderSelection () : boolean {
         if (this.currentSelection.getBorder().length > 0) {
-            this.selectionLayer.reset();
-            this.currentSelection.draw();
             return true;
         } else {
             return false;

@@ -1,6 +1,7 @@
 import {Layer} from "./layer";
 import {Vec2} from "../vec2";
 import {PixelSelectionHandler} from "../selection/selection";
+import {inBorder} from "../selection/selectionUtils";
 
 /**
  * Handler of the final step of rendering.
@@ -93,7 +94,7 @@ export class Viewport {
     /**
      * Render layers one by one in order, applying transformations such as zoom and translation.
      */
-    renderLayers () {
+    renderLayers (pixelSelection: Array<PixelSelectionHandler>) {
         // Reset canvas
         this.resetCanvas();
 
@@ -140,7 +141,75 @@ export class Viewport {
         }
 
         this.context.setTransform(1, 0, 0, 1, 0, 0);
+
+        if (pixelSelection.length > 0) {
+            this.renderBorder(pixelSelection[0].getBorder(), pixelSelection[0].getValues());
+        }
     };
+
+    renderBorder(border: Array<Vec2>, values: Uint8ClampedArray) {
+        const pattern = 10;
+        const period = 500;
+        const offset = (Date.now() % period) * pattern * 2 / period;
+
+        const w = this.layerDimensions.x;
+        const h = this.layerDimensions.y;
+
+        for (let i in border) {
+            const x = border[i].x;
+            const y = border[i].y;
+
+            const real_pos = this.localToGlobalPosition(border[i]);
+            const x_real = Math.floor(real_pos.x);
+            const y_real = Math.floor(real_pos.y);
+
+            if (x > 0 && inBorder(x - 1, y, values, w, h)) {
+                // connect up.
+                let pos_med = this.localToGlobalPosition(new Vec2(x-0.5, y));
+                for (let x_i = Math.min(pos_med.x, x_real); x_i <= Math.max(pos_med.x, x_real); x_i += 1) {
+                    this.putSelectionPixel(x_i, y_real, offset);
+                }
+            }
+
+            if (x < w - 1 && inBorder(x + 1, y, values, w, h)) {
+                // connect up.
+                let pos_med = this.localToGlobalPosition(new Vec2(x+0.5, y));
+                pos_med.x = Math.floor(pos_med.x);
+                for (let x_i = Math.min(pos_med.x, x_real); x_i <= Math.max(pos_med.x, x_real); x_i += 1) {
+                    this.putSelectionPixel(x_i, y_real, offset);
+                }
+            }
+
+            if (y > 0 && inBorder(x, y - 1, values, w, h)) {
+                // connect up.
+                let pos_med = this.localToGlobalPosition(new Vec2(x, y-0.5));
+                for (let y_i = Math.min(pos_med.y, y_real); y_i <= Math.max(pos_med.y, y_real); y_i += 1) {
+                    this.putSelectionPixel(x_real, y_i, offset);
+                }
+            }
+
+            if (y < h - 1 && inBorder(x, y + 1, values, w, h)) {
+                // connect up.
+                let pos_med = this.localToGlobalPosition(new Vec2(x, y+0.5));
+                for (let y_i = Math.min(pos_med.y, y_real); y_i <= Math.max(pos_med.y, y_real); y_i += 1) {
+                    this.putSelectionPixel(x_real, y_i, offset);
+                }
+            }
+        }
+    }
+
+
+    putSelectionPixel(x, y, offset) {
+        const pattern = 10;
+
+        this.context.lineWidth = 0;
+        if(((x + y + offset) / pattern) % 2 < 1) {
+            this.context.fillStyle = "#ffffffff";
+        } else {
+            this.context.fillStyle = "#000000ff";
+        }
+        this.context.fillRect(x, y, 1, 1);
+    }
 
     /**
      * Reset drawing canvas.
