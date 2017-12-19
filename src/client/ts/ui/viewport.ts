@@ -155,44 +155,33 @@ export class Viewport {
         const w = this.layerDimensions.x;
         const h = this.layerDimensions.y;
 
+        const pixels_per_pixels = 1+this.currentScale;
         for (let i in border) {
             const x = border[i].x;
             const y = border[i].y;
 
-            const real_pos = this.localToGlobalPosition(border[i]);
+            const real_pos = this.localToGlobalPosition(new Vec2(x+0.5, y+0.5));
             const x_real = Math.floor(real_pos.x);
             const y_real = Math.floor(real_pos.y);
 
-            if (x > 0 && inBorder(x - 1, y, values, w, h)) {
-                // connect up.
-                let pos_med = this.localToGlobalPosition(new Vec2(x-0.5, y));
-                for (let x_i = Math.min(pos_med.x, x_real); x_i <= Math.max(pos_med.x, x_real); x_i += 1) {
-                    this.putSelectionPixel(x_i, y_real, offset);
-                }
-            }
+            if (x_real > -pixels_per_pixels
+                && x_real < this.viewportDimensions.x + pixels_per_pixels
+                && y_real > -pixels_per_pixels
+                && y_real < this.viewportDimensions.y + pixels_per_pixels)
+            {
+                for (let d of [[0, 1], [0, -1], [1, 0], [-1, 0]]) {
+                    let dx = d[0];
+                    let dy = d[1];
 
-            if (x < w - 1 && inBorder(x + 1, y, values, w, h)) {
-                // connect up.
-                let pos_med = this.localToGlobalPosition(new Vec2(x+0.5, y));
-                pos_med.x = Math.floor(pos_med.x);
-                for (let x_i = Math.min(pos_med.x, x_real); x_i <= Math.max(pos_med.x, x_real); x_i += 1) {
-                    this.putSelectionPixel(x_i, y_real, offset);
-                }
-            }
-
-            if (y > 0 && inBorder(x, y - 1, values, w, h)) {
-                // connect up.
-                let pos_med = this.localToGlobalPosition(new Vec2(x, y-0.5));
-                for (let y_i = Math.min(pos_med.y, y_real); y_i <= Math.max(pos_med.y, y_real); y_i += 1) {
-                    this.putSelectionPixel(x_real, y_i, offset);
-                }
-            }
-
-            if (y < h - 1 && inBorder(x, y + 1, values, w, h)) {
-                // connect up.
-                let pos_med = this.localToGlobalPosition(new Vec2(x, y+0.5));
-                for (let y_i = Math.min(pos_med.y, y_real); y_i <= Math.max(pos_med.y, y_real); y_i += 1) {
-                    this.putSelectionPixel(x_real, y_i, offset);
+                    if (values[x+dx + (y+dy)*this.layerDimensions.x] == 0) {
+                        for (let i = 0; i <= pixels_per_pixels; i += 1){
+                            if (dx == 0) {
+                                this.putSelectionPixel(x_real - pixels_per_pixels/2 + i, y_real + dy*pixels_per_pixels/2, offset);
+                            } else {
+                                this.putSelectionPixel(x_real + dx*pixels_per_pixels/2, y_real - pixels_per_pixels/2 + i, offset);
+                            }
+                        }
+                    }
                 }
             }
         }
