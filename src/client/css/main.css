@@ -80,13 +80,13 @@ body {
 }
 
 .btn-floating.btn-huge {
-    width: 150px;
-    height: 150px;
+    width: 64px;
+    height: 64px;
 }
 
 .material-icons.huge {
-    line-height: 150px;
-    font-size: 74px;
+    line-height: 64px;
+    font-size: 38px;
 }
 
 .fixed-low-left {
