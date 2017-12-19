@@ -327,12 +327,17 @@ export class UIController {
         toolbox_container.children().click(this.onToolboxClicked.bind(this));
         toolbox_container.children().hover(this.onToolboxHovered.bind(this),
             this.onToolboxHoverLeft.bind(this));
-        viewport.mousedown(this.onMouseDown.bind(this));
+        viewport.mousedown(this.onMouseDown.bind(this));//this.onMouseDown.bind(this));
         viewport.mouseup(this.onMouseUp.bind(this));
         viewport.mousemove(this.onMouseMove.bind(this));
         viewport.mouseleave(this.onMouseUp.bind(this));
         document.getElementById("viewport").addEventListener('wheel', this.onMouseWheel.bind(this));
 
+        document.getElementById("viewport").addEventListener('touchstart', onTouch);
+        document.getElementById("viewport").addEventListener('touchmove', onTouch);
+        document.getElementById("viewport").addEventListener('touchend', onTouch);
+        document.getElementById("viewport").addEventListener('touchcancel', onTouch);
+        document.getElementById("viewport").addEventListener('touchleave', onTouch);
         newproject_button.click(function() {
             this.newProject(new Vec2(<number> newproject_width.val(), <number> newproject_height.val()));
         }.bind(this));
@@ -345,3 +350,35 @@ export class UIController {
 
     }
 }
+
+function onTouch(evt: TouchEvent) {
+    console.log("ontouch");
+    evt.preventDefault();
+    if (evt.touches.length > 1 || (evt.type == "touchend" && evt.touches.length > 0))
+        return;
+
+    let newEvt = document.createEvent("MouseEvents");
+    let type = null;
+    let touch = null;
+    switch (evt.type) {
+        case "touchstart":
+            type = "mousedown";
+            touch = evt.changedTouches[0];
+            break;
+        case "touchmove":
+            type = "mousemove";
+            touch = evt.changedTouches[0];
+            break;
+        case "touchend":
+            type = "mouseup";
+            touch = evt.changedTouches[0];
+            break;
+    }
+
+    newEvt.initMouseEvent(type, true, true, document.defaultView, 0,
+        touch.screenX, touch.screenY, touch.clientX, touch.clientY,
+        evt.ctrlKey, evt.altKey, evt.shiftKey, evt.metaKey, 0, null);
+    evt.target.dispatchEvent(newEvt);
+}
+
+
