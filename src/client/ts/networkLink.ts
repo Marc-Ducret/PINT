@@ -55,7 +55,7 @@ export class NetworkLink {
         if (action.data.type != ActionType.ToolPreview) {
             console.log("Action from "+action.sender+" with tool "+action.data.toolName);
         }
-        
+
         this.project.applyAction(action.data, this.selectionHandlers[action.sender]);
     }
 

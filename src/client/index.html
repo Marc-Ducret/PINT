@@ -7,30 +7,38 @@
     <link rel="stylesheet" type="text/css" href="main.css?__inline">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,400" rel="stylesheet">
-
 </head>
 <body>
 <div>
     <!-- MENU BAR -->
-    <div class="row z-depth-3" id="top-nav">
+    <div class="row z-depth-3 side-nav fixed" id="top-nav">
 
     </div>
+
+    <a href="#" data-activates="top-nav" class="button-collapse-left fixed-low-left btn-floating btn-large hide-on-med-and-up">
+        <i class="material-icons large">menu</i>
+    </a>
+
+    <a href="#" data-activates="right_pane" class="button-collapse-right fixed-low-right btn-floating btn-large hide-on-med-and-up">
+        <i class="material-icons large">build</i>
+    </a>
+
 
     <div class="row z-depth-3">
 
         <!-- horizontal bar to display the layer Manager : -->
-        <div class="col s2" id="left_pane">
+        <div class="col m2 hide-on-small-only" id="left_pane">
             <h2 id="name_layer_container"></h2>
             <div id="layerManager_container"></div>
         </div>
 
         <!-- area of the pinted canvas : -->
-        <div class="col s8" id="viewport-container">
+        <div class="col m8 s12" id="viewport-container">
             <canvas id="viewport"></canvas>
         </div>
 
         <!-- horizontal bar to display tool settings : -->
-        <div class="col s2" id="right_pane">
+        <div class="col m2 s0 side-nav fixed" id="right_pane">
             <h2 id="name_container"></h2>
             <div id="toolsettings_container"></div>
         </div>
@@ -44,10 +52,21 @@ var require = {
 
     paths: {
         //main libraries
+        'materialize.global': 'materialize/global',
+        'materialize.sideNav': 'materialize/sideNav',
+        'hammerjs': 'materialize/hammer.min',
+        'jquery-hammerjs': 'materialize/jquery.hammer',
+        'velocity': 'materialize/velocity.min',
         jquery: 'jquery',
         "socket.io-client": "/socket.io/socket.io.js"
     },
     shim: {
+        'materialize.global': {
+            deps: ['jquery', 'hammerjs', 'jquery-hammerjs', 'velocity']
+        },
+        'materialize.sideNav': {
+            deps: ['materialize.global']
+        },
         jquery: {
             exports: '$'
         }
@@ -55,5 +74,7 @@ var require = {
 };
 </script>
 <script type="text/javascript" src="require.js" data-main="main.js"></script>
+
+<script type="text/javascript" src="mat.js"></script>
 </body>
 </html>

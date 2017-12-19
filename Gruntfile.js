@@ -102,6 +102,10 @@ module.exports = function(grunt) {
                 cwd: 'src/client/assets/',
                 src: '*',
                 dest: 'build/client/assets/'
+            },
+            mat: {
+                src: 'src/client/mat.js',
+                dest: 'build/client/mat.js',
             }
         },
         requirejs: {
@@ -135,7 +139,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-exec');
 
     // Default task: dev build with source maps
-    grunt.registerTask('default', ['ts:dev', 'ts:convnet', 'concat:js_server_header', 'copy:img', 'copy:jquery_dev', 'copy:requirejs', 'concat:css_dev', 'htmlmin']);
+    grunt.registerTask('default', ['ts:dev', 'ts:convnet', 'concat:js_server_header', 'copy:mat', 'copy:img', 'copy:jquery_dev', 'copy:requirejs', 'concat:css_dev', 'htmlmin']);
     // Release task: compress js, html, css, remove source maps.
     grunt.registerTask('release', ['ts:dev', 'copy:img', 'copy:jquery_release', 'copy:requirejs', 'concat:css', 'htmlmin', 'cssmin', 'clean', 'cleanempty']);
     // Generate documentation.
