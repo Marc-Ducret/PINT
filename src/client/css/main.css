@@ -13,7 +13,19 @@ body {
 /**
  Big screen
  */
-@media only screen and (min-width: 601px) {
+@media only screen and (min-width: 1024px) {
+
+    #top-nav {
+        transform: translateX(0%) !important;
+        position: inherit!important;
+        width: 100%!important;
+        top: auto!important;
+        overflow-y: hidden;
+    }
+
+    .side-nav {
+        top: auto!important;
+    }
 
     #top-nav .col:not(:last-child) {
         border-right: solid white 1px;
@@ -26,7 +38,7 @@ body {
 
     .title {
         line-height: 100px !important;
-        font-size: 56px!important;
+        font-size: 53px!important;
     }
 
     #top-nav .col {
@@ -38,7 +50,7 @@ body {
 /**
  Mobile
  */
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 1023px) {
 
     #top-nav div p {
         line-height: 50px;
@@ -53,6 +65,16 @@ body {
         margin-top: 15px;
         height: 50px;
     }
+}
+
+.btn-floating.btn-huge {
+    width: 150px;
+    height: 150px;
+}
+
+.material-icons.huge {
+    line-height: 150px;
+    font-size: 74px;
 }
 
 .fixed-low-left {
