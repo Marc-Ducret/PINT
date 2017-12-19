@@ -111,6 +111,7 @@ export class UIController {
         let img = new Image;
         img.onload = function(){
             this.project.currentLayer.getContext().drawImage(img,0,0);
+            this.project.redraw = true;
         }.bind(this);
         img.src = data.data;
     }
