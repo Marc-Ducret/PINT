@@ -170,6 +170,9 @@ export class UIController {
                 console.warn("Unimplemented tool.");
             }
         }
+
+        eval("$(\".button-collapse-left\").sideNav('hide');");
+
     };
 
     static displayName(name: string) {
