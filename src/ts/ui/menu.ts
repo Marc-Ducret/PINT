@@ -2,6 +2,7 @@
 import {UIController} from "./ui";
 import {Vec2} from "../vec2";
 import {cat} from "shelljs";
+import * as squareRecon from "../image_utils/squareRecon";
 
 export class MenuController {
     elements: any = eval("new Map()");
@@ -298,6 +299,11 @@ function menu_toolbox_create(): HTMLElement {
     p.appendChild(create_separator());
     p.appendChild(create_function_icon("this.zoom(50);","Zoom in","zoom_in"));
     p.appendChild(create_function_icon("this.zoom(-50);","Zoom out","zoom_out"));
-
+    p.appendChild(create_function_icon("this.project.testSquare();", "Test Square", "build"));
+    $.get('assets/net.json', function(data) {
+        console.log('loaded network');
+        console.log(data);
+        squareRecon.initClassifier(data);
+    }); //TODO move elsewhere
     return p;
 }

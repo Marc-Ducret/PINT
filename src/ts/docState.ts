@@ -11,6 +11,7 @@ import {UIController} from "./ui/ui";
 import {mask} from "./selection/selectionUtils";
 import {History} from "./tools/history/history";
 import {HistoryEntry} from "./tools/history/historyEntry";
+import * as squareRecon from "./image_utils/squareRecon";
 
 /**
  * Project manager.
@@ -232,5 +233,9 @@ export class Project {
         document.body.appendChild(fake_link);
         fake_link.click();
         document.body.removeChild(fake_link);
+    }
+
+    testSquare() {
+        console.log("square: "+squareRecon.hasSquare(this.currentLayer.getContext().getImageData(0, 0, this.dimensions.x, this.dimensions.y)));
     }
 }

@@ -54,7 +54,6 @@ export abstract class Tool {
 
     defaultHistoryEntry(project: Project): HistoryEntry {
         let doLayer: Layer = new Layer(project.dimensions);
-        doLayer.getContext().translate(0.5, 0.5);
         doLayer.reset();
         this.drawPreview(doLayer.getContext());
         if (!this.overrideSelectionMask) {

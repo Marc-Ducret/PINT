@@ -22,7 +22,17 @@ module.exports = function(grunt) {
                     moduleResolution: 'node',
                     rootDir: 'src/'
                 }
-            }
+            },
+            convnet: {
+                src: ['node_modules/convnetjs-ts/src/*.ts'],
+                dest: 'build/convnetjs-ts.js',
+                options: {
+                    target: 'es6',
+                    module: 'amd',
+                    moduleResolution: 'node',
+                    rootDir: 'node_modules/convnetjs-ts/src/'
+                }
+            },
         },
         concat: {
             css_dev: {
@@ -62,7 +72,7 @@ module.exports = function(grunt) {
             }
         },
         clean: {
-            main: ["build/**/*.js", "build/**/*.map", "!build/main.js", "!build/jquery.js", "!build/require.js", ".tscache"]
+            main: ["build/**/*.js", "build/**/*.map", "!build/main.js", "!build/jquery.js", "!build/require.js", "!build/convnetjs-ts.js", ".tscache"]
         },
         cleanempty: {
             options: {
@@ -118,10 +128,6 @@ module.exports = function(grunt) {
                 command: 'node_modules/typedoc/bin/typedoc --mode file --module amd --out doc/ src/ts/'
             }
         }
-
-
-
-
     });
 
     grunt.loadNpmTasks('grunt-contrib-concat');
