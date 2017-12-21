@@ -106,6 +106,8 @@ export class UIController {
         this.project.addLayer();
         // update the layer manager menu:
         this.layer_menu_controller = setup_layer_menu(this, document.getElementById("layerManager_container"));
+        // update viewport LayerList
+        this.viewport.setLayerList(this.project.layerList);
     }
 
     /**
@@ -254,8 +256,8 @@ export class UIController {
      * @memberOf UIController
      */
     onStep (timestamp: number) {
-        if (this.project != null) {
-            if (this.project.renderSelection()) {
+        if (this.project != null) { // if there is an open project
+            if (this.project.renderSelection()) { // if something is selected (can be drawn)
                 this.redraw = true;
             }
 

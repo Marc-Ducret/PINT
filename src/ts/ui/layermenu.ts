@@ -42,16 +42,18 @@ export function setup_layer_menu(controller: UIController, base_element: HTMLEle
 
     let layer_list = controller.project.getLayerList();
     let l = layer_list.length -2; // -2 to remove the preview layer and the selection layer
-    //let l = 20;
-    let i = 0;
-    for (i=0 ; i<l ; i++) { // add layers representations to HTML horizontal bar
+    for (let i=0 ; i<l ; i++) { // add layers representations to HTML horizontal bar
         let div = $("<div/>");
         div.attr("layer_id", i);
         let p = $("<p/>");
-        p.attr("style", "color:white;");
+        p.attr("style", "color:white; cursor:pointer;");
         p.text("layer " + i.toString());
         p.appendTo(div);
-        layer_menu_controller.addElement(div.get(0)); // .get(0) returns an HTMLElement
+        // convert div in a HTML element:
+        let HTMLdiv : HTMLElement = div.get(0);
+        // add a listener to select a layer as current layer when button is clicked:
+        HTMLdiv.addEventListener("click", function(){ controller.project.selectLayer(i); } );
+        layer_menu_controller.addElement(HTMLdiv);
     }
 
     // display the add_button

@@ -25,7 +25,7 @@ export class Project {
     currentTool: Tool;
     currentSelection: PixelSelectionHandler;
     ui: UIController;
-    redraw: boolean;
+    redraw: boolean; // UIcontroller check this.redraw to now if it has to update the drawing
     history: History;
 
     /**
@@ -173,9 +173,23 @@ export class Project {
      * Add a Layer in the layerList, just before the previewLayer and the selectionLayer
      */
     addLayer (){
-	    //this.layerList.push(new Layer(this.dimensions));
-        this.layerList.splice(this.layerList.length - 3, 0, new Layer(this.dimensions));
-        this.currentLayer = this.layerList[this.layerList.length - 3];
+	    // we substract 3 to let preview and selection in the two last positions of LayerList:
+        let n_last_layer : number = this.layerList.length - 3; // index of old last "real" layer
+        let l = new Layer(this.dimensions); // added layer
+        l.reset(); // set added layer transparent
+        // add the newly created Layer to layerList, just before position indexed by n_last_layer+1:
+        this.layerList.splice(n_last_layer+1, 0, l);
+        this.currentLayer = l;
+    };
+
+    selectLayer (i: number){
+        if (i >= this.layerList.length -2 || i < 0){//console.log(i.toString());
+            throw "try to select a layer that doesn't exist"
+                ;
+        }
+        else{
+            this.currentLayer = this.layerList[i];
+        }
     };
 
     /**
@@ -183,11 +197,10 @@ export class Project {
      * @param {number} i First layer to switch, index starting from 0
      * @param {number} j Second layer to switch, index starting from 0
      */
-
     exchangeLayers (i: number, j: number){
         if (i >= this.layerList.length || j >= this.layerList.length){
             throw "try to exchange a layer that doesn't exist with another one"
-            ;
+                ;
         }
         else{
             var temp = this.layerList[i];
