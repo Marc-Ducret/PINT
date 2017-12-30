@@ -135,6 +135,7 @@ export class UIController {
         } else {
             let func = (<Element> event.target).getAttribute("data-function");
             if(func !== null) {
+                let elem = event.target;
                 eval(func);
             } else {
                 console.warn("Unimplemented tool.");
@@ -313,5 +314,3 @@ export class UIController {
 
     }
 }
-
-
