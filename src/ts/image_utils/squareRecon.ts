@@ -245,8 +245,8 @@ function downgreyscale(img: ImageData) {
 
 export function hasSquare(img: ImageData): boolean {
     let sample = downgreyscale(img);
-    console.log('downgreyscale sample');
-    logImg(sample);
+    // console.log('downgreyscale sample');
+    // logImg(sample);
     return classifier.classify(sample);
 }
 
