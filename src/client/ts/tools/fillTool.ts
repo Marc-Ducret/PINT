@@ -10,6 +10,7 @@ import {colorSelect} from "../image_utils/connexComponent";
 import {Project} from "../docState";
 import {ActionInterface} from "./actionInterface";
 import {HistoryEntry} from "../history/historyEntry";
+import {Layer} from "../ui/layer";
 
 /**
  * Fill a connex component tool.
@@ -61,7 +62,7 @@ export class FillTool extends Tool {
     endUse (pos) {};
 
 
-    drawPreview (ctx: CanvasRenderingContext2D) {
+    drawPreview(layer: Layer) {
         if (this.newImage == null) {
             let selection = this.getSetting("project_selection");
 
@@ -77,7 +78,7 @@ export class FillTool extends Tool {
                 b: parseInt(result[3], 16)
             } : null;
 
-            this.newImage = ctx.createImageData(width, height);
+            this.newImage = layer.getContext().createImageData(width, height);
 
             let pixels = new Uint8ClampedArray(this.data.pixels, 0);
 
@@ -98,12 +99,12 @@ export class FillTool extends Tool {
 
             console.log("Fill tool: nfilled = "+nfilled);
         }
-        ctx.putImageData(this.newImage, 0, 0);
+        layer.getContext().putImageData(this.newImage, 0, 0);
     };
 
 
-    applyTool(context: CanvasRenderingContext2D): HistoryEntry {
-        this.drawPreview(context);
+    applyTool(layer: Layer): HistoryEntry {
+        this.drawPreview(layer);
         return new HistoryEntry(() => {}, () => {}, {});
     }
 }

@@ -4,6 +4,7 @@ import {InputType} from "../tool_settings/settingsRequester";
 import {Project} from "../docState";
 import {HistoryEntry} from "../history/historyEntry";
 import {ActionInterface} from "./actionInterface";
+import {Layer} from "../ui/layer";
 
 /**
  * Draw a shape tool.
@@ -41,19 +42,20 @@ export class LineTool extends Tool {
         this.continueUse(pos);
     };
 
-    drawPreview (ctx) {
-        ctx.globalAlpha = this.getSetting("strokeAlpha") / 100;
-        ctx.strokeStyle = this.getSetting('strokeColor');
-        ctx.lineWidth = this.getSetting('lineWidth');
-        ctx.beginPath();
-        ctx.moveTo(this.data.firstCorner.x, this.data.firstCorner.y);
-        ctx.lineTo(this.data.lastCorner.x, this.data.lastCorner.y);
-        ctx.stroke();
-        ctx.globalAlpha = 1;
+    drawPreview(layer: Layer) {
+        let context = layer.getContext();
+        context.globalAlpha = this.getSetting("strokeAlpha") / 100;
+        context.strokeStyle = this.getSetting('strokeColor');
+        context.lineWidth = this.getSetting('lineWidth');
+        context.beginPath();
+        context.moveTo(this.data.firstCorner.x, this.data.firstCorner.y);
+        context.lineTo(this.data.lastCorner.x, this.data.lastCorner.y);
+        context.stroke();
+        context.globalAlpha = 1;
     };
 
-    applyTool (context: CanvasRenderingContext2D): HistoryEntry {
-        this.drawPreview(context);
+    applyTool(layer: Layer): HistoryEntry {
+        this.drawPreview(layer);
         return new HistoryEntry(()=>{},()=>{}, []);
     }
 }

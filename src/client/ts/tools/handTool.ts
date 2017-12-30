@@ -8,6 +8,7 @@ import {Vec2} from "../vec2";
 import {Project} from "../docState";
 import {HistoryEntry} from "../history/historyEntry";
 import {InputType} from "../tool_settings/settingsRequester";
+import {Layer} from "../ui/layer";
 
 /**
  * Hand tool, allows the user to translate the canvas in the viewport.
@@ -67,14 +68,14 @@ export class HandTool extends Tool {
 
     /**
      * It's not really a preview, it applies the translation.
-     * @param {CanvasRenderingContext2D} ctx Ignored
+     * @param {CanvasRenderingContext2D} layer Ignored
      */
-    drawPreview(ctx) {
+    drawPreview(layer: Layer) {
         this.getSetting("user_interface").translate(new Vec2(this.data.lcx - this.data.fcx, this.data.lcy - this.data.fcy));
     };
 
-    applyTool (context: CanvasRenderingContext2D): HistoryEntry {
-        this.drawPreview(context);
+    applyTool(layer: Layer): HistoryEntry {
+        this.drawPreview(layer);
         return new HistoryEntry(()=>{},()=>{}, []);
     }
 }

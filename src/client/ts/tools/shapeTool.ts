@@ -4,6 +4,7 @@ import {InputType} from "../tool_settings/settingsRequester";
 import {Project} from "../docState";
 import {HistoryEntry} from "../history/historyEntry";
 import {ActionInterface} from "./actionInterface";
+import {Layer} from "../ui/layer";
 
 
 function drawEllipse(ctx, x, y, w, h) {
@@ -78,26 +79,27 @@ export class ShapeTool extends Tool {
         this.continueUse(pos);
     };
 
-    drawPreview (ctx) {
-        ctx.fillStyle = this.getSetting('fillColor');
-        ctx.strokeStyle = this.getSetting('strokeColor');
-        ctx.lineWidth = this.getSetting('lineWidth');
+    drawPreview(layer: Layer) {
+        let context = layer.getContext();
+        context.fillStyle = this.getSetting('fillColor');
+        context.strokeStyle = this.getSetting('strokeColor');
+        context.lineWidth = this.getSetting('lineWidth');
 
         let firstCorner = new Vec2(this.data.firstCorner.x, this.data.firstCorner.y);
         let lastCorner = new Vec2(this.data.lastCorner.x, this.data.lastCorner.y);
 
         switch (this.getSetting('shape')) {
             case "square":
-                ctx.beginPath();
+                context.beginPath();
                 const x = Math.min(firstCorner.x, lastCorner.x) + .5,
                     y = Math.min(firstCorner.y, lastCorner.y) + .5,
                     w = Math.abs(firstCorner.x - lastCorner.x),
                     h = Math.abs(firstCorner.y - lastCorner.y);
-                ctx.rect(x,y,w,h);
+                context.rect(x,y,w,h);
                 break;
             case "circle":
-                ctx.beginPath();
-                ctx.arc(firstCorner.x, firstCorner.y, firstCorner.distance(lastCorner), 0, 2 * Math.PI, false);
+                context.beginPath();
+                context.arc(firstCorner.x, firstCorner.y, firstCorner.distance(lastCorner), 0, 2 * Math.PI, false);
                 break;
             case "ellipse":
                 const xdep = firstCorner.x,
@@ -105,21 +107,21 @@ export class ShapeTool extends Tool {
                     xlen = lastCorner.x - firstCorner.x,
                     ylen = lastCorner.y - firstCorner.y;
                 //ctx.beginPath();
-                drawEllipse(ctx, xdep, ydep, xlen, ylen);
+                drawEllipse(context, xdep, ydep, xlen, ylen);
                 break;
             default:
                 console.error("No shape selected.");
                 break;
         }
-        ctx.globalAlpha = this.getSetting("fillAlpha")/100;
-        ctx.fill();
-        ctx.globalAlpha = this.getSetting("strokeAlpha")/100;
-        ctx.stroke();
-        ctx.globalAlpha = 1;
+        context.globalAlpha = this.getSetting("fillAlpha")/100;
+        context.fill();
+        context.globalAlpha = this.getSetting("strokeAlpha")/100;
+        context.stroke();
+        context.globalAlpha = 1;
     };
 
-    applyTool (context: CanvasRenderingContext2D): HistoryEntry {
-        this.drawPreview(context);
+    applyTool(layer: Layer): HistoryEntry {
+        this.drawPreview(layer);
         return new HistoryEntry(()=>{},()=>{}, []);
     }
 }

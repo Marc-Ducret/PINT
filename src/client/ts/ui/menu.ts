@@ -318,6 +318,9 @@ function menu_toolbox_create(controller: UIController): HTMLElement {
         function(elem) {
             controller.project.testSquare(elem);
         }));
+    p.appendChild(create_separator());
+    p.appendChild(create_tool_entry_icon("CopyTool","flip_to_back"));
+
     $.get('assets/net.json', function(data) {
         console.log('loaded network');
         console.log(data);

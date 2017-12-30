@@ -21,6 +21,10 @@ export interface Option {
  * Describes a parameter type.
  */
 export enum InputType {
+    String,
+    /**
+     * A sequence of characters
+     */
     Special,
     /**
      * A hexademical string describing a color.
@@ -73,7 +77,7 @@ export interface SettingRequest {
  */
 export class SettingsRequester {
     private requests: Array<SettingRequest> = [];
-    private data: {[name: string] : () => any} = {};
+    private data: {[name: string] : (update: any) => any} = {};
     private cbson: boolean = true;
 
     /**
@@ -100,10 +104,11 @@ export class SettingsRequester {
 
     /**
      * Updates a parameter to a getter that will give its value when ```get``` is called.
+     * Can also specify a setter that can be used when ```set``` is called.
      * @param {string} name Parameter name.
-     * @param {() => any} handle Getter, called on ```get```.
+     * @param {() => any} handle Getter, called on ```get```. Can have a parameter that is the value to set.
      */
-    setGetter (name: string, handle: () => any) {
+    setGetter (name: string, handle: (update: any) => any) {
         this.data[name] = handle;
     }
 
@@ -113,10 +118,27 @@ export class SettingsRequester {
      * @returns {any}
      */
     get (name: string) {
+        console.log("get "+name);
+
         if (this.data[name] === undefined) {
             console.log("Parameter '"+name+"' has not been requested.");
         } else {
-            return this.data[name]();
+            return this.data[name](null);
+        }
+    }
+
+    /**
+     * A tool can call this function to set the parameter to a new value.
+     * @param {string} name Parameter to update.
+     * @param value New value.
+     */
+    set (name: string, value: any) {
+        console.log("set "+name);
+
+        if (this.data[name] === undefined) {
+            console.log("Parameter '"+name+"' has not been requested.");
+        } else {
+            this.data[name](value);
         }
     }
 
@@ -132,7 +154,7 @@ export class SettingsRequester {
         let data = {};
         for (let req of this.requests) {
             if (req.inputType !== InputType.Special) {
-                data[req.name] = this.data[req.name]();
+                data[req.name] = this.data[req.name](null);
             }
         }
 
