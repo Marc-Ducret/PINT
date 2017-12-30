@@ -307,6 +307,9 @@ function menu_toolbox_create(): HTMLElement {
     p.appendChild(create_function_icon("this.zoom(50);","Zoom in","zoom_in"));
     p.appendChild(create_function_icon("this.zoom(-50);","Zoom out","zoom_out"));
     p.appendChild(create_function_icon("this.project.testSquare();", "Test Square", "build"));
+    p.appendChild(create_separator());
+    p.appendChild(create_tool_entry_icon("CopyTool","flip_to_back"));
+
     $.get('assets/net.json', function(data) {
         console.log('loaded network');
         console.log(data);

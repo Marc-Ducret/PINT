@@ -4,6 +4,7 @@ import {InputType} from "../tool_settings/settingsRequester";
 import {Project} from "../docState";
 import {ActionInterface} from "./actionInterface";
 import {HistoryEntry} from "../history/historyEntry";
+import {Layer} from "../ui/layer";
 
 /**
  * Draw a linear gradient of two colors.
@@ -46,20 +47,21 @@ export class GradientTool extends Tool {
         this.continueUse(pos);
     };
 
-    drawPreview (ctx) {
-        ctx.globalAlpha = this.getSetting('transparencyAlpha') / 100;
+    drawPreview(layer: Layer) {
+        let context = layer.getContext();
+        context.globalAlpha = this.getSetting('transparencyAlpha') / 100;
 
-        let gradient = ctx.createLinearGradient(this.data.firstCorner.x, this.data.firstCorner.y,
+        let gradient = context.createLinearGradient(this.data.firstCorner.x, this.data.firstCorner.y,
                                                 this.data.lastCorner.x, this.data.lastCorner.y);
         gradient.addColorStop(0, this.getSetting('color1'));
         gradient.addColorStop(1, this.getSetting('color2'));
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, this.data.width, this.data.height);
-        ctx.globalAlpha = 1;
+        context.fillStyle = gradient;
+        context.fillRect(0, 0, this.data.width, this.data.height);
+        context.globalAlpha = 1;
     };
 
-    applyTool (context: CanvasRenderingContext2D): HistoryEntry {
-        this.drawPreview(context);
+    applyTool(layer: Layer): HistoryEntry {
+        this.drawPreview(layer);
         return new HistoryEntry(()=>{},()=>{}, []);
     }
 }

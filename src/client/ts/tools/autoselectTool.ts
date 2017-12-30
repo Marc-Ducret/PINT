@@ -5,6 +5,7 @@ import {colorSelect} from "../image_utils/connexComponent";
 import {InputType} from "../tool_settings/settingsRequester";
 import {HistoryEntry} from "../history/historyEntry";
 import {ActionInterface} from "./actionInterface";
+import {Layer} from "../ui/layer";
 
 /**
  * 'Magic wand' automatic selection tool, selects the connex component of the picture containing the clicked position.
@@ -37,15 +38,15 @@ export class AutoSelectTool extends Tool {
 
     continueUse (pos) {};
 
-    drawPreview (ctx: CanvasRenderingContext2D) {
+    drawPreview(layer: Layer) {
         let selection = this.getSetting("project_selection");
         selection.reset();
         selection.addRegion(new Uint8ClampedArray(this.data, 0));
         selection.updateBorder();
     };
 
-    applyTool(context: CanvasRenderingContext2D): HistoryEntry {
-        this.drawPreview(context);
+    applyTool(layer: Layer): HistoryEntry {
+        this.drawPreview(layer);
         return new HistoryEntry(() => {}, () => {}, {});
     }
 }

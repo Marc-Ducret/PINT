@@ -51,9 +51,9 @@ export abstract class Tool {
 
     /**
      * Here the tool should draw its pending changes on the preview canvas layer.
-     * @param {CanvasRenderingContext2D} context Preview canvas.
+     * @param {CanvasRenderingContext2D} layer Preview canvas.
      */
-    abstract drawPreview (context: CanvasRenderingContext2D);
+    abstract drawPreview(layer: Layer);
 
     updateData (data: any) {
         this.data = data;
@@ -61,11 +61,10 @@ export abstract class Tool {
 
     /**
      *
-     * @param {ActionInterface} data
-     * @param {CanvasRenderingContext2D} context
+     * @param {Layer} layer on which the tool is applied
      * @returns {HistoryEntry}
      */
-    abstract applyTool(context: CanvasRenderingContext2D): HistoryEntry;
+    abstract applyTool(layer: Layer): HistoryEntry;
 
     /**
      * Called by the inherited classes when they need a custom parameter that the UI should provide.
@@ -84,6 +83,12 @@ export abstract class Tool {
     protected getSetting(name: string) {
         return this.settings.get(name);
     }
+
+
+    protected setSetting(key: string, value: any) {
+        this.settings.set(key, value);
+    }
+
 
     /**
      * Get the name of the tool.

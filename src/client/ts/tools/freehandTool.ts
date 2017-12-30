@@ -76,35 +76,36 @@ export class FreehandTool extends Tool {
 
     /**
      * Rendering using canvas features.
-     * @param {CanvasRenderingContext2D} ctx Canvas context.
+     * @param {CanvasRenderingContext2D} layer Canvas context.
      */
-    drawPreview (ctx) {
-        ctx.globalAlpha = this.getSetting("strokeAlpha") / 100;
-        ctx.lineWidth = this.getSetting("lineWidth");
-        ctx.strokeStyle = this.getSetting("strokeColor");
-        ctx.fillStyle = this.getSetting("strokeColor");
-        ctx.lineCap = "round";
-        ctx.lineJoin = "round";
+    drawPreview(layer: Layer) {
+        let context = layer.getContext();
+        context.globalAlpha = this.getSetting("strokeAlpha") / 100;
+        context.lineWidth = this.getSetting("lineWidth");
+        context.strokeStyle = this.getSetting("strokeColor");
+        context.fillStyle = this.getSetting("strokeColor");
+        context.lineCap = "round";
+        context.lineJoin = "round";
 
         if (this.data.positions.length > 0) {
-            ctx.fillRect(this.data.positions[0].x-0.5,this.data.positions[0].y-0.5,1,1);
+            context.fillRect(this.data.positions[0].x-0.5,this.data.positions[0].y-0.5,1,1);
         }
-        ctx.beginPath();
+        context.beginPath();
         for (let i = 0; i < this.data.positions.length; i++) {
             let pos = this.data.positions[i];
             if(i === 0) {
-                ctx.moveTo(pos.x, pos.y);
+                context.moveTo(pos.x, pos.y);
             } else {
-                ctx.lineTo(pos.x, pos.y);
+                context.lineTo(pos.x, pos.y);
             }
         }
 
-        ctx.stroke();
-        ctx.globalAlpha = 1;
+        context.stroke();
+        context.globalAlpha = 1;
     };
 
-    applyTool(context: CanvasRenderingContext2D): HistoryEntry {
-        this.drawPreview(context);
+    applyTool(layer: Layer): HistoryEntry {
+        this.drawPreview(layer);
         return new HistoryEntry(() => {}, () => {}, {});
     }
 

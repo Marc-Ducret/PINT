@@ -8,6 +8,7 @@ import {Vec2} from "../vec2";
 import {Project} from "../docState";
 import {InputType} from "../tool_settings/settingsRequester";
 import {HistoryEntry} from "../history/historyEntry";
+import {Layer} from "../ui/layer";
 
 /**
  * Shape selection tool, allows the user to add a shape to current selection.
@@ -45,39 +46,40 @@ export class SelectionTool extends Tool {
         this.continueUse(pos);
     };
 
-    drawPreview(ctx) {
-        ctx.strokeStyle = '#000';
-        ctx.lineWidth = 1;
+    drawPreview(layer: Layer) {
+        let context = layer.getContext();
+        context.strokeStyle = '#000';
+        context.lineWidth = 1;
 
         let firstCorner = new Vec2(this.data.firstCorner.x, this.data.firstCorner.y);
         let lastCorner = new Vec2(this.data.lastCorner.x, this.data.lastCorner.y);
 
         switch (this.getSetting("shape")) {
             case "square":
-                ctx.beginPath();
+                context.beginPath();
                 let x = Math.min(firstCorner.x, lastCorner.x),
                     y = Math.min(firstCorner.y, lastCorner.y),
                     w = Math.abs(firstCorner.x - lastCorner.x),
                     h = Math.abs(firstCorner.y - lastCorner.y);
 
-                ctx.rect(x, y, w, h);
-                ctx.stroke();
+                context.rect(x, y, w, h);
+                context.stroke();
                 break;
             case "circle":
-                ctx.beginPath();
+                context.beginPath();
                 let center = firstCorner;
                 let radius = center.distance(lastCorner);
-                ctx.arc(center.x, center.y, radius, 0, 2 * Math.PI, false);
-                ctx.stroke();
+                context.arc(center.x, center.y, radius, 0, 2 * Math.PI, false);
+                context.stroke();
                 break;
             case "ellipse":
                 let xdep = lastCorner.x / 2 + firstCorner.x / 2,
                     ydep = lastCorner.y / 2 + firstCorner.y / 2,
                     xlen = Math.abs(lastCorner.x / 2 - firstCorner.x / 2),
                     ylen = Math.abs(lastCorner.y / 2 - firstCorner.y / 2);
-                ctx.beginPath();
-                ctx.ellipse(xdep, ydep, xlen, ylen, 0, 0, 2 * Math.PI);
-                ctx.stroke();
+                context.beginPath();
+                context.ellipse(xdep, ydep, xlen, ylen, 0, 0, 2 * Math.PI);
+                context.stroke();
                 break;
             default:
                 console.error("No shape selected.");
@@ -85,7 +87,7 @@ export class SelectionTool extends Tool {
         }
     };
 
-    applyTool (context: CanvasRenderingContext2D): HistoryEntry {
+    applyTool(layer: Layer): HistoryEntry {
         let width = this.data.width;
         let height = this.data.height;
 

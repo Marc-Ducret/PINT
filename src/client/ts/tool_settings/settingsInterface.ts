@@ -35,6 +35,9 @@ export class SettingsInterface {
         let type_string: string;
 
         switch (type) {
+            case InputType.String:
+                type_string = "text";
+                break;
             case InputType.Range:
                 type_string = "range";
                 break;
@@ -139,6 +142,7 @@ export class SettingsInterface {
                 switch (request.inputType) {
                     case InputType.Range:
                     case InputType.Number:
+                    case InputType.String:
                     case InputType.Color:
                         input = SettingsInterface.createInputElement(
                             request.inputType,
@@ -168,7 +172,17 @@ export class SettingsInterface {
                     }).bind(input));
                 }
 
-                tool.settingsSetGetter(request.name, (function(name) {return this.savedSettings[name]}).bind(this, request.name));
+                let getter_setter_function = function(name: string, input_node, value_to_set: any) {
+                    console.log("Called "+name+" value "+value_to_set);
+                    if (value_to_set !== null) {// use as a setter
+                        this.savedSettings[name] = value_to_set;
+                        input_node.val(value_to_set);
+                    } else { // use as a getter
+                        return this.savedSettings[name];
+                    }
+                };
+
+                tool.settingsSetGetter(request.name, getter_setter_function.bind(this, request.name, input));
 
                 /*
                 Connect the different HTML elements.

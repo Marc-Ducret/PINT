@@ -8,6 +8,7 @@ import {SelectionTool} from "./selectionTool";
 import {HandTool} from "./handTool";
 import {LineTool} from "./lineTool";
 import {GradientTool} from "./gradientTool";
+import {CopyTool} from "./copyTool";
 
 /**
  * Basically a hashmap interface.
@@ -24,6 +25,7 @@ export class ToolRegistry {
         this.registerTool(new HandTool());
         this.registerTool(new LineTool());
         this.registerTool(new GradientTool());
+        this.registerTool(new CopyTool());
     }
 
     /**
