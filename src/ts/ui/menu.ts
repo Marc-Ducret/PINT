@@ -130,7 +130,7 @@ export function setup_menu(controller: UIController, base_element: HTMLElement) 
     menu_controller.addElementToCategory(back, 0);
     $(back).parent().hide();
 
-    let toolbox = menu_toolbox_create();
+    let toolbox = menu_toolbox_create(controller);
     menu_controller.addElement(toolbox, 0);
     menu_controller.addElementToCategory(toolbox, 1);
 
@@ -279,7 +279,14 @@ function create_function_icon(function_call: string, description: string, icon: 
     return i;
 }
 
-function menu_toolbox_create(): HTMLElement {
+function scheduleUpdates(elem: HTMLElement, update): HTMLElement {
+    setInterval(function() {
+        update(elem);
+    }, 500);
+    return elem;
+}
+
+function menu_toolbox_create(controller: UIController): HTMLElement {
     let p = document.createElement("p");
     p.id = "toolbox-container";
 
@@ -299,7 +306,11 @@ function menu_toolbox_create(): HTMLElement {
     p.appendChild(create_separator());
     p.appendChild(create_function_icon("this.zoom(50);","Zoom in","zoom_in"));
     p.appendChild(create_function_icon("this.zoom(-50);","Zoom out","zoom_out"));
-    p.appendChild(create_function_icon("this.project.testSquare();", "Test Square", "build"));
+    p.appendChild(scheduleUpdates(
+        create_function_icon("this.project.testSquare(elem);", "Test Square", "build"),
+        function(elem) {
+            controller.project.testSquare(elem);
+        }));
     $.get('assets/net.json', function(data) {
         console.log('loaded network');
         console.log(data);

@@ -235,7 +235,13 @@ export class Project {
         document.body.removeChild(fake_link);
     }
 
-    testSquare() {
-        console.log("square: "+squareRecon.hasSquare(this.currentLayer.getContext().getImageData(0, 0, this.dimensions.x, this.dimensions.y)));
+    testSquare(elem: HTMLElement) {
+        let color: string;
+        if(squareRecon.hasSquare(this.currentLayer.getContext().getImageData(0, 0, this.dimensions.x, this.dimensions.y))) {
+            color = "#6aeb70";
+        } else {
+            color = "#cc3058";
+        }
+        elem.setAttribute("style", "color: "+color);
     }
 }
