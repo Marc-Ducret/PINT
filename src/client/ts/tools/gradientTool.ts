@@ -11,7 +11,7 @@ import {Layer} from "../ui/layer";
  */
 export class GradientTool extends Tool {
     constructor () {
-        super("GradientTool", "Gradient");
+        super("GradientTool", "Gradient", "g");
         // define the two colors of the gradient:
         this.addSetting({name: "color1", descName: "from", inputType: InputType.Color, defaultValue: "#000000"});
         this.addSetting({name: "color2", descName: "to", inputType: InputType.Color, defaultValue: "#FFFFFF"});

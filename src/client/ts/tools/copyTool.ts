@@ -12,7 +12,7 @@ export class CopyTool extends Tool {
     private updated: boolean = false;
 
     constructor() {
-        super("CopyTool", "Copy");
+        super("CopyTool", "Copy", "c");
 
         this.addSetting({name: "project_clipboard", descName: "Clipboard", inputType: InputType.Hidden, defaultValue: ""});
         this.addSetting({name: "project_clipboard_x", descName: "Clipboard X", inputType: InputType.Hidden, defaultValue: 0});

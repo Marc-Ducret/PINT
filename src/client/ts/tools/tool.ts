@@ -9,18 +9,22 @@ import {ActionInterface, ActionType} from "./actionInterface";
 export abstract class Tool {
     private name: string;
     private desc: string;
+    private shortcut: string;
+
     private settings: SettingsRequester;
     protected data: any;
     readonly overrideSelectionMask: boolean = false;
 
     /**
      * Tool builder, giving it a name and a displayed description.
-     * @param name Name
-     * @param desc Description
+     * @param name Name.
+     * @param desc Dsiplayed name.
+     * @param shortcut Keyboard key associated to the tool.
      */
-    constructor (name, desc) {
+    constructor(name: string, desc: string, shortcut: string = "") {
         this.name = name;
         this.desc = desc;
+        this.shortcut = shortcut;
         this.settings = new SettingsRequester();
         this.data = {};
     }
@@ -98,8 +102,20 @@ export abstract class Tool {
         return this.name;
     }
 
+    /**
+     * Get tool displayed name.
+     * @returns {string}
+     */
     public getDesc() {
         return this.desc;
+    }
+
+    /**
+     * Get tool keyboard shortcut.
+     * @returns {string}
+     */
+    public getShortcut() {
+        return this.shortcut;
     }
 
     /**

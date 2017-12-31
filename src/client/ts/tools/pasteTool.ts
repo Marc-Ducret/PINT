@@ -12,7 +12,7 @@ export class PasteTool extends Tool {
     private ready: boolean = false;
 
     constructor() {
-        super("PasteTool", "Paste");
+        super("PasteTool", "Paste", "v");
 
         this.addSetting({name: "project_clipboard", descName: "Clipboard", inputType: InputType.Hidden, defaultValue: ""});
         this.addSetting({name: "project_clipboard_x", descName: "Clipboard X", inputType: InputType.Hidden, defaultValue: 0});

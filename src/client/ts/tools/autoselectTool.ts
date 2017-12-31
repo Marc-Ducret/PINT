@@ -17,7 +17,7 @@ export class AutoSelectTool extends Tool {
      * Instantiates the Tool with AutoSelectTool name.
      */
     constructor () {
-        super("AutoSelectTool", "Magic wand");
+        super("AutoSelectTool", "Magic wand", "w");
         this.addSetting({name: "wand_threshold", descName: "Threshold", inputType: InputType.Number, defaultValue: 50});
         this.addSetting({name: "project_selection", descName: "", inputType: InputType.Special, defaultValue: 0});
     }

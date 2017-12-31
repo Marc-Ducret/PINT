@@ -15,7 +15,7 @@ import {Layer} from "../ui/layer";
  */
 export class HandTool extends Tool {
     constructor() {
-        super("HandTool", "Move");
+        super("HandTool", "Move", "h");
 
         this.addSetting({name: "user_interface", descName: "", inputType: InputType.Special, defaultValue: 0});
     }
