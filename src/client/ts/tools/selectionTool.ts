@@ -17,7 +17,7 @@ export class SelectionTool extends Tool {
     readonly overrideSelectionMask: boolean = true;
 
     constructor() {
-        super("SelectionTool", "Selection");
+        super("SelectionTool", "Selection", "s");
 
         this.addSetting({
             name: "shape", descName: "Shape", inputType: InputType.Select, defaultValue: "square",

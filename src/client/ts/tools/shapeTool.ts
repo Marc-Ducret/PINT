@@ -32,7 +32,7 @@ function drawEllipse(ctx, x, y, w, h) {
  */
 export class ShapeTool extends Tool {
     constructor () {
-        super("ShapeTool", "Shape");
+        super("ShapeTool", "Shape", "q");
         this.addSetting({name: "strokeColor", descName: "Stroke color", inputType: InputType.Color, defaultValue: "#ffffff"});
         this.addSetting({
             name: "strokeAlpha",

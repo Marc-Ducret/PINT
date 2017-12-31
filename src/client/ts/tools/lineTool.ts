@@ -11,7 +11,7 @@ import {Layer} from "../ui/layer";
  */
 export class LineTool extends Tool {
     constructor () {
-        super("LineTool", "Line");
+        super("LineTool", "Line", "l");
         this.addSetting({name: "strokeColor", descName: "Stroke color", inputType: InputType.Color, defaultValue: "#000000"});
         this.addSetting({
             name: "strokeAlpha",
