@@ -311,8 +311,6 @@ function menu_toolbox_create(controller: UIController): HTMLElement {
     p.appendChild(create_tool_entry_icon("FillTool","format_color_fill"));
     p.appendChild(create_tool_entry_icon("GradientTool","gradient"));
     p.appendChild(create_separator());
-    p.appendChild(create_function_icon("this.zoom(50);","Zoom in","zoom_in"));
-    p.appendChild(create_function_icon("this.zoom(-50);","Zoom out","zoom_out"));
     p.appendChild(scheduleUpdates(
         create_function_icon("this.project.testSquare(elem);", "Test Square", "build"),
         function(elem) {
@@ -320,6 +318,7 @@ function menu_toolbox_create(controller: UIController): HTMLElement {
         }));
     p.appendChild(create_separator());
     p.appendChild(create_tool_entry_icon("CopyTool","flip_to_back"));
+    p.appendChild(create_tool_entry_icon("PasteTool","flip_to_front"));
 
     $.get('assets/net.json', function(data) {
         console.log('loaded network');

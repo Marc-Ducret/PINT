@@ -45,7 +45,7 @@ export class AutoSelectTool extends Tool {
         selection.updateBorder();
     };
 
-    applyTool(layer: Layer): HistoryEntry {
+    async applyTool(layer: Layer): Promise<HistoryEntry> {
         this.drawPreview(layer);
         return new HistoryEntry(() => {}, () => {}, {});
     }

@@ -49,6 +49,23 @@ export class Layer {
         return this.height;
     }
 
+    clone(): Layer {
+        let layer = new Layer(new Vec2(this.width, this.height));
+        layer.getContext().drawImage(this.getHTMLElement(), 0, 0);
+        return layer;
+    }
+
+    drawDataUrl(data: string, x: number, y: number): Promise<any> {
+        return new Promise(resolve => {
+            let imgtag = document.createElement("img");
+            imgtag.src = data;
+            imgtag.addEventListener("load", function() {
+                this.getContext().drawImage(imgtag, x, y);
+                resolve();
+            }.bind(this));
+        });
+    }
+
     /***
      * @deprecated
      * @param {PixelSelectionHandler} selection

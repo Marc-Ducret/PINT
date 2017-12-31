@@ -87,7 +87,7 @@ export class SelectionTool extends Tool {
         }
     };
 
-    applyTool(layer: Layer): HistoryEntry {
+    async applyTool(layer: Layer): Promise<HistoryEntry> {
         let width = this.data.width;
         let height = this.data.height;
 

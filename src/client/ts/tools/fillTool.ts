@@ -103,7 +103,7 @@ export class FillTool extends Tool {
     };
 
 
-    applyTool(layer: Layer): HistoryEntry {
+    async applyTool(layer: Layer): Promise<HistoryEntry> {
         this.drawPreview(layer);
         return new HistoryEntry(() => {}, () => {}, {});
     }
