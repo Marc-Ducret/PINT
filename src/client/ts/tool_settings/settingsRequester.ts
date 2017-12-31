@@ -21,9 +21,16 @@ export interface Option {
  * Describes a parameter type.
  */
 export enum InputType {
-    String,
+    /**
+     * A hidden variable that can be modified only by tools.
+     */
+    Hidden,
     /**
      * A sequence of characters
+     */
+    String,
+    /**
+     *
      */
     Special,
     /**

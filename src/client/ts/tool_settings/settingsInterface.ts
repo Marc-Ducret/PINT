@@ -116,6 +116,16 @@ export class SettingsInterface {
                 } else if (name === "user_interface") {
                     tool.settingsSetGetter("user_interface", (function () {return this.getUI()}).bind(project));
                 }
+            } else if (request.inputType == InputType.Hidden) {
+                let getter_setter_function = function(name: string, value_to_set: any) {
+                    if (value_to_set !== null) {// use as a setter
+                        this.savedSettings[name] = value_to_set;
+                    } else { // use as a getter
+                        return this.savedSettings[name];
+                    }
+                };
+
+                tool.settingsSetGetter(request.name, getter_setter_function.bind(this, request.name));
             } else {
                 const name = request.name;
                 const desc = request.descName;
@@ -173,7 +183,6 @@ export class SettingsInterface {
                 }
 
                 let getter_setter_function = function(name: string, input_node, value_to_set: any) {
-                    console.log("Called "+name+" value "+value_to_set);
                     if (value_to_set !== null) {// use as a setter
                         this.savedSettings[name] = value_to_set;
                         input_node.val(value_to_set);

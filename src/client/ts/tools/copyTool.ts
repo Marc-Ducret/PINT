@@ -14,9 +14,9 @@ export class CopyTool extends Tool {
     constructor() {
         super("CopyTool", "Copy");
 
-        this.addSetting({name: "project_clipboard", descName: "Clipboard", inputType: InputType.String, defaultValue: ""});
-        this.addSetting({name: "project_clipboard_x", descName: "Clipboard X", inputType: InputType.Number, defaultValue: 0});
-        this.addSetting({name: "project_clipboard_y", descName: "Clipboard Y", inputType: InputType.Number, defaultValue: 0});
+        this.addSetting({name: "project_clipboard", descName: "Clipboard", inputType: InputType.Hidden, defaultValue: ""});
+        this.addSetting({name: "project_clipboard_x", descName: "Clipboard X", inputType: InputType.Hidden, defaultValue: 0});
+        this.addSetting({name: "project_clipboard_y", descName: "Clipboard Y", inputType: InputType.Hidden, defaultValue: 0});
 
         this.addSetting({name: "project_selection", descName: "", inputType: InputType.Special, defaultValue: 0});
         this.addSetting({name: "user_interface", descName: "", inputType: InputType.Special, defaultValue: 0});
