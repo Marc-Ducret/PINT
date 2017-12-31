@@ -359,6 +359,26 @@ export class UIController {
         document.body.addEventListener('touchmove', function(event) {
             event.preventDefault();
         }, false);
+
+        document.addEventListener("keyup",function (evt: KeyboardEvent) {
+            let combination = [];
+
+            if (evt.ctrlKey) {
+                combination.push("Ctrl");
+            }
+
+            if (evt.altKey) {
+                combination.push("Alt");
+            }
+
+            if (evt.shiftKey) {
+                combination.push("Shift");
+            }
+
+            combination.push(evt.key);
+
+            console.log(combination.join("-"));
+        }.bind(this));
     }
 }
 
