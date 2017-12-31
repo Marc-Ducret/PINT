@@ -6,6 +6,16 @@ module.exports = function(config) {
             { pattern: "src/client/ts/**/*.ts" },
             { pattern: "test/**/*.ts" }
         ],
+        karmaTypescriptConfig: {
+            compilerOptions: {
+                emitDecoratorMetadata: true,
+                experimentalDecorators: true,
+                jsx: "react",
+                module: "commonjs",
+                sourceMap: true,
+                target: "ES2015"
+            }
+        },
         preprocessors: {
             "src/**/*.ts": ["karma-typescript", "coverage"],
             "test/**/*.ts": ["karma-typescript"],
