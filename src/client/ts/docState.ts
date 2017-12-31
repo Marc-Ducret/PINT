@@ -194,13 +194,17 @@ export class Project {
                 tool.applyTool(this.previewLayer).then(ignored => {
                     this.previewLayer.applyMask(selectionHandler);
                     this.currentLayer.getContext().drawImage(this.previewLayer.getHTMLElement(), -0.5, -0.5);
+
+                    this.previewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
+                    this.redraw = true;
                 });
             } else { /// Or not.
-                tool.applyTool(this.currentLayer);
+                tool.applyTool(this.currentLayer).then(ignored => {
+                    this.previewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
+                    this.redraw = true;
+                });
             }
 
-            this.previewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
-            this.redraw = true;
         } else if (action.type == ActionType.ToolPreview) {
             if (this.ui == null) {
                 return; // No work on server side for preview.
