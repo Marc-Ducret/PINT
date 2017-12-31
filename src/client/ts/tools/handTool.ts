@@ -74,7 +74,7 @@ export class HandTool extends Tool {
         this.getSetting("user_interface").translate(new Vec2(this.data.lcx - this.data.fcx, this.data.lcy - this.data.fcy));
     };
 
-    applyTool(layer: Layer): HistoryEntry {
+    async applyTool(layer: Layer): Promise<HistoryEntry> {
         this.drawPreview(layer);
         return new HistoryEntry(()=>{},()=>{}, []);
     }

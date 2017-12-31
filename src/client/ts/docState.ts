@@ -191,11 +191,10 @@ export class Project {
             this.previewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
 
             if (!tool.overrideSelectionMask) { /// Applying selection mask.
-                tool.applyTool(this.previewLayer);
-
-                this.previewLayer.applyMask(selectionHandler);
-
-                this.currentLayer.getContext().drawImage(this.previewLayer.getHTMLElement(), -0.5, -0.5);
+                tool.applyTool(this.previewLayer).then(ignored => {
+                    this.previewLayer.applyMask(selectionHandler);
+                    this.currentLayer.getContext().drawImage(this.previewLayer.getHTMLElement(), -0.5, -0.5);
+                });
             } else { /// Or not.
                 tool.applyTool(this.currentLayer);
             }

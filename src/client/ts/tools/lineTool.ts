@@ -54,7 +54,7 @@ export class LineTool extends Tool {
         context.globalAlpha = 1;
     };
 
-    applyTool(layer: Layer): HistoryEntry {
+    async applyTool(layer: Layer): Promise<HistoryEntry> {
         this.drawPreview(layer);
         return new HistoryEntry(()=>{},()=>{}, []);
     }
