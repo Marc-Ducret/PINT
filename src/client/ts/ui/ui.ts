@@ -8,6 +8,8 @@ import {Vec2} from "../vec2";
 import {MenuController, setup_menu} from "./menu";
 import * as io from 'socket.io-client';
 import {LayerMenuController, setup_layer_menu} from "./layermenu"
+import {KeyboardManager} from "./keyboardManager";
+import {Tool} from "../tools/tool";
 
 /**
  * @file User interface handler
@@ -30,6 +32,7 @@ export class UIController {
     layer_menu_controller: LayerMenuController;
     toolRegistry: ToolRegistry;
     menu_controller: MenuController;
+    keyboard_manager: KeyboardManager;
     redraw: boolean;
 
     project_name: string;
@@ -59,6 +62,8 @@ export class UIController {
         }.bind(this));
 
         this.socket.on("joined", this.loadServerHostedCallback.bind(this));
+
+        this.keyboard_manager = new KeyboardManager(this);
 
         window.requestAnimationFrame(this.onStep.bind(this));
     }
@@ -140,6 +145,24 @@ export class UIController {
         this.layer_menu_controller = setup_layer_menu(this, document.getElementById("layerManager_container"));
     }
 
+    setTool (tool: Tool) {
+        if (this.project != null) {
+            this.project.changeTool(tool);
+            this.settingsUI.setupToolSettings(tool, this.project);
+
+            $("#toolbox-container").children().removeClass("hovered");
+            let toolbox: Element = document.getElementById("toolbox-container");
+            for (let i=0; i<toolbox.children.length; i++) {
+                let child = toolbox.children[i];
+                if (child.getAttribute("data-tool") == tool.getName()) {
+                    child.className += " hovered";
+                }
+            }
+
+            UIController.displayName(tool.getDesc());
+        }
+    }
+
     /**
      * @function onToolboxClicked
      * @description Event handler triggered when one of the toolbox buttons is clicked.
@@ -153,12 +176,8 @@ export class UIController {
         if(toolname !== null) {
             let tool = this.toolRegistry.getToolByName(toolname);
             if(tool !== null) {
-                if (this.project != null) {
-                    this.project.changeTool(tool);
-                    this.settingsUI.setupToolSettings(tool, this.project);
-                    $("#toolbox-container").children().removeClass("hovered");
-                    (<Element> event.target).className += " hovered";
-                }
+                this.setTool(tool);
+                (<Element> event.target).className += " hovered";
             } else {
                 console.warn("No such tool "+toolname);
             }
@@ -353,25 +372,7 @@ export class UIController {
             event.preventDefault();
         }, false);
 
-        document.addEventListener("keyup",function (evt: KeyboardEvent) {
-            let combination = [];
-
-            if (evt.ctrlKey) {
-                combination.push("Ctrl");
-            }
-
-            if (evt.altKey) {
-                combination.push("Alt");
-            }
-
-            if (evt.shiftKey) {
-                combination.push("Shift");
-            }
-
-            combination.push(evt.key);
-
-            console.log(combination.join("-"));
-        }.bind(this));
+        document.addEventListener("keyup", this.keyboard_manager.handleEvent.bind(this.keyboard_manager));
     }
 }
 
