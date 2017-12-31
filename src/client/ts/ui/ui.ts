@@ -10,6 +10,7 @@ import * as io from 'socket.io-client';
 import {LayerMenuController, setup_layer_menu} from "./layermenu"
 import {KeyboardManager} from "./keyboardManager";
 import {Tool} from "../tools/tool";
+import {ActionType} from "../tools/actionInterface";
 
 /**
  * @file User interface handler
@@ -64,6 +65,21 @@ export class UIController {
         this.socket.on("joined", this.loadServerHostedCallback.bind(this));
 
         this.keyboard_manager = new KeyboardManager(this);
+        this.keyboard_manager.registerBinding("Ctrl-a", function() {
+           if (this.project != null) {
+                this.project.applyAction({
+                    type: ActionType.ToolApply,
+                    toolName: "SelectionTool",
+                    actionData: {
+                        firstCorner: {x: 0, y: 0},
+                        lastCorner:this.project.dimensions,
+                        width: this.project.dimensions.x,
+                        height: this.project.dimensions.y
+                    },
+                    toolSettings: {shape: "square"}
+                }, this.project.currentSelection);
+           }
+        }.bind(this));
 
         window.requestAnimationFrame(this.onStep.bind(this));
     }
