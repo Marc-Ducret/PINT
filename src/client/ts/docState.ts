@@ -191,7 +191,7 @@ export class Project {
             this.previewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
 
             if (!tool.overrideSelectionMask) { /// Applying selection mask.
-                tool.applyTool(this.previewLayer).then(ignored => {
+                tool.applyTool(this.previewLayer, false).then(ignored => {
                     this.previewLayer.applyMask(selectionHandler);
                     this.currentLayer.getContext().drawImage(this.previewLayer.getHTMLElement(), -0.5, -0.5);
 
@@ -199,7 +199,7 @@ export class Project {
                     this.redraw = true;
                 });
             } else { /// Or not.
-                tool.applyTool(this.currentLayer).then(ignored => {
+                tool.applyTool(this.currentLayer, false).then(ignored => {
                     this.previewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
                     this.redraw = true;
                 });
