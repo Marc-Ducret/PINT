@@ -3,7 +3,6 @@ import {Vec2} from "../vec2";
 import {PixelSelectionHandler} from "../selection/selection";
 
 
-
 /**
  * Interface for a virtual HTML Canvas element.
  */
@@ -57,12 +56,28 @@ export class Layer {
 
     drawDataUrl(data: string, x: number, y: number): Promise<any> {
         return new Promise(resolve => {
-            let imgtag = document.createElement("img");
-            imgtag.src = data;
-            imgtag.addEventListener("load", function() {
-                this.getContext().drawImage(imgtag, x, y);
+            if(typeof process === 'object' && process + '' === '[object process]'){
+                // is node
+                const { Image } = require('canvas');
+
+                let img = new Image();
+                img.src = data;
+
+                this.getContext().drawImage(img, x, y);
                 resolve();
-            }.bind(this));
+            }
+            else{
+                // not node
+                let imgtag = document.createElement("img");
+                console.log("load");
+
+                imgtag.addEventListener("load", function() {
+                    this.getContext().drawImage(imgtag, x, y);
+                    console.log("loaded");
+                    resolve();
+                }.bind(this));
+                imgtag.src = data;
+            }
         });
     }
 
@@ -77,7 +92,13 @@ export class Layer {
     }
 
     mask(layer: Layer) {
-        this.context.globalCompositeOperation = 'destintion-in';
+        this.context.globalCompositeOperation = 'destination-in';
+        this.context.drawImage(layer.getHTMLElement(), 0, 0);
+        this.context.globalCompositeOperation = 'source-over';
+    }
+
+    draw_source_in(layer: Layer) {
+        this.context.globalCompositeOperation = 'source-in';
         this.context.drawImage(layer.getHTMLElement(), 0, 0);
         this.context.globalCompositeOperation = 'source-over';
     }

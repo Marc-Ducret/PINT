@@ -7,6 +7,7 @@ export interface ActionInterface {
 
 
 export enum ActionType {
+    ToolApplyHistory,
     Undo,
     Redo,
     Load,

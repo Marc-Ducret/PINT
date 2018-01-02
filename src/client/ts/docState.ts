@@ -9,7 +9,7 @@ import {Vec2} from "./vec2";
 import {PixelSelectionHandler} from "./selection/selection";
 import {UIController} from "./ui/ui";
 import {mask} from "./selection/selectionUtils";
-import {History} from "./history/history";
+import {PintHistory} from "./history/history";
 import {HistoryEntry} from "./history/historyEntry";
 import * as squareRecon from "./image_utils/squareRecon";
 import {ActionInterface, ActionType} from "./tools/actionInterface";
@@ -24,16 +24,16 @@ export class Project {
     dimensions: Vec2;
     previewLayer: Layer;
     currentLayer: Layer;
+    workingLayer: Layer;
 
     layerList: Array<Layer>; // The renderer draw layers in order.
     currentTool: Tool;
     currentSelection: PixelSelectionHandler;
     ui: UIController;
     redraw: boolean; // UIcontroller check this.redraw to now if it has to update the drawing
-    history: History;
+    history: PintHistory;
     toolRegistry: ToolRegistry;
     private netlink: NetworkLink;
-
     private usingTool: boolean;
 
     /**
@@ -45,12 +45,16 @@ export class Project {
      */
     constructor (ui: UIController, name: string, dimensions: Vec2) {
         this.name = name;
+
         this.toolRegistry = new ToolRegistry();
         if (dimensions == null) {
             this.dimensions = new Vec2(800,600);
         } else {
             this.dimensions = dimensions;
         }
+        this.workingLayer = new Layer(this.dimensions);
+        this.workingLayer.getContext().translate(0.5, 0.5);
+
         this.previewLayer = new Layer(this.dimensions);
         this.previewLayer.getContext().translate(0.5, 0.5); // why translating of 0.5, 0.5 ?
 
@@ -73,8 +77,6 @@ export class Project {
         this.currentSelection = new PixelSelectionHandler(this.dimensions.x, this.dimensions.y);
 
         this.currentLayer.fill();
-
-        this.history = new History(this);
     }
 
 
@@ -141,7 +143,7 @@ export class Project {
             };
 
 
-            this.applyAction(action, this.currentSelection);
+            this.applyAction(action, this.currentSelection, false);
 
             if (this.netlink === null || this.currentTool.getSettings().canBeSentOverNetwork() === false) {
             } else {
@@ -172,7 +174,7 @@ export class Project {
             };
 
             if (this.netlink === null || this.currentTool.getSettings().canBeSentOverNetwork() === false) {
-                this.applyAction(action, this.currentSelection);
+                this.applyAction(action, this.currentSelection, false);
             } else {
                 this.netlink.sendAction(action);
             }
@@ -180,8 +182,37 @@ export class Project {
         }
     };
 
+    undo() {
+        if (this.netlink !== null) {
+            let action = {
+                toolName: "Undo",
+                actionData: "",
+                type: ActionType.Undo,
+                toolSettings: {}
+            };
+            this.netlink.sendAction(action);
+        } else { /// TODO: Implement local version.
 
-    applyAction (action: ActionInterface, selectionHandler: PixelSelectionHandler) {
+        }
+    }
+
+    redo() {
+        if (this.netlink !== null) {
+            let action = {
+                toolName: "Redo",
+                actionData: "",
+                type: ActionType.Redo,
+                toolSettings: {}
+            };
+            this.netlink.sendAction(action);
+        } else { /// TODO: Implement local version.
+
+        }
+
+    }
+
+
+    async applyAction (action: ActionInterface, selectionHandler: PixelSelectionHandler, generateHistory: boolean): Promise<ActionInterface> {
         if (action.type == ActionType.ToolApply) {
             let tool = this.toolRegistry.getToolByName(action.toolName);
             tool.reset();
@@ -191,23 +222,48 @@ export class Project {
             this.previewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
 
             if (!tool.overrideSelectionMask) { /// Applying selection mask.
-                tool.applyTool(this.previewLayer, false).then(ignored => {
-                    this.previewLayer.applyMask(selectionHandler);
-                    this.currentLayer.getContext().drawImage(this.previewLayer.getHTMLElement(), -0.5, -0.5);
 
-                    this.previewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
-                    this.redraw = true;
-                });
+                console.log("App1cation of tool");
+
+                let undo = await tool.applyTool(this.previewLayer, generateHistory);
+
+                console.log("Application of tool");
+
+                if (undo != null && undo.type == ActionType.ToolApplyHistory) {
+                    this.workingLayer.getContext().imageSmoothingEnabled = false;
+                    await tool.applyTool(this.workingLayer, false);
+                    this.workingLayer.draw_source_in(this.currentLayer);
+
+                    undo.type = ActionType.ToolApply;
+                    undo.toolName = "PasteTool";
+                    undo.toolSettings = {
+                        project_clipboard: this.workingLayer.getHTMLElement().toDataURL(),
+                        project_clipboard_x: 0,
+                        project_clipboard_y: 0,
+                    };
+                    undo.actionData = {x: 0, y: 0};
+
+                    this.workingLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
+                }
+
+
+                this.previewLayer.applyMask(selectionHandler);
+                this.currentLayer.getContext().drawImage(this.previewLayer.getHTMLElement(), -0.5, -0.5);
+
+                this.previewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
+                this.redraw = true;
+                return undo;
             } else { /// Or not.
-                tool.applyTool(this.currentLayer, false).then(ignored => {
-                    this.previewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
-                    this.redraw = true;
-                });
+                let undo = await tool.applyTool(this.currentLayer, generateHistory);
+
+                this.previewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
+                this.redraw = true;
+                return undo;
             }
 
         } else if (action.type == ActionType.ToolPreview) {
             if (this.ui == null) {
-                return; // No work on server side for preview.
+                return null; // No work on server side for preview.
             }
 
             let tool = this.toolRegistry.getToolByName(action.toolName);
@@ -224,6 +280,7 @@ export class Project {
             }
 
             this.redraw = true;
+            return null;
         }
     }
 

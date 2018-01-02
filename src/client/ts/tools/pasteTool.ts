@@ -36,34 +36,21 @@ export class PasteTool extends Tool {
     drawPreview(layer: Layer) {};
 
     async applyTool(layer: Layer, generate_undo: boolean): Promise<ActionInterface> {
-        if (generate_undo) {
-            let old_layer = layer.clone();
+        console.log("let's work");
 
-            await layer.drawDataUrl(
-                this.getSetting("project_clipboard"),
-                this.data.x - this.getSetting("project_clipboard_x"),
-                this.data.y - this.getSetting("project_clipboard_y"));
+        await layer.drawDataUrl(
+            this.getSetting("project_clipboard"),
+            this.data.x - this.getSetting("project_clipboard_x"),
+            this.data.y - this.getSetting("project_clipboard_y"));
 
-            old_layer.mask(layer);
-            return {
-                type: ActionType.ToolApply,
-                toolName: "PasteTool",
-                actionData: null,
-                toolSettings:
-                    {
-                        project_clipboard: old_layer.getHTMLElement().toDataURL(),
-                        project_clipboard_x: 0,
-                        project_clipboard_y: 0,
-                    }
-            };
-        } else {
-            await layer.drawDataUrl(
-                this.getSetting("project_clipboard"),
-                this.data.x - this.getSetting("project_clipboard_x"),
-                this.data.y - this.getSetting("project_clipboard_y"));
-            return null;
-        }
+        console.log("done.");
 
+        return {
+            type: ActionType.ToolApplyHistory,
+            toolName: "PasteTool",
+            actionData: {},
+            toolSettings: {}
+        };
     };
 }
 

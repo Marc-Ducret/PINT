@@ -58,24 +58,16 @@ export class GradientTool extends Tool {
     };
 
     async applyTool(layer: Layer, generate_undo: boolean): Promise<ActionInterface> {
-        if (generate_undo) {
-            let old_layer = layer.clone();
-            this.drawPreview(layer);
+        this.drawPreview(layer);
 
-            old_layer.mask(layer);
+        if (generate_undo) {
             return {
-                type: ActionType.ToolApply,
+                type: ActionType.ToolApplyHistory,
                 toolName: "PasteTool",
-                actionData: null,
-                toolSettings:
-                    {
-                        project_clipboard: old_layer.getHTMLElement().toDataURL(),
-                        project_clipboard_x: 0,
-                        project_clipboard_y: 0,
-                    }
+                actionData: {},
+                toolSettings: {}
             };
         } else {
-            this.drawPreview(layer);
             return null;
         }
     }

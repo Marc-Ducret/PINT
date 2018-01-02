@@ -7,6 +7,8 @@ import {Vec2} from "../client/ts/vec2";
 import {Project} from "../client/ts/docState";
 import {ActionNetworkPacket, HelloNetworkPacket} from "../client/ts/networkLink";
 import {PixelSelectionHandler} from "../client/ts/selection/selection";
+import {ActionType} from "../client/ts/tools/actionInterface";
+import {PintHistory} from "../client/ts/history/history";
 
 let app = express();
 
@@ -26,6 +28,8 @@ app.use('/', serveStatic(path.join(__dirname, '../client/')));
 let project = new Project(null, "0", new Vec2(800,600));
 let selectionHandlers: {[id: string]: PixelSelectionHandler} = {};
 let clients: {[id: string]: SocketIO.Socket} = {};
+
+let history: PintHistory = new PintHistory(project);
 
 io.on("connection", function (socket: SocketIO.Socket) {
     socket.on("join", function (name: string) {
@@ -72,8 +76,31 @@ io.on("connection", function (socket: SocketIO.Socket) {
           socket.disconnect();
         }
 
-        io.sockets.emit("action", data);
         console.log("Action by " + data.sender + " with tool " + data.data.toolName);
-        project.applyAction(data.data, selectionHandlers[data.sender]);
+        if (data.data.type == ActionType.Undo) {
+            let action_packet = history.undo();
+            if (action_packet != null) {
+                project.applyAction(action_packet.data, selectionHandlers[action_packet.sender], false).then(_ => {
+                    io.sockets.emit("action", action_packet);
+                });
+            }
+        } else if (data.data.type == ActionType.Redo) {
+            let action_packet = history.redo();
+
+            if (action_packet != null) {
+                project.applyAction(action_packet.data, selectionHandlers[action_packet.sender], false).then(null);
+                io.sockets.emit("action", action_packet);
+            }
+        } else {
+            io.sockets.emit("action", data);
+            if (data.data.type == ActionType.ToolApply) {
+                project.applyAction(data.data, selectionHandlers[data.sender], true).then(undo_action => {
+                    history.register_action(data, undo_action);
+                });
+            } else if (data.data.type == ActionType.ToolPreview) {
+                project.applyAction(data.data, selectionHandlers[data.sender], false).then(null);
+            }
+
+        }
     })
 });
