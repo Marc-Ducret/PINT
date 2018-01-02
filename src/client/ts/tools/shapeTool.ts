@@ -1,9 +1,7 @@
 import {Tool} from "./tool";
 import {Vec2} from "../vec2";
 import {InputType} from "../tool_settings/settingsRequester";
-import {Project} from "../docState";
-import {HistoryEntry} from "../history/historyEntry";
-import {ActionInterface} from "./actionInterface";
+import {ActionInterface, ActionType} from "./actionInterface";
 import {Layer} from "../ui/layer";
 
 
@@ -120,8 +118,22 @@ export class ShapeTool extends Tool {
         context.globalAlpha = 1;
     };
 
-    async applyTool(layer: Layer): Promise<HistoryEntry> {
+    async applyTool(layer: Layer): Promise<ActionInterface> {
+
+        let old_layer = layer.clone();
         this.drawPreview(layer);
-        return new HistoryEntry(()=>{},()=>{}, []);
+
+        old_layer.mask(layer);
+        return {
+            type: ActionType.ToolApply,
+            toolName: "PasteTool",
+            actionData: null,
+            toolSettings:
+                {
+                    project_clipboard: old_layer.getHTMLElement().toDataURL(),
+                    project_clipboard_x: 0,
+                    project_clipboard_y: 0,
+                }
+        };
     }
 }

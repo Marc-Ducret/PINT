@@ -6,9 +6,9 @@
 import {Tool} from "./tool";
 import {Vec2} from "../vec2";
 import {Project} from "../docState";
-import {HistoryEntry} from "../history/historyEntry";
 import {InputType} from "../tool_settings/settingsRequester";
 import {Layer} from "../ui/layer";
+import {ActionInterface, ActionType} from "./actionInterface";
 
 /**
  * Hand tool, allows the user to translate the canvas in the viewport.
@@ -74,8 +74,21 @@ export class HandTool extends Tool {
         this.getSetting("user_interface").translate(new Vec2(this.data.lcx - this.data.fcx, this.data.lcy - this.data.fcy));
     };
 
-    async applyTool(layer: Layer): Promise<HistoryEntry> {
+    async applyTool(layer: Layer): Promise<ActionInterface> {
+        let old_layer = layer.clone();
         this.drawPreview(layer);
-        return new HistoryEntry(()=>{},()=>{}, []);
+
+        old_layer.mask(layer);
+        return {
+            type: ActionType.ToolApply,
+            toolName: "PasteTool",
+            actionData: null,
+            toolSettings:
+                {
+                    project_clipboard: old_layer.getHTMLElement().toDataURL(),
+                    project_clipboard_x: 0,
+                    project_clipboard_y: 0,
+                }
+        };
     }
 }

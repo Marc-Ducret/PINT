@@ -1,9 +1,8 @@
 import {Tool} from "./tool";
 import {Vec2} from "../vec2";
-import {Project} from "../docState";
 import {InputType} from "../tool_settings/settingsRequester";
-import {HistoryEntry} from "../history/historyEntry";
 import {Layer} from "../ui/layer";
+import {ActionInterface, ActionType} from "./actionInterface";
 
 /**
  * Paste tool
@@ -36,13 +35,26 @@ export class PasteTool extends Tool {
 
     drawPreview(layer: Layer) {};
 
-    async applyTool(layer: Layer): Promise<HistoryEntry> {
+    async applyTool(layer: Layer): Promise<ActionInterface> {
+        let old_layer = layer.clone();
+
         await layer.drawDataUrl(
             this.getSetting("project_clipboard"),
             this.data.x - this.getSetting("project_clipboard_x"),
             this.data.y - this.getSetting("project_clipboard_y"));
 
-        return new HistoryEntry(()=>{},()=>{}, []);
+        old_layer.mask(layer);
+        return {
+            type: ActionType.ToolApply,
+            toolName: "PasteTool",
+            actionData: null,
+            toolSettings:
+                {
+                    project_clipboard: old_layer.getHTMLElement().toDataURL(),
+                    project_clipboard_x: 0,
+                    project_clipboard_y: 0,
+                }
+        };
     };
 }
 

@@ -1,9 +1,8 @@
 import {Tool} from "./tool";
 import {Vec2} from "../vec2";
-import {Project} from "../docState";
 import {InputType} from "../tool_settings/settingsRequester";
-import {HistoryEntry} from "../history/historyEntry";
 import {Layer} from "../ui/layer";
+import {ActionInterface} from "./actionInterface";
 
 /**
  * Copy tool.
@@ -45,7 +44,8 @@ export class CopyTool extends Tool {
 
     drawPreview(layer: Layer) {};
 
-    async applyTool(layer: Layer): Promise<HistoryEntry> {
-        return new HistoryEntry(()=>{},()=>{}, []);
+    async applyTool(layer: Layer): Promise<ActionInterface> {
+        // Can't undo a copy.
+        return null;
     };
 }

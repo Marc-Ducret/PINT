@@ -1,22 +1,8 @@
-import {Project} from "../docState";
+import {ActionInterface} from "../tools/actionInterface";
 
 export class HistoryEntry {
 
-    doFunction;
-    undoFunction;
-    data;
+    constructor(doAction: ActionInterface, undoAction: ActionInterface) {
 
-    constructor(doFunction, undoFunction, data) {
-        this.doFunction = doFunction;
-        this.undoFunction = undoFunction;
-        this.data = data;
-    };
-
-    doAction(project: Project) {
-        this.doFunction(this.data, project);
-    };
-
-    undoAction(project: Project) {
-        this.undoFunction(this.data, project);
     };
 }
