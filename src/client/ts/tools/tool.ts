@@ -1,7 +1,6 @@
 import {SettingRequest, SettingsRequester} from "../tool_settings/settingsRequester";
 import {Vec2} from "../vec2";
 import {HistoryEntry} from "../history/historyEntry";
-import {Project} from "../docState";
 import {Layer} from "../ui/layer";
 import {ActionInterface, ActionType} from "./actionInterface";
 
@@ -68,7 +67,7 @@ export abstract class Tool {
      * @param {Layer} layer on which the tool is applied
      * @returns {HistoryEntry}
      */
-    abstract async applyTool(layer: Layer): Promise<HistoryEntry>;
+    abstract async applyTool(layer: Layer): Promise<ActionInterface>;
 
     /**
      * Called by the inherited classes when they need a custom parameter that the UI should provide.

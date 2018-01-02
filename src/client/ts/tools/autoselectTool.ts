@@ -3,8 +3,7 @@ import {Vec2} from "../vec2";
 import {Project} from "../docState";
 import {colorSelect} from "../image_utils/connexComponent";
 import {InputType} from "../tool_settings/settingsRequester";
-import {HistoryEntry} from "../history/historyEntry";
-import {ActionInterface} from "./actionInterface";
+import {ActionInterface, ActionType} from "./actionInterface";
 import {Layer} from "../ui/layer";
 
 /**
@@ -45,8 +44,15 @@ export class AutoSelectTool extends Tool {
         selection.updateBorder();
     };
 
-    async applyTool(layer: Layer): Promise<HistoryEntry> {
+    async applyTool(layer: Layer): Promise<ActionInterface> {
+        // Save old selection.
+        let selection_buffer = this.getSetting("project_selection").getValues().buffer.slice(0);
         this.drawPreview(layer);
-        return new HistoryEntry(() => {}, () => {}, {});
+        return {
+            type: ActionType.ToolApply,
+            toolName: "AutoSelectTool",
+            actionData: selection_buffer,
+            toolSettings: {},
+        };
     }
 }

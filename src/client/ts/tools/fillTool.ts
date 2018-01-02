@@ -8,8 +8,7 @@ import {Vec2} from "../vec2";
 import {InputType} from "../tool_settings/settingsRequester";
 import {colorSelect} from "../image_utils/connexComponent";
 import {Project} from "../docState";
-import {ActionInterface} from "./actionInterface";
-import {HistoryEntry} from "../history/historyEntry";
+import {ActionInterface, ActionType} from "./actionInterface";
 import {Layer} from "../ui/layer";
 
 /**
@@ -103,8 +102,21 @@ export class FillTool extends Tool {
     };
 
 
-    async applyTool(layer: Layer): Promise<HistoryEntry> {
+    async applyTool(layer: Layer): Promise<ActionInterface> {
+        let old_layer = layer.clone();
         this.drawPreview(layer);
-        return new HistoryEntry(() => {}, () => {}, {});
+
+        old_layer.mask(layer);
+        return {
+            type: ActionType.ToolApply,
+            toolName: "PasteTool",
+            actionData: null,
+            toolSettings:
+                {
+                    project_clipboard: old_layer.getHTMLElement().toDataURL(),
+                    project_clipboard_x: 0,
+                    project_clipboard_y: 0,
+                }
+        };
     }
 }

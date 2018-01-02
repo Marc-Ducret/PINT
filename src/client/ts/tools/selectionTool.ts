@@ -5,10 +5,9 @@
 
 import {Tool} from "./tool";
 import {Vec2} from "../vec2";
-import {Project} from "../docState";
 import {InputType} from "../tool_settings/settingsRequester";
-import {HistoryEntry} from "../history/historyEntry";
 import {Layer} from "../ui/layer";
+import {ActionInterface, ActionType} from "./actionInterface";
 
 /**
  * Shape selection tool, allows the user to add a shape to current selection.
@@ -87,7 +86,7 @@ export class SelectionTool extends Tool {
         }
     };
 
-    async applyTool(layer: Layer): Promise<HistoryEntry> {
+    async applyTool(layer: Layer): Promise<ActionInterface> {
         let width = this.data.width;
         let height = this.data.height;
 
@@ -128,10 +127,18 @@ export class SelectionTool extends Tool {
                 console.error("No shape selected.");
                 break;
         }
+
+        let selection_buffer = this.getSetting("project_selection").getValues().buffer.slice(0);
+
         this.getSetting('project_selection').reset();
         this.getSetting('project_selection').addRegion(selection);
         this.getSetting('project_selection').updateBorder();
 
-        return new HistoryEntry(()=>{},()=>{}, []);
+        return {
+            type: ActionType.ToolApply,
+            toolName: "AutoSelectTool",
+            actionData: selection_buffer,
+            toolSettings: {},
+        };
     }
 }

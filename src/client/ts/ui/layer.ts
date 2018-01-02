@@ -67,12 +67,18 @@ export class Layer {
     }
 
     /***
-     * @deprecated
+     *
      * @param {PixelSelectionHandler} selection
      */
     applyMask(selection: PixelSelectionHandler) {
         this.context.globalCompositeOperation = 'destination-in';
         this.context.drawImage(selection.getMask(), 0, 0);
+        this.context.globalCompositeOperation = 'source-over';
+    }
+
+    mask(layer: Layer) {
+        this.context.globalCompositeOperation = 'destintion-in';
+        this.context.drawImage(layer.getHTMLElement(), 0, 0);
         this.context.globalCompositeOperation = 'source-over';
     }
 
@@ -82,4 +88,5 @@ export class Layer {
         blank.height = this.height;
         return this.getHTMLElement().toDataURL() === blank.toDataURL();
     }
+
 }
