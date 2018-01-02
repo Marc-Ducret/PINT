@@ -1,8 +1,7 @@
 import {ActionInterface} from "../tools/actionInterface";
 
-export class HistoryEntry {
-
-    constructor(doAction: ActionInterface, undoAction: ActionInterface) {
-
-    };
+export interface HistoryEntry {
+    sender: string,
+    undo: ActionInterface,
+    redo: ActionInterface,
 }

@@ -290,7 +290,8 @@ function menu_toolbox_create(): HTMLElement {
     let p = document.createElement("p");
     p.id = "toolbox-container";
 
-    p.appendChild(create_function_icon("this.project.history.undoAction();", "Undo", "undo"));
+    p.appendChild(create_function_icon("this.project.undo();", "Undo", "undo"));
+    p.appendChild(create_function_icon("this.project.redo();", "Redo", "redo"));
     p.appendChild(create_separator());
     p.appendChild(create_function_icon("this.project.saveProject();", "Save", "save"));
     p.appendChild(create_separator());

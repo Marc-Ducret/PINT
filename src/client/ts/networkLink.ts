@@ -56,7 +56,7 @@ export class NetworkLink {
             console.log("Action from "+action.sender+" with tool "+action.data.toolName);
         }
 
-        this.project.applyAction(action.data, this.selectionHandlers[action.sender]);
+        this.project.applyAction(action.data, this.selectionHandlers[action.sender], false);
     }
 
     onHello(packet: HelloNetworkPacket) {
