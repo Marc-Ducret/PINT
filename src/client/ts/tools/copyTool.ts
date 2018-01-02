@@ -44,7 +44,7 @@ export class CopyTool extends Tool {
 
     drawPreview(layer: Layer) {};
 
-    async applyTool(layer: Layer): Promise<ActionInterface> {
+    async applyTool(layer: Layer, generate_undo: boolean): Promise<ActionInterface> {
         // Can't undo a copy.
         return null;
     };

@@ -51,21 +51,27 @@ export class LineTool extends Tool {
         context.globalAlpha = 1;
     };
 
-    async applyTool(layer: Layer): Promise<ActionInterface> {
-        let old_layer = layer.clone();
-        this.drawPreview(layer);
+    async applyTool(layer: Layer, generate_undo: boolean): Promise<ActionInterface> {
+        if (generate_undo) {
+            let old_layer = layer.clone();
+            this.drawPreview(layer);
 
-        old_layer.mask(layer);
-        return {
-            type: ActionType.ToolApply,
-            toolName: "PasteTool",
-            actionData: null,
-            toolSettings:
-                {
-                    project_clipboard: old_layer.getHTMLElement().toDataURL(),
-                    project_clipboard_x: 0,
-                    project_clipboard_y: 0,
-                }
-        };
+            old_layer.mask(layer);
+            return {
+                type: ActionType.ToolApply,
+                toolName: "PasteTool",
+                actionData: null,
+                toolSettings:
+                    {
+                        project_clipboard: old_layer.getHTMLElement().toDataURL(),
+                        project_clipboard_x: 0,
+                        project_clipboard_y: 0,
+                    }
+            };
+        } else {
+            this.drawPreview(layer);
+            return null;
+        }
+
     }
 }

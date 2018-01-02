@@ -67,7 +67,7 @@ export abstract class Tool {
      * @param {Layer} layer on which the tool is applied
      * @returns {HistoryEntry}
      */
-    abstract async applyTool(layer: Layer): Promise<ActionInterface>;
+    abstract async applyTool(layer: Layer, generate_undo: boolean): Promise<ActionInterface>;
 
     /**
      * Called by the inherited classes when they need a custom parameter that the UI should provide.

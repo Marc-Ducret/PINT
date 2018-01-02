@@ -44,15 +44,21 @@ export class AutoSelectTool extends Tool {
         selection.updateBorder();
     };
 
-    async applyTool(layer: Layer): Promise<ActionInterface> {
+    async applyTool(layer: Layer, generate_undo: boolean): Promise<ActionInterface> {
         // Save old selection.
-        let selection_buffer = this.getSetting("project_selection").getValues().buffer.slice(0);
-        this.drawPreview(layer);
-        return {
-            type: ActionType.ToolApply,
-            toolName: "AutoSelectTool",
-            actionData: selection_buffer,
-            toolSettings: {},
-        };
+        if (generate_undo) {
+            let selection_buffer = this.getSetting("project_selection").getValues().buffer.slice(0);
+            this.drawPreview(layer);
+            return {
+                type: ActionType.ToolApply,
+                toolName: "AutoSelectTool",
+                actionData: selection_buffer,
+                toolSettings: {},
+            };
+        } else {
+            this.drawPreview(layer);
+            return null;
+        }
+
     }
 }

@@ -86,7 +86,7 @@ export class SelectionTool extends Tool {
         }
     };
 
-    async applyTool(layer: Layer): Promise<ActionInterface> {
+    async applyTool(layer: Layer, generate_undo: boolean): Promise<ActionInterface> {
         let width = this.data.width;
         let height = this.data.height;
 
@@ -128,17 +128,24 @@ export class SelectionTool extends Tool {
                 break;
         }
 
-        let selection_buffer = this.getSetting("project_selection").getValues().buffer.slice(0);
+        let selection_buffer = null;
+        if (generate_undo) {
+            selection_buffer = this.getSetting("project_selection").getValues().buffer.slice(0);
+        }
 
         this.getSetting('project_selection').reset();
         this.getSetting('project_selection').addRegion(selection);
         this.getSetting('project_selection').updateBorder();
 
-        return {
-            type: ActionType.ToolApply,
-            toolName: "AutoSelectTool",
-            actionData: selection_buffer,
-            toolSettings: {},
-        };
+        if (generate_undo) {
+            return {
+                type: ActionType.ToolApply,
+                toolName: "AutoSelectTool",
+                actionData: selection_buffer,
+                toolSettings: {},
+            };
+        } else {
+            return null;
+        }
     }
 }
