@@ -53,13 +53,8 @@ export class Project {
             this.dimensions = dimensions;
         }
         this.workingLayer = new Layer(this.dimensions);
-        this.workingLayer.getContext().translate(0.5, 0.5);
-
         this.previewLayer = new Layer(this.dimensions);
-        this.previewLayer.getContext().translate(0.5, 0.5); // why translating of 0.5, 0.5 ?
-
         this.currentLayer = new Layer(this.dimensions);
-        this.currentLayer.getContext().translate(0.5, 0.5);
 
         this.layerList = [this.currentLayer, this.previewLayer]; // The renderer draw layers in order.
         this.currentTool = null;
@@ -248,7 +243,7 @@ export class Project {
 
 
                 this.previewLayer.applyMask(selectionHandler);
-                this.currentLayer.getContext().drawImage(this.previewLayer.getHTMLElement(), -0.5, -0.5);
+                this.currentLayer.getContext().drawImage(this.previewLayer.getHTMLElement(), 0, 0);
 
                 this.previewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
                 this.redraw = true;
