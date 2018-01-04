@@ -61,7 +61,7 @@ export class SelectionTool extends Tool {
                     w = Math.abs(firstCorner.x - lastCorner.x),
                     h = Math.abs(firstCorner.y - lastCorner.y);
 
-                context.rect(x, y, w, h);
+                context.rect(x + 0.5, y + 0.5, w, h);
                 context.stroke();
                 break;
             case "circle":

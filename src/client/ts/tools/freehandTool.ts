@@ -93,9 +93,9 @@ export class FreehandTool extends Tool {
         for (let i = 0; i < this.data.positions.length; i++) {
             let pos = this.data.positions[i];
             if(i === 0) {
-                context.moveTo(pos.x, pos.y);
+                context.moveTo(pos.x + 0.5, pos.y + 0.5);
             } else {
-                context.lineTo(pos.x, pos.y);
+                context.lineTo(pos.x + 0.5, pos.y + 0.5);
             }
         }
 

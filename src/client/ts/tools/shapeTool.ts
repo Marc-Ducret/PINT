@@ -89,11 +89,11 @@ export class ShapeTool extends Tool {
         switch (this.getSetting('shape')) {
             case "square":
                 context.beginPath();
-                const x = Math.min(firstCorner.x, lastCorner.x) + .5,
-                    y = Math.min(firstCorner.y, lastCorner.y) + .5,
+                const x = Math.min(firstCorner.x, lastCorner.x),
+                    y = Math.min(firstCorner.y, lastCorner.y),
                     w = Math.abs(firstCorner.x - lastCorner.x),
                     h = Math.abs(firstCorner.y - lastCorner.y);
-                context.rect(x,y,w,h);
+                context.rect(x + 0.5, y + 0.5, w, h);
                 break;
             case "circle":
                 context.beginPath();
