@@ -14,15 +14,15 @@ module.exports = function(grunt) {
                 }
             },
             convnet: {
-                src: ['node_modules/convnetjs-ts/src/*.ts'],
-                dest: 'build/convnetjs-ts.js',
+                src: ['src/client/ts/lib/convnet/*.ts'],
+                dest: 'build/client/convnetjs-ts.js',
                 options: {
                     target: 'es6',
                     module: 'amd',
                     moduleResolution: 'node',
                     rootDir: 'node_modules/convnetjs-ts/src/'
                 }
-            },
+            }
         },
         concat: {
             css_dev: {
