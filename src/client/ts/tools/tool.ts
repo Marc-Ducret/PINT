@@ -3,8 +3,6 @@ import {Vec2} from "../vec2";
 import {HistoryEntry} from "../history/historyEntry";
 import {Layer} from "../ui/layer";
 import {ActionInterface, ActionType} from "./actionInterface";
-import {Settings} from "http2";
-
 
 export abstract class Tool {
     private name: string;
