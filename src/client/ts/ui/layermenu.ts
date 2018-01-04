@@ -50,7 +50,7 @@ export function setup_layer_menu(controller: UIController, base_element: HTMLEle
         p.text("layer " + i.toString());
         p.appendTo(div);
         // convert div in a HTML element:
-        let HTMLdiv : HTMLElement = div.get(0);
+        let HTMLdiv : HTMLElement = <HTMLElement> div.get(0);
         // add a listener to select a layer as current layer when button is clicked:
         HTMLdiv.addEventListener("click", function(){ controller.project.selectLayer(i); } );
         layer_menu_controller.addElement(HTMLdiv);
@@ -63,7 +63,7 @@ export function setup_layer_menu(controller: UIController, base_element: HTMLEle
     button.attr("style", "color:#777777;");
     button.text("Add a layer");
     // convert button in a HTML element:
-    let HTMLbutton : HTMLElement = button.get(0);
+    let HTMLbutton : HTMLElement = <HTMLElement> button.get(0);
     // add a listener to add a layer when button is clicked:
     HTMLbutton.addEventListener("click", function(){ controller.addLayer(); } );
     layer_menu_controller.addElement(HTMLbutton);
