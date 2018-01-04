@@ -56,7 +56,6 @@ export class Project {
         this.workingLayer.getContext().translate(0.5, 0.5);
 
         this.previewLayer = new Layer(this.dimensions);
-        this.previewLayer.getContext().translate(0.5, 0.5); // why translating of 0.5, 0.5 ?
 
         this.currentLayer = new Layer(this.dimensions);
         this.currentLayer.getContext().translate(0.5, 0.5);
