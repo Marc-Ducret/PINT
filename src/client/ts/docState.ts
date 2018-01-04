@@ -308,7 +308,7 @@ export class Project {
      */
     addLayer (){
         // we substract 3 to let preview and selection in the two last positions of LayerList:
-        let n_last_layer : number = this.layerList.length - 3; // index of old last "real" layer
+        let n_last_layer : number = this.layerList.length - 2; // index of old last "real" layer
         let l = new Layer(this.dimensions); // added layer
         l.reset(); // set added layer transparent
         // add the newly created Layer to layerList, just before position indexed by n_last_layer+1:

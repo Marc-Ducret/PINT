@@ -41,7 +41,7 @@ export function setup_layer_menu(controller: UIController, base_element: HTMLEle
     let layer_menu_controller = new LayerMenuController(base_element);
 
     let layer_list = controller.project.getLayerList();
-    let l = layer_list.length -2; // -2 to remove the preview layer and the selection layer
+    let l = layer_list.length -1; // -1 to remove the preview layer
     for (let i=0 ; i<l ; i++) { // add layers representations to HTML horizontal bar
         let div = $("<div/>");
         div.attr("layer_id", i);
