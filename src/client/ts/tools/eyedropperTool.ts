@@ -56,20 +56,9 @@ export class EyedropperTool extends Tool {
     };
 
     drawPreview(layer: Layer) {
-        // let context = layer.getContext();
-        // context.globalAlpha = this.getSetting("strokeAlpha") / 100;
-        // context.strokeStyle = this.getSetting('strokeColor');
-        // context.lineWidth = this.getSetting('lineWidth');
-        // context.beginPath();
-        // context.moveTo(this.data.firstCorner.x + 0.5, this.data.firstCorner.y  + 0.5);
-        // context.lineTo(this.data.lastCorner.x + 0.5, this.data.lastCorner.y + 0.5);
-        // context.stroke();
-        // context.globalAlpha = 1;
     };
 
     async applyTool(layer: Layer, generate_undo: boolean): Promise<ActionInterface> {
-        this.drawPreview(layer);
-
-        return null;
+          return null;
     }
 }
