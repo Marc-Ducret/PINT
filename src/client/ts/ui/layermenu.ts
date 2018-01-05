@@ -45,18 +45,36 @@ export function setup_layer_menu(controller: UIController, base_element: HTMLEle
     for (let i=0 ; i<l ; i++) { // add layers representations to HTML horizontal bar
         let div = $("<div/>");
         let p = $("<p/>");
+
+        // create delete layer button element:
+        let del_button = $("<span/>");
+        del_button.text("delete");
+        del_button.click(function () { controller.deleteLayer(i); });
+        del_button.mouseover(function () { $(this).css("background-color", "#333333") });
+        del_button.mouseout(function () { $(this).css("background-color", "transparent") });
+        del_button.attr("style", "color:#888888; cursor:pointer; border-radius: 10px;"
+            +"padding-left: 2px; padding-right: 2px; padding-top: 2px; padding-bottom: 2px;"
+            +"padding-radius: 10px;");
+        // set help text displayed when mouseover:
+        del_button.attr("title", "click to delete this layer");
+        // to display the del_button as an icon:
+        del_button.addClass("medium material-icons");
+        del_button.text("close");
+        del_button.appendTo(p);
+
+        // layer element:
         let span = $("<span/>");
         span.attr("id", "layer"+i.toString());
         span.attr("style", "color:white; cursor:pointer; border-radius: 10px;"
-        +"padding-left: 10px; padding-right: 10px; padding-top: 2px; padding-bottom: 2px;"
-        +"padding-radius: 10px;");
+            +"padding-left: 10px; padding-right: 10px; padding-top: 2px; padding-bottom: 2px;"
+            +"padding-radius: 10px;");
         span.text("layer " + i.toString());
-        span.appendTo(div);
+        span.click(function() { controller.selectLayer(i); } );
+        span.appendTo(p);
+
         p.appendTo(div);
         // convert div in a HTML element:
         let HTMLdiv : HTMLElement = <HTMLElement> div.get(0);
-        // add a listener to select a layer as current layer when button is clicked:
-        HTMLdiv.addEventListener("click", function(){ controller.selectLayer(i); } );
         layer_menu_controller.addElement(HTMLdiv);
         }
 
@@ -87,7 +105,7 @@ export function highlight_layer(controller: UIController, i: number) {
     let l = layer_list.length -1; // -1 to remove the preview layer
     // erase highlight of all layers:
     for (let j=0 ; j<l ; j++) {
-        document.getElementById("layer"+j.toString()).style.background = "none";
+        document.getElementById("layer"+j.toString()).style.background = "transparent";
     }
     // highlight layer i:
     document.getElementById("layer"+i.toString()).style.background = "#444444";

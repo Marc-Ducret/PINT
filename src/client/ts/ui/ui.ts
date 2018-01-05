@@ -179,6 +179,23 @@ export class UIController {
         highlight_layer(this, i);
     }
 
+    /**
+     * @brief: delete layer of index i
+     * @param {number} i: index of the layer to delete
+     */
+    deleteLayer (i:number) {
+        // delete layer i of current project and return the index of new currentLayer:
+        let indexNewCurrentLayer = this.project.deleteLayer(i);
+
+        // update the layer manager menu:
+        this.layer_menu_controller = setup_layer_menu(this, document.getElementById("layerManager_container"));
+        // update viewport LayerList
+        this.viewport.setLayerList(this.project.layerList);
+
+        // update of layer menu display:
+        highlight_layer(this, indexNewCurrentLayer);
+    }
+
     setTool (tool: Tool) {
         if (this.project != null) {
             this.project.changeTool(tool);

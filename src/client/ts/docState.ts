@@ -300,14 +300,61 @@ export class Project {
         this.currentLayer = l;
     };
 
+    /**
+     * Set layer of index i as the current layer
+     * @param {number} i
+     */
     selectLayer (i: number){
-        if (i >= this.layerList.length -1 || i < 0){//console.log(i.toString());
+        if (i >= this.layerList.length -1 || i < 0){
             throw "try to select a layer that doesn't exist"
                 ;
         }
         else{
             this.currentLayer = this.layerList[i];
         }
+    };
+
+    /**
+     * Delete layer of index i
+     * @param {number} i
+     * @return {number}
+     */
+    deleteLayer (i: number):number {
+        let ret = 0;
+        for(let j=0; j<this.layerList.length-1; j++) {
+            if (this.currentLayer == this.layerList[j]){
+                if (i<j) { // if deleted layer is before selected layer, we have to decrease by 1
+                    ret = j-1;
+                }
+                else {
+                    ret = j;
+                }
+            }
+        }
+        if (i >= this.layerList.length -1 || i < 0) {
+            throw "try to delete a layer that doesn't exist";
+        }
+        else if (this.layerList.length -1 == 1) {
+            console.warn("impossible to delete the only layer remaining");
+        }
+        else if (this.currentLayer == this.layerList[i]) {
+            if (i == this.layerList.length -2) { // if layer i is the last layer
+                ret = i-1;
+                this.selectLayer(ret);
+            }
+            else {
+                this.selectLayer(i+1);
+                ret = i;
+            }
+            // delete layer i:
+            this.layerList.splice(i,1);
+
+        }
+        else {
+            // delete layer i:
+            this.layerList.splice(i,1);
+        }
+        return ret;
     };
 
     /**
