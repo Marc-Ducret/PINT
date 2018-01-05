@@ -12,6 +12,7 @@ export abstract class Tool {
     private settings: SettingsRequester;
     protected data: any;
     readonly overrideSelectionMask: boolean = false;
+    public icon: HTMLElement;
 
     /**
      * Tool builder, giving it a name and a displayed description.

@@ -227,6 +227,7 @@ export class UIController {
         if(toolname !== null) {
             let tool = this.toolRegistry.getToolByName(toolname);
             if(tool !== null) {
+                tool.icon = <HTMLElement> event.target;
                 this.setTool(tool);
                 (<Element> event.target).className += " hovered";
             } else {
