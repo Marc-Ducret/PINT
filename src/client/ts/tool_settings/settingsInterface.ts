@@ -2,7 +2,6 @@ import * as $ from "jquery";
 
 import {Tool} from "../tools/tool";
 import {Option, InputType} from "./settingsRequester";
-import {isNullOrUndefined} from "util";
 import {Project} from "../docState";
 
 /**

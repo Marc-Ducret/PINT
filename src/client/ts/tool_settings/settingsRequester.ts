@@ -2,7 +2,6 @@
  * A couple of (Internal name, Display name), used to represent
  * multiple options in a Select.
  */
-import {isNullOrUndefined} from "util";
 import {PixelSelectionHandler} from "../selection/selection";
 import {UIController} from "../ui/ui";
 
