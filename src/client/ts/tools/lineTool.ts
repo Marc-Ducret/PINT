@@ -45,8 +45,8 @@ export class LineTool extends Tool {
         context.strokeStyle = this.getSetting('strokeColor');
         context.lineWidth = this.getSetting('lineWidth');
         context.beginPath();
-        context.moveTo(this.data.firstCorner.x, this.data.firstCorner.y);
-        context.lineTo(this.data.lastCorner.x, this.data.lastCorner.y);
+        context.moveTo(this.data.firstCorner.x + 0.5, this.data.firstCorner.y  + 0.5);
+        context.lineTo(this.data.lastCorner.x + 0.5, this.data.lastCorner.y + 0.5);
         context.stroke();
         context.globalAlpha = 1;
     };

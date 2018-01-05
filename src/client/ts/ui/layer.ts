@@ -26,7 +26,7 @@ export class Layer {
         return this.canvasElement[0];
     };
 
-    getContext () {
+    getContext(): CanvasRenderingContext2D {
         return this.context;
     };
 
@@ -97,7 +97,7 @@ export class Layer {
         this.context.globalCompositeOperation = 'source-over';
     }
 
-    draw_source_in(layer: Layer) {
+    drawSourceIn(layer: Layer) {
         this.context.globalCompositeOperation = 'source-in';
         this.context.drawImage(layer.getHTMLElement(), 0, 0);
         this.context.globalCompositeOperation = 'source-over';

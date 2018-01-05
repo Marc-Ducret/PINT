@@ -24,7 +24,6 @@ export class Project {
     dimensions: Vec2;
     previewLayer: Layer;
     currentLayer: Layer;
-    workingLayer: Layer;
 
     layerList: Array<Layer>; // The renderer draw layers in order.
     currentTool: Tool;
@@ -52,14 +51,9 @@ export class Project {
         } else {
             this.dimensions = dimensions;
         }
-        this.workingLayer = new Layer(this.dimensions);
-        this.workingLayer.getContext().translate(0.5, 0.5);
 
         this.previewLayer = new Layer(this.dimensions);
-        this.previewLayer.getContext().translate(0.5, 0.5); // why translating of 0.5, 0.5 ?
-
         this.currentLayer = new Layer(this.dimensions);
-        this.currentLayer.getContext().translate(0.5, 0.5);
 
         this.layerList = [this.currentLayer, this.previewLayer]; // The renderer draw layers in order.
         this.currentTool = null;
@@ -222,33 +216,23 @@ export class Project {
             this.previewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
 
             if (!tool.overrideSelectionMask) { /// Applying selection mask.
-
-                console.log("App1cation of tool");
-
                 let undo = await tool.applyTool(this.previewLayer, generateHistory);
 
-                console.log("Application of tool");
-
                 if (undo != null && undo.type == ActionType.ToolApplyHistory) {
-                    this.workingLayer.getContext().imageSmoothingEnabled = false;
-                    await tool.applyTool(this.workingLayer, false);
-                    this.workingLayer.draw_source_in(this.currentLayer);
 
                     undo.type = ActionType.ToolApply;
                     undo.toolName = "PasteTool";
                     undo.toolSettings = {
-                        project_clipboard: this.workingLayer.getHTMLElement().toDataURL(),
+                        project_clipboard: this.currentLayer.getHTMLElement().toDataURL(),
                         project_clipboard_x: 0,
                         project_clipboard_y: 0,
                     };
                     undo.actionData = {x: 0, y: 0};
-
-                    this.workingLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
                 }
 
 
                 this.previewLayer.applyMask(selectionHandler);
-                this.currentLayer.getContext().drawImage(this.previewLayer.getHTMLElement(), -0.5, -0.5);
+                this.currentLayer.getContext().drawImage(this.previewLayer.getHTMLElement(), 0, 0);
 
                 this.previewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
                 this.redraw = true;

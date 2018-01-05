@@ -61,7 +61,7 @@ export class SelectionTool extends Tool {
                     w = Math.abs(firstCorner.x - lastCorner.x),
                     h = Math.abs(firstCorner.y - lastCorner.y);
 
-                context.rect(x, y, w, h);
+                context.rect(x + 0.5, y + 0.5, w, h);
                 context.stroke();
                 break;
             case "circle":
@@ -96,8 +96,8 @@ export class SelectionTool extends Tool {
         let selection = new Uint8ClampedArray(width * height);
         switch (this.getSetting("shape")) {
             case "square":
-                for (let y = Math.floor(Math.min(firstCorner.y, lastCorner.y)); y < Math.max(firstCorner.y, lastCorner.y); y++) {
-                    for (let x = Math.floor(Math.min(firstCorner.x, lastCorner.x)); x < Math.max(firstCorner.x, lastCorner.x); x++) {
+                for (let y = Math.min(firstCorner.y, lastCorner.y); y <= Math.max(firstCorner.y, lastCorner.y); y++) {
+                    for (let x = Math.min(firstCorner.x, lastCorner.x); x <= Math.max(firstCorner.x, lastCorner.x); x++) {
                         if(x >= 0 && y >= 0 && x < width && y < height) {
                             selection[x + y * width] = 0xFF;
                         }

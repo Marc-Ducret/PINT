@@ -4,7 +4,6 @@ import {HistoryEntry} from "../history/historyEntry";
 import {Layer} from "../ui/layer";
 import {ActionInterface, ActionType} from "./actionInterface";
 
-
 export abstract class Tool {
     private name: string;
     private desc: string;
@@ -138,7 +137,7 @@ export abstract class Tool {
         return this.data;
     }
 
-    getSettings() {
+    getSettings(): SettingsRequester {
         return this.settings;
     }
 }
