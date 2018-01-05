@@ -317,7 +317,7 @@ export class Project {
     };
 
     selectLayer (i: number){
-        if (i >= this.layerList.length -2 || i < 0){//console.log(i.toString());
+        if (i >= this.layerList.length -1 || i < 0){//console.log(i.toString());
             throw "try to select a layer that doesn't exist"
                 ;
         }

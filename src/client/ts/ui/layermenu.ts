@@ -44,17 +44,21 @@ export function setup_layer_menu(controller: UIController, base_element: HTMLEle
     let l = layer_list.length -1; // -1 to remove the preview layer
     for (let i=0 ; i<l ; i++) { // add layers representations to HTML horizontal bar
         let div = $("<div/>");
-        div.attr("layer_id", i);
         let p = $("<p/>");
-        p.attr("style", "color:white; cursor:pointer;");
-        p.text("layer " + i.toString());
+        let span = $("<span/>");
+        span.attr("id", "layer"+i.toString());
+        span.attr("style", "color:white; cursor:pointer; border-radius: 10px;"
+        +"padding-left: 10px; padding-right: 10px; padding-top: 2px; padding-bottom: 2px;"
+        +"padding-radius: 10px;");
+        span.text("layer " + i.toString());
+        span.appendTo(div);
         p.appendTo(div);
         // convert div in a HTML element:
         let HTMLdiv : HTMLElement = <HTMLElement> div.get(0);
         // add a listener to select a layer as current layer when button is clicked:
-        HTMLdiv.addEventListener("click", function(){ controller.project.selectLayer(i); } );
+        HTMLdiv.addEventListener("click", function(){ controller.selectLayer(i); } );
         layer_menu_controller.addElement(HTMLdiv);
-    }
+        }
 
     // display the add_button
     let button = $("<button/>");
@@ -68,6 +72,23 @@ export function setup_layer_menu(controller: UIController, base_element: HTMLEle
     HTMLbutton.addEventListener("click", function(){ controller.addLayer(); } );
     layer_menu_controller.addElement(HTMLbutton);
 
+    document.getElementById("layer0").style.background = "#444444";
 
     return layer_menu_controller;
+}
+
+/**
+ * @ brief: highlight layer of index i (selected layer)
+ * @param {UIController} controller
+ * @param {number} i: index of selected layer
+ */
+export function highlight_layer(controller: UIController, i: number) {
+    let layer_list = controller.project.getLayerList();
+    let l = layer_list.length -1; // -1 to remove the preview layer
+    // erase highlight of all layers:
+    for (let j=0 ; j<l ; j++) {
+        document.getElementById("layer"+j.toString()).style.background = "none";
+    }
+    // highlight layer i:
+    document.getElementById("layer"+i.toString()).style.background = "#444444";
 }

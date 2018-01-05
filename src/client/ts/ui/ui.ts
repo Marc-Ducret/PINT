@@ -7,7 +7,7 @@ import {ToolRegistry} from "../tools/toolregistry";
 import {Vec2} from "../vec2";
 import {MenuController, setup_menu} from "./menu";
 import * as io from 'socket.io-client';
-import {LayerMenuController, setup_layer_menu} from "./layermenu"
+import {highlight_layer, LayerMenuController, setup_layer_menu} from "./layermenu"
 import {KeyboardManager} from "./keyboardManager";
 import {Tool} from "../tools/tool";
 import {ActionType} from "../tools/actionInterface";
@@ -161,6 +161,22 @@ export class UIController {
         this.layer_menu_controller = setup_layer_menu(this, document.getElementById("layerManager_container"));
         // update viewport LayerList
         this.viewport.setLayerList(this.project.layerList);
+
+        let layer_list = this.project.getLayerList();
+        let l = layer_list.length;
+        highlight_layer(this, l-2);
+    }
+
+    /**
+     * @brief: select a layer to the project (in ending position)
+     * @param {number} i: index of selected layer
+     */
+    selectLayer (i:number) {
+        // select layer i in current project:
+        this.project.selectLayer(i);
+
+        // update of layer menu display:
+        highlight_layer(this, i);
     }
 
     setTool (tool: Tool) {
@@ -361,6 +377,8 @@ export class UIController {
         $("#viewport").height(newSize.y - offset.top);
         this.viewport.viewportDimensionsChanged();
     };
+
+
 
 
     /**
