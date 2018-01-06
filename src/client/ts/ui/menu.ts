@@ -1,12 +1,19 @@
 
 import {UIController} from "./ui";
 import {Vec2} from "../vec2";
-import {cat} from "shelljs";
 import * as squareRecon from "../image_utils/squareRecon";
+
+export enum MenuCategories {
+    NoProjectOffline,
+    NoProjectOnline,
+    InProjectOffline,
+    InProjectOnline,
+    Working,
+};
 
 export class MenuController {
     elements: any = eval("new Map()");
-    displayedCategory: number = 0;
+    displayedCategory: MenuCategories = MenuCategories.NoProjectOffline;
     menu_container: HTMLElement;
 
     constructor (base_element) {
@@ -34,7 +41,7 @@ export class MenuController {
             .appendChild(div);
     }
 
-    addElementToCategory (element: HTMLElement, category: number) {
+    addElementToCategory (element: HTMLElement, category: MenuCategories) {
         if (this.elements.get(category) === undefined) {
             this.elements.set(category, []);
         }
@@ -46,7 +53,7 @@ export class MenuController {
         this.elements.get(category).push(element);
     }
 
-    switchCategory (category: number) {
+    switchCategory (category: MenuCategories) {
         if (this.displayedCategory == category) {
             return;
         }
@@ -95,6 +102,22 @@ export class MenuController {
         }
         this.displayedCategory = category;
     }
+
+    updateStatus(project_open: boolean, is_online: boolean) {
+        if (project_open) {
+            if (is_online) {
+                this.switchCategory(MenuCategories.InProjectOnline);
+            } else {
+                this.switchCategory(MenuCategories.InProjectOffline);
+            }
+        } else {
+            if (is_online) {
+                this.switchCategory(MenuCategories.NoProjectOnline);
+            } else {
+                this.switchCategory(MenuCategories.NoProjectOffline);
+            }
+        }
+    }
 }
 
 export function setup_menu(controller: UIController, base_element: HTMLElement) {
@@ -102,11 +125,21 @@ export function setup_menu(controller: UIController, base_element: HTMLElement) 
 
     let title = menu_title_create(
         function() {
-            menu_controller.switchCategory(0)
-        });
+                menu_controller.updateStatus(controller.hasProjectOpen(), controller.isOnline());
+            });
+
     menu_controller.addElement(title, {l: 2, m: 12, s: 12});
-    menu_controller.addElementToCategory(title, 0);
-    menu_controller.addElementToCategory(title, 1);
+    menu_controller.addElementToCategory(title, MenuCategories.InProjectOffline);
+    menu_controller.addElementToCategory(title, MenuCategories.InProjectOnline);
+    menu_controller.addElementToCategory(title, MenuCategories.NoProjectOffline);
+    menu_controller.addElementToCategory(title, MenuCategories.NoProjectOnline);
+    menu_controller.addElementToCategory(title, MenuCategories.Working);
+
+
+    let share_online_checkbox = menu_share_online_create();
+    menu_controller.addElement(share_online_checkbox, {l: 1, m: 6, s: 6});
+    menu_controller.addElementToCategory(share_online_checkbox, MenuCategories.NoProjectOnline);
+    menu_controller.addElementToCategory(share_online_checkbox, MenuCategories.InProjectOnline);
 
     let filename = menu_filename_create(
         function() {
@@ -114,42 +147,79 @@ export function setup_menu(controller: UIController, base_element: HTMLElement) 
         });
 
     menu_controller.addElement(filename, {l: 3, m: 12, s: 12});
-    menu_controller.addElementToCategory(filename, 1);
+    menu_controller.addElementToCategory(filename, MenuCategories.InProjectOffline);
+    menu_controller.addElementToCategory(filename, MenuCategories.InProjectOnline);
+    menu_controller.addElementToCategory(filename, MenuCategories.NoProjectOffline);
+    menu_controller.addElementToCategory(filename, MenuCategories.NoProjectOnline);
 
     let newproject = menu_newproject_create(function (dimensions) {
         controller.newProject(dimensions);
     });
     menu_controller.addElement(newproject, {l: 3, m: 12, s: 12});
-    menu_controller.addElementToCategory(newproject, 0);
+    menu_controller.addElementToCategory(newproject, MenuCategories.InProjectOffline);
+    menu_controller.addElementToCategory(newproject, MenuCategories.InProjectOnline);
+    menu_controller.addElementToCategory(newproject, MenuCategories.NoProjectOffline);
+    menu_controller.addElementToCategory(newproject, MenuCategories.NoProjectOnline);
 
-    let load_image_file = menu_load_image_file_create(function() {
+    let load_image_file = menu_button_create("Load from file", function() {
         controller.loadImageFromFile();
     });
     menu_controller.addElement(load_image_file, {l: 1, m: 6, s: 6});
-    menu_controller.addElementToCategory(load_image_file, 0);
+    menu_controller.addElementToCategory(load_image_file, MenuCategories.InProjectOffline);
+    menu_controller.addElementToCategory(load_image_file, MenuCategories.InProjectOnline);
+    menu_controller.addElementToCategory(load_image_file, MenuCategories.NoProjectOffline);
+    menu_controller.addElementToCategory(load_image_file, MenuCategories.NoProjectOnline);
 
-    let back = menu_back_create(
+
+
+    let back = menu_button_create("Back",
         function() {
-            menu_controller.switchCategory(1);
+            menu_controller.switchCategory(MenuCategories.Working);
         }
     );
     menu_controller.addElement(back, {l: 1, m: 6, s: 6});
-    menu_controller.addElementToCategory(back, 0);
-    $(back).parent().hide();
+    menu_controller.addElementToCategory(back, MenuCategories.InProjectOffline);
+    menu_controller.addElementToCategory(back, MenuCategories.InProjectOnline);
 
     let toolbox = menu_toolbox_create(controller);
     menu_controller.addElement(toolbox, {l: 0, m: 0, s: 0});
-    menu_controller.addElementToCategory(toolbox, 1);
+    menu_controller.addElementToCategory(toolbox, MenuCategories.Working);
 
     return menu_controller;
 }
 
 function menu_title_create(callback): HTMLElement {
+    let container = document.createElement("div");
     let a = document.createElement("a");
     a.className = "title";
     a.innerText = "PINT.js";
     a.addEventListener("click", callback);
-    return a;
+
+    let indicator_container = document.createElement("ul");
+    indicator_container.className = "indicator-container";
+
+    let indicator = document.createElement("li");
+    indicator.className = "indicator orange";
+    indicator_container.appendChild(indicator);
+
+    container.appendChild(indicator_container);
+    container.appendChild(a);
+    return container;
+}
+
+function menu_share_online_create(): HTMLElement {
+    let p = document.createElement("p");
+    p.innerText = "Share online";
+    p.id = "share_online_p";
+    let div_switch = document.createElement("div");
+    div_switch.className = "switch";
+    div_switch.innerHTML = "<label>\n" +
+        "      <input type=\"checkbox\">\n" +
+        "      <span class=\"lever\"></span>\n" +
+        "    </label>";
+
+    p.appendChild(div_switch);
+    return p;
 }
 
 function menu_filename_create(callback): HTMLElement {
@@ -231,26 +301,17 @@ function menu_newproject_create(callback): HTMLElement {
     return p;
 }
 
-function menu_load_image_file_create(callback): HTMLElement {
-    let p = document.createElement("p");
-    let a = document.createElement("a");
-    a.className = "btn-large";
-    a.innerText = "Load from file";
-    a.addEventListener("click", callback);
-
-    p.appendChild(a);
-    return p;
-}
-function menu_back_create(callback): HTMLElement {
+function menu_button_create(text, callback): HTMLElement {
     let p = document.createElement("p");
     let a = document.createElement("a");
     a.className = "btn-large flex";
-    a.innerText = "Back";
+    a.innerText = text;
     a.addEventListener("click", callback);
 
     p.appendChild(a);
     return p;
 }
+
 
 /**
  * TOOLBOX
@@ -316,7 +377,9 @@ function menu_toolbox_create(controller: UIController): HTMLElement {
     p.appendChild(scheduleUpdates(
         create_function_icon("this.project.testSquare(elem);", "Test Square", "build"),
         function(elem) {
-            controller.project.testSquare(elem);
+            if (controller.project != null) {
+                controller.project.testSquare(elem);
+            }
         }));
     p.appendChild(create_separator());
     p.appendChild(create_tool_entry_icon("CopyTool","flip_to_back"));

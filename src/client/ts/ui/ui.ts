@@ -5,7 +5,7 @@ import {SettingsInterface} from "../tool_settings/settingsInterface";
 import {Viewport} from "./viewport";
 import {ToolRegistry} from "../tools/toolregistry";
 import {Vec2} from "../vec2";
-import {MenuController, setup_menu} from "./menu";
+import {MenuCategories, MenuController, setup_menu} from "./menu";
 import * as io from 'socket.io-client';
 import {highlight_layer, LayerMenuController, setup_layer_menu} from "./layermenu"
 import {KeyboardManager} from "./keyboardManager";
@@ -39,8 +39,9 @@ export class UIController {
     project_name: string;
     socket: SocketIOClient.Socket;
 
+    private is_online: boolean;
+
     constructor (){
-        this.socket = io.connect('//');
 
         let fallbackImage = document.createElement("img");
         this.viewport = new Viewport(<JQuery<HTMLCanvasElement>> $("#viewport"), fallbackImage);
@@ -56,11 +57,54 @@ export class UIController {
 
         this.project_name = "Untitled";
         this.redraw = true;
+        this.is_online = false;
+
+
+        let indicator = $(".indicator");
+
+        let on_failed = function() {
+            this.is_online = false;
+            if (this.menu_controller.displayedCategory !== MenuCategories.Working) {
+                this.menu_controller.updateStatus(this.hasProjectOpen(), this.isOnline());
+            }
+            indicator.removeClass("green");
+            indicator.removeClass("orange");
+            indicator.addClass("red");
+        }.bind(this);
+
+
+        let on_connection_pending = function() {
+            this.is_online = false;
+            if (this.menu_controller.displayedCategory !== MenuCategories.Working) {
+                this.menu_controller.updateStatus(this.hasProjectOpen(), this.isOnline());
+            }
+            indicator.removeClass("green");
+            indicator.addClass("orange");
+            indicator.removeClass("red");
+        }.bind(this);
+
+        let on_connected = function() {
+            this.is_online = true;
+            if (this.menu_controller.displayedCategory !== MenuCategories.Working) {
+                this.menu_controller.updateStatus(this.hasProjectOpen(), this.isOnline());
+            }
+
+            indicator.addClass("green");
+            indicator.removeClass("orange");
+            indicator.removeClass("red");
+        }.bind(this);
 
         // On connect, allow load from server.
-        this.socket.on("connect", function() {
-            this.loadServerHosted("main");
-        }.bind(this));
+        this.socket = io.connect('//');
+        this.socket.on("connect", on_connected);
+        this.socket.on("reconnect", on_connected);
+        this.socket.on("reconnecting", on_connection_pending);
+        this.socket.on("reconnect_error", on_failed);
+        this.socket.on("reconnect_failed", on_failed);
+        this.socket.on("disconnect", on_failed);
+        this.socket.on("connect_error", on_failed);
+        this.socket.on("connect_timeout", on_failed);
+        this.socket.on("error", on_failed);
 
         this.socket.on("joined", this.loadServerHostedCallback.bind(this));
 
@@ -139,7 +183,7 @@ export class UIController {
 
 
     newProject (dimensions: Vec2) {
-        this.menu_controller.switchCategory(1);
+        this.menu_controller.switchCategory(MenuCategories.Working);
 
         this.redraw = true;
         this.project = new Project(this, this.project_name, dimensions);
@@ -149,6 +193,15 @@ export class UIController {
         // display the layer menu:
         this.layer_menu_controller = setup_layer_menu(this, document.getElementById("layerManager_container"));
 
+    }
+
+
+    hasProjectOpen(): boolean {
+        return this.project !== null;
+    }
+
+    isOnline(): boolean {
+        return this.is_online;
     }
 
     /**
@@ -433,6 +486,7 @@ export class UIController {
 
         document.addEventListener("keyup", this.keyboard_manager.handleEvent.bind(this.keyboard_manager));
     }
+
 }
 
 function onTouch(evt: TouchEvent) {
