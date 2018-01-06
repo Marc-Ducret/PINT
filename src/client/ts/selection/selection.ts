@@ -57,11 +57,12 @@ export class PixelSelectionHandler {
         this.mask.reset();
         this.mask.fill();
 
-
         // select all at the beginning.
         for (let i = 0; i < w * h; i++) {
             this.values[i] = 0xFF;
         }
+
+
     }
 
     getMask(): HTMLCanvasElement {
