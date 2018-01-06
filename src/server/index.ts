@@ -7,7 +7,7 @@ import {Vec2} from "../client/ts/vec2";
 import {Project} from "../client/ts/docState";
 import {ActionNetworkPacket, HelloNetworkPacket} from "../client/ts/networkLink";
 import {PixelSelectionHandler} from "../client/ts/selection/selection";
-import {ActionType} from "../client/ts/tools/actionInterface";
+import {ActionInterface, ActionType} from "../client/ts/tools/actionInterface";
 import {PintHistory} from "../client/ts/history/history";
 
 let app = express();
@@ -25,23 +25,41 @@ app.use('/src/', serveStatic(path.join(__dirname, '../../src/')));
 app.use('/', serveStatic(path.join(__dirname, '../client/')));
 
 
-let project = new Project(null, "0", new Vec2(800,600));
-let selectionHandlers: {[id: string]: PixelSelectionHandler} = {};
-let clients: {[id: string]: SocketIO.Socket} = {};
 
-let history: PintHistory = new PintHistory(project);
+let clients: {[pid: string] : {[uid: string]: SocketIO.Socket}} = {};
+let projects: {[pid: string]: Project}  = {};
+let selectionHandlers: {[uid: string]: PixelSelectionHandler}  = {};
+let histories: {[pid: string]: PintHistory} = {};
+let client_project: {[uid: string]: string} = {};
+
+interface JoinPacket {
+    name: string;
+    dimensions: {x: number, y: number};
+    image_data: string;
+}
 
 io.on("connection", function (socket: SocketIO.Socket) {
-    socket.on("join", function (name: string) {
-        console.log(socket.id + " joining drawing `"+name+"`");
+    socket.on("join", function (packet: JoinPacket) {
+        if (projects[packet.name] === undefined) {
+            console.log(socket.id + " creates the drawing `"+packet.name+"`");
+             let project = new Project(null, packet.name, new Vec2(packet.dimensions.x,packet.dimensions.y));
+             let history: PintHistory = new PintHistory(project);
+
+             projects[packet.name] = project;
+             histories[packet.name] = history;
+             clients[packet.name] = {};
+        }
+
+        console.log(socket.id + " joining drawing `"+packet.name+"`");
 
         let data = {
-            dimensions: project.dimensions,
-            data: project.currentLayer.getHTMLElement().toDataURL(),
+            dimensions: projects[packet.name].dimensions,
+            data: projects[packet.name].currentLayer.getHTMLElement().toDataURL(),
         };
 
+
         socket.emit("joined", data);
-        for (let id in selectionHandlers) {
+        for (let id in clients[packet.name]) {
             let hello: HelloNetworkPacket = {
                 sender: id,
                 serializedSelection: selectionHandlers[id].serialize(),
@@ -50,24 +68,54 @@ io.on("connection", function (socket: SocketIO.Socket) {
         }
 
 
-        selectionHandlers[socket.id] = new PixelSelectionHandler(800, 600);
+        selectionHandlers[socket.id] = new PixelSelectionHandler(data.dimensions.x, data.dimensions.y);
 
         let hello: HelloNetworkPacket = {
             sender: socket.id,
             serializedSelection: selectionHandlers[socket.id].serialize(),
         };
 
-        for (let id in clients) {
-            clients[id].emit("hello", hello);
+        for (let id in clients[packet.name]) {
+            clients[packet.name][id].emit("hello", hello);
         }
 
-        clients[socket.id] = socket;
+        clients[packet.name][socket.id] = socket;
+        client_project[socket.id] = packet.name;
+
+        if (packet.image_data !== "") {
+            let actionPacket: ActionNetworkPacket = {
+                data: {
+                    type: ActionType.ToolApply,
+                    toolName: "PasteTool",
+                    actionData: {x: 0, y: 0},
+                    toolSettings: {
+                        project_clipboard: packet.image_data,
+                        project_clipboard_x: 0,
+                        project_clipboard_y: 0,
+                    },
+                },
+                sender: socket.id,
+            };
+
+            for (let socket_id in clients[packet.name]) {
+                clients[packet.name][socket_id].emit("action", actionPacket);
+            }
+
+            projects[packet.name].applyAction(actionPacket.data, selectionHandlers[actionPacket.sender], false).then(null);
+        }
     });
 
     socket.on("disconnect", function() {
         console.log(socket.id + " left.");
-        delete selectionHandlers[socket.id];
-        delete clients[socket.id];
+
+        if (socket.id in selectionHandlers) {
+            delete selectionHandlers[socket.id];
+        }
+
+        if (socket.id in client_project) {
+            delete clients[client_project[socket.id]][socket.id];
+            delete client_project[socket.id];
+        }
     });
 
     socket.on("action", function (data: ActionNetworkPacket) {
@@ -76,29 +124,43 @@ io.on("connection", function (socket: SocketIO.Socket) {
           socket.disconnect();
         }
 
-        console.log("Action by " + data.sender + " with tool " + data.data.toolName);
+        let name = client_project[socket.id];
+
+        let history = histories[name];
+
+        if (data.data.type != ActionType.ToolPreview) {
+            console.log("On project: "+name);
+            console.log("Action by " + data.sender + " with tool " + data.data.toolName);
+        }
+
         if (data.data.type == ActionType.Undo) {
             let action_packet = history.undo();
             if (action_packet != null) {
-                project.applyAction(action_packet.data, selectionHandlers[action_packet.sender], false).then(_ => {
-                    io.sockets.emit("action", action_packet);
+                projects[name].applyAction(action_packet.data, selectionHandlers[action_packet.sender], false).then(_ => {
+                    for (let socket_id in clients[name]) {
+                        clients[name][socket_id].emit("action", action_packet);
+                    }
                 });
             }
         } else if (data.data.type == ActionType.Redo) {
             let action_packet = history.redo();
 
             if (action_packet != null) {
-                project.applyAction(action_packet.data, selectionHandlers[action_packet.sender], false).then(null);
-                io.sockets.emit("action", action_packet);
+                projects[name].applyAction(action_packet.data, selectionHandlers[action_packet.sender], false).then(null);
+                for (let socket_id in clients[name]) {
+                    clients[name][socket_id].emit("action", action_packet);
+                }
             }
         } else {
-            io.sockets.emit("action", data);
+            for (let socket_id in clients[name]) {
+                clients[name][socket_id].emit("action", data);
+            }
             if (data.data.type == ActionType.ToolApply) {
-                project.applyAction(data.data, selectionHandlers[data.sender], true).then(undo_action => {
+                projects[name].applyAction(data.data, selectionHandlers[data.sender], true).then(undo_action => {
                     history.register_action(data, undo_action);
                 });
             } else if (data.data.type == ActionType.ToolPreview) {
-                project.applyAction(data.data, selectionHandlers[data.sender], false).then(null);
+                projects[name].applyAction(data.data, selectionHandlers[data.sender], false).then(null);
             }
 
         }
