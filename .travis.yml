@@ -23,7 +23,14 @@ deploy:
     local_dir: build
     on:
       repo: VengeurK/PINT
-      branch: server
+      branch: master
+  - provider: pages
+    name: PINT WebApp
+    local_dir: build
+    skip_cleanup: true
+    github_token: $GITHUB_TOKEN
+    on:
+      branch: master
 before_install:
 - export CHROME_BIN=chromium-browser
 - export DISPLAY=:99.0
