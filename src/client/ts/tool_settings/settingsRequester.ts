@@ -124,8 +124,6 @@ export class SettingsRequester {
      * @returns {any}
      */
     get (name: string) {
-        console.log("get "+name);
-
         if (this.data[name] === undefined) {
             console.log("Parameter '"+name+"' has not been requested.");
         } else {
@@ -139,8 +137,6 @@ export class SettingsRequester {
      * @param value New value.
      */
     set (name: string, value: any) {
-        console.log("set "+name);
-
         if (this.data[name] === undefined) {
             console.log("Parameter '"+name+"' has not been requested.");
         } else {
