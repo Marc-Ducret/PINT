@@ -2,6 +2,7 @@
 import {UIController} from "./ui";
 import {Vec2} from "../vec2";
 import * as squareRecon from "../image_utils/squareRecon";
+import * as $ from "jquery";
 
 export enum MenuCategories {
     NoProjectOffline,
@@ -153,7 +154,11 @@ export function setup_menu(controller: UIController, base_element: HTMLElement) 
     menu_controller.addElementToCategory(filename, MenuCategories.NoProjectOnline);
 
     let newproject = menu_newproject_create(function (dimensions) {
-        controller.newProject(dimensions);
+        if ($("#share_online_checkbox").is(":checked")) { // Sync project with server.
+            controller.loadServerHosted(controller.project_name, dimensions, "");
+        } else { // Offline mode.
+            controller.newProject(dimensions);
+        }
     });
     menu_controller.addElement(newproject, {l: 3, m: 12, s: 12});
     menu_controller.addElementToCategory(newproject, MenuCategories.InProjectOffline);
@@ -162,7 +167,7 @@ export function setup_menu(controller: UIController, base_element: HTMLElement) 
     menu_controller.addElementToCategory(newproject, MenuCategories.NoProjectOnline);
 
     let load_image_file = menu_button_create("Load from file", function() {
-        controller.loadImageFromFile();
+        controller.newProjectFromFile();
     });
     menu_controller.addElement(load_image_file, {l: 1, m: 6, s: 6});
     menu_controller.addElementToCategory(load_image_file, MenuCategories.InProjectOffline);
@@ -214,7 +219,7 @@ function menu_share_online_create(): HTMLElement {
     let div_switch = document.createElement("div");
     div_switch.className = "switch";
     div_switch.innerHTML = "<label>\n" +
-        "      <input type=\"checkbox\">\n" +
+        "      <input type=\"checkbox\" id=\"share_online_checkbox\">\n" +
         "      <span class=\"lever\"></span>\n" +
         "    </label>";
 

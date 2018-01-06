@@ -135,7 +135,31 @@ export class UIController {
         this.project_name = new_title;
     }
 
-    loadImageFromFile() {
+
+
+
+    loadServerHosted (name: string, dimensions: Vec2, image_data: string) {
+        this.socket.emit('join', {"name": name, "dimensions": dimensions, "image_data": image_data});
+    }
+
+
+    /// Data contains project dimensions, image data
+    loadServerHostedCallback (data) {
+        this.newProject(data.dimensions);
+        this.project.enableNetwork(this.socket);
+
+
+
+        /// TODO: Work with multiple layers.
+        let img = new Image;
+        img.onload = function(){
+            this.project.currentLayer.getContext().drawImage(img,0,0);
+            this.project.redraw = true;
+        }.bind(this);
+        img.src = data.data;
+    }
+
+    newProjectFromFile() {
         let input = document.createElement("input");
         input.type = "file";
         input.accept = ".jpg, .jpeg, .png";
@@ -149,8 +173,15 @@ export class UIController {
             reader.onload = function(event) {
                 imgtag.src = reader.result;
                 imgtag.addEventListener("load", function() {
-                    self.newProject(new Vec2(imgtag.width, imgtag.height));
-                    self.project.currentLayer.getContext().drawImage(imgtag, 0, 0);
+                    if ($("#share_online_checkbox").is(":checked")) {
+                        self.menu_controller.switchCategory(MenuCategories.Working);
+                        self.redraw = true;
+
+                        self.loadServerHosted(self.project_name, new Vec2(imgtag.width, imgtag.height), reader.result);
+                    } else {
+                        self.newProject(new Vec2(imgtag.width, imgtag.height));
+                        self.project.currentLayer.getContext().drawImage(imgtag, 0, 0);
+                    }
                 });
             };
             reader.readAsDataURL(selectedFile);
@@ -161,37 +192,17 @@ export class UIController {
         return false;
     }
 
-
-    loadServerHosted (name: string) {
-        this.socket.emit('join', name);
-    }
-
-
-    /// Data contains project dimensions, image data
-    loadServerHostedCallback (data) {
-        this.newProject(data.dimensions);
-        this.project.enableNetwork(this.socket);
-
-        /// TODO: Work with multiple layers.
-        let img = new Image;
-        img.onload = function(){
-            this.project.currentLayer.getContext().drawImage(img,0,0);
-            this.project.redraw = true;
-        }.bind(this);
-        img.src = data.data;
-    }
-
-
     newProject (dimensions: Vec2) {
         this.menu_controller.switchCategory(MenuCategories.Working);
-
         this.redraw = true;
+
         this.project = new Project(this, this.project_name, dimensions);
         this.viewport.setLayerList(this.project.layerList);
         $("#toolbox-container").children().removeClass("hovered"); // Unselect tools.
 
         // display the layer menu:
         this.layer_menu_controller = setup_layer_menu(this, document.getElementById("layerManager_container"));
+
 
     }
 

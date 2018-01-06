@@ -30,11 +30,11 @@ export class Layer {
         return this.context;
     };
 
-    reset = function() {
+    reset() {
         this.context.clearRect(0,0,this.width,this.height);
     };
 
-    fill = function() {
+    fill() {
         this.context.fillStyle = "#ffffff";
         this.context.strokeStyle = "#ffffff";
         this.context.fillRect(0,0,this.width,this.height);
