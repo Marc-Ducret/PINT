@@ -126,6 +126,18 @@ export class UIController {
         }.bind(this));
 
         window.requestAnimationFrame(this.onStep.bind(this));
+
+        let url = new URL(window.location.href);
+        let online = url.searchParams.get("online");
+        let project_name = url.searchParams.get("project");
+
+        if (online != null && project_name != null) {
+            if (online == "true") {
+                this.socket.emit('join', {"name": project_name, "dimensions": new Vec2(800, 600), "image_data": ""});
+            } else {
+                //TODO: Load from local storage.
+            }
+        }
     }
 
     filenameUpdate (new_title: string) {
@@ -193,6 +205,7 @@ export class UIController {
     }
 
     newProject (dimensions: Vec2) {
+
         this.menu_controller.switchCategory(MenuCategories.Working);
         this.redraw = true;
 
@@ -202,8 +215,6 @@ export class UIController {
 
         // display the layer menu:
         this.layer_menu_controller = setup_layer_menu(this, document.getElementById("layerManager_container"));
-
-
     }
 
 

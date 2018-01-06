@@ -155,8 +155,10 @@ export function setup_menu(controller: UIController, base_element: HTMLElement) 
 
     let newproject = menu_newproject_create(function (dimensions) {
         if ($("#share_online_checkbox").is(":checked")) { // Sync project with server.
+            window.history.pushState(null, 'PINT - '+name, '?online=true&project='+name);
             controller.loadServerHosted(controller.project_name, dimensions, "");
         } else { // Offline mode.
+            window.history.pushState(null, 'PINT - '+name, '?online=false&project='+name);
             controller.newProject(dimensions);
         }
     });
