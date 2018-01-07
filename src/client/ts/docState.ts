@@ -83,20 +83,6 @@ export class Project {
 
     enableNetwork(socket: SocketIOClient.Socket) {
         this.link = new NetworkLink(this, socket);
-
-        this.link.sendAction({
-            type: ActionType.ToolApply,
-            toolName: "SelectionTool",
-            actionData: {
-                firstCorner: {x: 0, y: 0},
-                lastCorner: {x: this.dimensions.x, y: this.dimensions.y},
-                width: this.dimensions.x,
-                height: this.dimensions.y
-            },
-            toolSettings: {
-                shape: "square",
-            },
-        });
     }
 
     /**

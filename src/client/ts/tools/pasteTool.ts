@@ -65,6 +65,10 @@ export class PasteTool extends Tool {
     drawPreview(layer: Layer) {};
 
     async applyTool(layer: Layer, generate_undo: boolean): Promise<ActionInterface> {
+        if (this.getSetting("project_clipboard") == "") {
+            return null;
+        }
+
         layer.getContext().save();
         layer.getContext().globalCompositeOperation = this.getSetting("mode");
         if (this.getSetting("mode") == "copy") {

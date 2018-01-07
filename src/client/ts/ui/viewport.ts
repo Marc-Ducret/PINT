@@ -293,8 +293,6 @@ export class Viewport {
         let size_x = Math.min(end_x - begin_x, layer.getWidth() - begin_x);
         let size_y = Math.min(end_y - begin_y, layer.getHeight() - begin_y);
 
-        //console.log("sx" + size_x + " |bx " + begin_x + " |ex " + end_x);
-
         layer.getContext().globalCompositeOperation = method;
         layer.getContext().drawImage(selection.getMask(),
             begin_x,

@@ -168,7 +168,7 @@ export class UIController {
             img.onload = function(){
                 this.project.layerList[i].getContext().globalCompositeOperation = "copy";
                 this.project.layerList[i].getContext().drawImage(img,0,0);
-                this.project.layerList[i].getContext().globalCompositeOperation = "source-in";
+                this.project.layerList[i].getContext().globalCompositeOperation = "source-over";
                 this.project.redraw = true;
             }.bind(this);
             img.src = data.data[i];
