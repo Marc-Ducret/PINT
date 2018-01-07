@@ -260,7 +260,7 @@ function menu_newproject_create(callback): HTMLElement {
     a.className = "btn-large";
     a.innerText = "New project";
     a.addEventListener("click", function() {
-        callback(new Vec2(<number>$(input).val(), <number>$(input2).val()));
+        callback(new Vec2(parseInt(<string>$(input).val()), parseInt(<string>$(input2).val())));
     });
 
     let span = document.createElement("span");
