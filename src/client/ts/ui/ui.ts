@@ -171,6 +171,9 @@ export class UIController {
             }.bind(this);
             img.src = data.data[i];
         }
+        // Update preview layer to last layer.
+        let last = this.project.layerList.length - 1;
+        this.project.previewLayer = this.project.layerList[last];
 
         this.layer_menu_controller = setup_layer_menu(this, document.getElementById("layerManager_container"));
     }
