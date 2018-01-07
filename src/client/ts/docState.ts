@@ -230,6 +230,11 @@ export class Project {
             console.log("Action on layer: " + draw_layer);
 
             if (!tool.overrideSelectionMask) { /// Applying selection mask.
+                let history_save = "";
+                if (generateHistory) {
+                    history_save = this.layerList[draw_layer].getHTMLElement().toDataURL();
+                }
+
                 if (tool.readahead) {
                     // The tool can see what is in the layer on application.
                     this.previewLayer.getContext().drawImage(this.layerList[draw_layer].getHTMLElement(), 0, 0);
@@ -243,7 +248,7 @@ export class Project {
                     undo.type = ActionType.ToolApply;
                     undo.toolName = "PasteTool";
                     undo.toolSettings = {
-                        project_clipboard: this.layerList[draw_layer].getHTMLElement().toDataURL(),
+                        project_clipboard: history_save,
                         project_clipboard_x: 0,
                         project_clipboard_y: 0,
                         layer: draw_layer,
