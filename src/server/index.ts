@@ -63,8 +63,8 @@ io.on("connection", function (socket: SocketIO.Socket) {
             data: [],
         };
 
-        // Send all layers except preview.
-        for (let i=0; i < projects[packet.name].layerList.length-1; i++) {
+        // Send all layers
+        for (let i=0; i < projects[packet.name].layerList.length; i++) {
             data.data.push(projects[packet.name].layerList[i].getHTMLElement().toDataURL());
         }
 
@@ -124,15 +124,6 @@ io.on("connection", function (socket: SocketIO.Socket) {
 
     socket.on("disconnect", function() {
         console.log(socket.id + " left.");
-
-        if (socket.id in selectionHandlers) {
-            delete selectionHandlers[socket.id];
-        }
-
-        if (socket.id in client_project) {
-            delete clients[client_project[socket.id]][socket.id];
-            delete client_project[socket.id];
-        }
     });
 
     socket.on("action", function (data: ActionNetworkPacket) {
