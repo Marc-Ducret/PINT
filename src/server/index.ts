@@ -5,7 +5,7 @@ import * as path from 'path';
 import * as serveStatic from 'serve-static';
 import {Vec2} from "../client/ts/vec2";
 import {Project} from "../client/ts/docState";
-import {ActionNetworkPacket, HelloNetworkPacket} from "../client/ts/networkLink";
+import {ActionNetworkPacket, HelloNetworkPacket} from "../client/ts/actionLink/networkLink";
 import {PixelSelectionHandler} from "../client/ts/selection/selection";
 import {ActionInterface, ActionType} from "../client/ts/tools/actionInterface";
 import {PintHistory} from "../client/ts/history/history";

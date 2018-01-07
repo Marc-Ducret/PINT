@@ -13,8 +13,10 @@ import {PintHistory} from "./history/history";
 import {HistoryEntry} from "./history/historyEntry";
 import * as squareRecon from "./image_utils/squareRecon";
 import {ActionInterface, ActionType} from "./tools/actionInterface";
-import {NetworkLink} from "./networkLink";
+import {NetworkLink} from "./actionLink/networkLink";
 import {ToolRegistry} from "./tools/toolregistry";
+import {ActionLink} from "./actionLink/actionLink";
+import {LocalLink} from "./actionLink/localLink";
 
 /**
  * Project manager.
@@ -32,7 +34,7 @@ export class Project {
     redraw: boolean; // UIcontroller check this.redraw to now if it has to update the drawing
     history: PintHistory;
     toolRegistry: ToolRegistry;
-    private netlink: NetworkLink;
+    private link: ActionLink;
     private usingTool: boolean;
 
     /**
@@ -60,24 +62,21 @@ export class Project {
         this.ui = ui;
         this.redraw = false;
 
-        this.netlink = null;
-
-        this.currentLayer.fill();
-
         /** selection is a table of int between 0 and 255 that represents selected
          * pixels (initialized with number of pixels of current layer)
          * @todo : standardize selection dimention - layers ...
          */
         this.currentSelection = new PixelSelectionHandler(this.dimensions.x, this.dimensions.y);
-
         this.currentLayer.fill();
+
+        this.link = new LocalLink(this);
     }
 
 
     enableNetwork(socket: SocketIOClient.Socket) {
-        this.netlink = new NetworkLink(this, socket);
+        this.link = new NetworkLink(this, socket);
 
-        this.netlink.sendAction({
+        this.link.sendAction({
             type: ActionType.ToolApply,
             toolName: "SelectionTool",
             actionData: {
@@ -153,9 +152,9 @@ export class Project {
 
             this.applyAction(action, this.currentSelection, false);
 
-            if (this.netlink === null || this.currentTool.getSettings().canBeSentOverNetwork() === false) {
+            if (this.currentTool.getSettings().canBeSentOverNetwork() === false) {
             } else {
-                this.netlink.sendAction(action);
+                this.link.sendAction(action);
             }
         }
 
@@ -181,42 +180,33 @@ export class Project {
                 toolSettings: this.currentTool.getSettings().exportParameters(),
             };
 
-            if (this.netlink === null || this.currentTool.getSettings().canBeSentOverNetwork() === false) {
+            if (this.currentTool.getSettings().canBeSentOverNetwork() === false) {
                 this.applyAction(action, this.currentSelection, false);
             } else {
-                this.netlink.sendAction(action);
+                this.link.sendAction(action);
             }
 
         }
     };
 
     undo() {
-        if (this.netlink !== null) {
-            let action = {
-                toolName: "Undo",
-                actionData: "",
-                type: ActionType.Undo,
-                toolSettings: {}
-            };
-            this.netlink.sendAction(action);
-        } else { /// TODO: Implement local version.
-
-        }
+        let action = {
+            toolName: "Undo",
+            actionData: "",
+            type: ActionType.Undo,
+            toolSettings: {}
+        };
+        this.link.sendAction(action);
     }
 
     redo() {
-        if (this.netlink !== null) {
-            let action = {
-                toolName: "Redo",
-                actionData: "",
-                type: ActionType.Redo,
-                toolSettings: {}
-            };
-            this.netlink.sendAction(action);
-        } else { /// TODO: Implement local version.
-
-        }
-
+        let action = {
+            toolName: "Redo",
+            actionData: "",
+            type: ActionType.Redo,
+            toolSettings: {}
+        };
+        this.link.sendAction(action);
     }
 
 
