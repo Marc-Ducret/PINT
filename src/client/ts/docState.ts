@@ -335,31 +335,32 @@ export class Project {
 
             return {
                 toolName: "AddLayer",
-                actionData: backupContent,
+                actionData: {
+                    position: i,
+                    content: backupContent
+                },
                 type: ActionType.AddLayer,
                 toolSettings: {}
             };
         } else if (action.type == ActionType.AddLayer) {
-            // we substract 2 to let preview in the last positions of LayerList:
-            let n_last_layer : number = this.layerList.length - 2; // index of old last "real" layer
             let l = new Layer(this.dimensions); // added layer
             l.reset(); // set added layer transparent
             // add the newly created Layer to layerList, just before position indexed by n_last_layer+1:
-            this.layerList.splice(n_last_layer+1, 0, l);
+            this.layerList.splice(action.actionData.position, 0, l);
             this.currentLayer = l;
 
-            if (action.actionData != "") {
-                await l.drawDataUrl(action.actionData, 0, 0);
+            if (action.actionData.content != "") {
+                await l.drawDataUrl(action.actionData.content, 0, 0);
             }
 
             if (this.ui != null) {
                 this.ui.layer_menu_controller = setup_layer_menu(this.ui, document.getElementById("layerManager_container"));
-                highlight_layer(this.ui, n_last_layer + 1);
+                highlight_layer(this.ui, action.actionData.position);
             }
 
             return {
                 toolName: "DeleteLayer",
-                actionData: n_last_layer + 1,
+                actionData: action.actionData.position,
                 type: ActionType.DeleteLayer,
                 toolSettings: {}
             };
@@ -391,7 +392,10 @@ export class Project {
     addLayer (){
         let action = {
             toolName: "AddLayer",
-            actionData: "",
+            actionData: {
+                position: this.layerList.length - 1,
+                content: ""
+            },
             type: ActionType.AddLayer,
             toolSettings: {}
         };
