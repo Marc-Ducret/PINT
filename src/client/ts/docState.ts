@@ -26,6 +26,8 @@ export class Project {
     dimensions: Vec2;
     previewLayer: Layer;
     currentLayer: Layer;
+    workingLayer: Layer;
+
     renderPreviewPosition: number;
 
     layerList: Array<Layer>; // The renderer draw layers in order.
@@ -57,6 +59,8 @@ export class Project {
 
         this.previewLayer = new Layer(this.dimensions);
         this.currentLayer = new Layer(this.dimensions);
+        this.workingLayer = new Layer(this.dimensions);
+        this.workingLayer.getContext().globalCompositeOperation = "copy";
 
         this.layerList = [this.currentLayer]; // The renderer draw layers in order + preview layer position specified by renderPreviewPosition.
         this.renderPreviewPosition = -1; // -1 is at the end.
@@ -287,6 +291,8 @@ export class Project {
                 // The tool can see what is in the layer on application.
                 let draw_layer = action.toolSettings["layer"];
                 this.previewLayer.getContext().drawImage(this.layerList[draw_layer].getHTMLElement(), 0, 0);
+                this.workingLayer.getContext().drawImage(this.layerList[draw_layer].getHTMLElement(), 0, 0);
+
                 this.renderPreviewPosition = draw_layer;
             } else {
                 this.renderPreviewPosition = -1;
@@ -296,6 +302,9 @@ export class Project {
             if (!tool.overrideSelectionMask) {
                 // Optimized masking according to what is displayed.
                 this.ui.viewport.applyMask(this.previewLayer, selectionHandler);
+                this.ui.viewport.applyInvMask(this.workingLayer, selectionHandler);
+
+                this.previewLayer.getContext().drawImage(this.workingLayer.getHTMLElement(), 0, 0);
             }
 
             this.redraw = true;

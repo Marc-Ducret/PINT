@@ -276,7 +276,7 @@ export class Viewport {
             .add(translation, true);
     }
 
-    applyMask(layer: Layer, selection: PixelSelectionHandler) {
+    applyComposition(layer: Layer, selection: PixelSelectionHandler, method: string) {
         let viewport_local_width = this.viewportDimensions.x / this.currentScale;
         let viewport_local_height = this.viewportDimensions.y / this.currentScale;
 
@@ -295,7 +295,7 @@ export class Viewport {
 
         //console.log("sx" + size_x + " |bx " + begin_x + " |ex " + end_x);
 
-        layer.getContext().globalCompositeOperation = 'destination-in';
+        layer.getContext().globalCompositeOperation = method;
         layer.getContext().drawImage(selection.getMask(),
             begin_x,
             begin_y,
@@ -305,7 +305,15 @@ export class Viewport {
             begin_y,
             size_x,
             size_y,
-            );
+        );
         layer.getContext().globalCompositeOperation = 'source-over';
+    }
+
+    applyMask(layer: Layer, selection: PixelSelectionHandler) {
+        this.applyComposition(layer, selection, 'destination-in');
+    }
+
+    applyInvMask(layer: Layer, selection: PixelSelectionHandler) {
+        this.applyComposition(layer, selection, 'destination-out');
     }
 }
