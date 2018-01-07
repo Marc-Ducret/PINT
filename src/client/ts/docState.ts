@@ -325,11 +325,12 @@ export class Project {
                 this.layerList.splice(i,1);
             }
 
-            // update the layer manager menu:
-            this.ui.layer_menu_controller = setup_layer_menu(this.ui, document.getElementById("layerManager_container"));
-
-            // update of layer menu display:
-            highlight_layer(this.ui, indexNewCurrentLayer);
+            if (this.ui != null) {
+                // update the layer manager menu:
+                this.ui.layer_menu_controller = setup_layer_menu(this.ui, document.getElementById("layerManager_container"));
+                // update of layer menu display:
+                highlight_layer(this.ui, indexNewCurrentLayer);
+            }
 
 
             return {
@@ -351,8 +352,10 @@ export class Project {
                 await l.drawDataUrl(action.actionData, 0, 0);
             }
 
-            this.ui.layer_menu_controller = setup_layer_menu(this.ui, document.getElementById("layerManager_container"));
-            highlight_layer(this.ui, n_last_layer + 1);
+            if (this.ui != null) {
+                this.ui.layer_menu_controller = setup_layer_menu(this.ui, document.getElementById("layerManager_container"));
+                highlight_layer(this.ui, n_last_layer + 1);
+            }
 
             return {
                 toolName: "DeleteLayer",
