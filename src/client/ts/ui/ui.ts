@@ -11,6 +11,7 @@ import {highlight_layer, LayerMenuController, setup_layer_menu} from "./layermen
 import {KeyboardManager} from "./keyboardManager";
 import {Tool} from "../tools/tool";
 import {ActionType} from "../tools/actionInterface";
+import {Layer} from "./layer";
 
 /**
  * @file User interface handler
@@ -159,16 +160,19 @@ export class UIController {
     loadServerHostedCallback (data) {
         this.newProject(data.dimensions);
         this.project.enableNetwork(this.socket);
+        for (let i = 0; i < data.data.length; i++) {
+            if (i != 0) {
+                this.project.layerList.push(new Layer(data.dimensions));
+            }
+            let img = new Image;
+            img.onload = function(){
+                this.project.layerList[i].getContext().drawImage(img,0,0);
+                this.project.redraw = true;
+            }.bind(this);
+            img.src = data.data[i];
+        }
 
-
-
-        /// TODO: Work with multiple layers.
-        let img = new Image;
-        img.onload = function(){
-            this.project.currentLayer.getContext().drawImage(img,0,0);
-            this.project.redraw = true;
-        }.bind(this);
-        img.src = data.data;
+        this.layer_menu_controller = setup_layer_menu(this, document.getElementById("layerManager_container"));
     }
 
     newProjectFromFile() {

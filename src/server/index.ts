@@ -40,6 +40,9 @@ interface JoinPacket {
 
 io.on("connection", function (socket: SocketIO.Socket) {
     socket.on("join", function (packet: JoinPacket) {
+        /**
+         * Project creation.
+         */
         if (projects[packet.name] === undefined) {
             console.log(socket.id + " creates the drawing `"+packet.name+"`");
              let project = new Project(null, packet.name, new Vec2(packet.dimensions.x,packet.dimensions.y));
@@ -50,15 +53,26 @@ io.on("connection", function (socket: SocketIO.Socket) {
              clients[packet.name] = {};
         }
 
+        /**
+         * Client synchronization to drawing
+         */
         console.log(socket.id + " joining drawing `"+packet.name+"`");
 
         let data = {
             dimensions: projects[packet.name].dimensions,
-            data: projects[packet.name].currentLayer.getHTMLElement().toDataURL(),
+            data: [],
         };
 
+        // Send all layers except preview.
+        for (let i=0; i < projects[packet.name].layerList.length-1; i++) {
+            data.data.push(projects[packet.name].layerList[i].getHTMLElement().toDataURL());
+        }
 
         socket.emit("joined", data);
+
+        /**
+         * Client to client synchronization of selection
+         */
         for (let id in clients[packet.name]) {
             let hello: HelloNetworkPacket = {
                 sender: id,
@@ -82,6 +96,9 @@ io.on("connection", function (socket: SocketIO.Socket) {
         clients[packet.name][socket.id] = socket;
         client_project[socket.id] = packet.name;
 
+        /**
+         * Loaded image into project. (Load from file option)
+         */
         if (packet.image_data !== "") {
             let actionPacket: ActionNetworkPacket = {
                 data: {
