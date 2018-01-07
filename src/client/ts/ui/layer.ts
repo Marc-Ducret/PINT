@@ -91,6 +91,12 @@ export class Layer {
         this.context.globalCompositeOperation = 'source-over';
     }
 
+    applyInvMask(selection: PixelSelectionHandler) {
+        this.context.globalCompositeOperation = 'destination-out';
+        this.context.drawImage(selection.getMask(), 0, 0);
+        this.context.globalCompositeOperation = 'source-over';
+    }
+
     mask(layer: Layer) {
         this.context.globalCompositeOperation = 'destination-in';
         this.context.drawImage(layer.getHTMLElement(), 0, 0);

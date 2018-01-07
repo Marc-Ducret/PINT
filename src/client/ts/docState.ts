@@ -149,11 +149,11 @@ export class Project {
                 toolSettings: this.currentTool.getSettings().exportParameters(),
             };
 
+            action.toolSettings["layer"] = this.layerList.indexOf(this.currentLayer); // Encapsulate layer information.
 
             this.applyAction(action, this.currentSelection, false);
 
-            if (this.currentTool.getSettings().canBeSentOverNetwork() === false) {
-            } else {
+            if (this.currentTool.getSettings().canBeSentOverNetwork() === true) {
                 this.link.sendAction(action);
             }
         }
@@ -179,6 +179,8 @@ export class Project {
                 type: ActionType.ToolApply,
                 toolSettings: this.currentTool.getSettings().exportParameters(),
             };
+
+            action.toolSettings["layer"] = this.layerList.indexOf(this.currentLayer);
 
             if (this.currentTool.getSettings().canBeSentOverNetwork() === false) {
                 this.applyAction(action, this.currentSelection, false);
@@ -219,7 +221,16 @@ export class Project {
 
             this.previewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
 
+            let draw_layer = action.toolSettings["layer"];
+            console.log("Action on layer: " + draw_layer);
+
             if (!tool.overrideSelectionMask) { /// Applying selection mask.
+                if (tool.readahead) {
+                    // The tool can see what is in the layer on application.
+                    this.previewLayer.getContext().drawImage(this.layerList[draw_layer].getHTMLElement(), 0, 0);
+                    this.layerList[draw_layer].applyInvMask(selectionHandler);
+                }
+
                 let undo = await tool.applyTool(this.previewLayer, generateHistory);
 
                 if (undo != null && undo.type == ActionType.ToolApplyHistory) {
@@ -227,22 +238,24 @@ export class Project {
                     undo.type = ActionType.ToolApply;
                     undo.toolName = "PasteTool";
                     undo.toolSettings = {
-                        project_clipboard: this.currentLayer.getHTMLElement().toDataURL(),
+                        project_clipboard: this.layerList[draw_layer].getHTMLElement().toDataURL(),
                         project_clipboard_x: 0,
                         project_clipboard_y: 0,
+                        layer: draw_layer,
+                        mode: "copy"
                     };
                     undo.actionData = {x: 0, y: 0};
                 }
 
 
                 this.previewLayer.applyMask(selectionHandler);
-                this.currentLayer.getContext().drawImage(this.previewLayer.getHTMLElement(), 0, 0);
+                this.layerList[draw_layer].getContext().drawImage(this.previewLayer.getHTMLElement(), 0, 0);
 
                 this.previewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
                 this.redraw = true;
                 return undo;
             } else { /// Or not.
-                let undo = await tool.applyTool(this.currentLayer, generateHistory);
+                let undo = await tool.applyTool(this.layerList[draw_layer], generateHistory);
 
                 this.previewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
                 this.redraw = true;
