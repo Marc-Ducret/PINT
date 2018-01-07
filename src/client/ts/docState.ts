@@ -26,6 +26,7 @@ export class Project {
     dimensions: Vec2;
     previewLayer: Layer;
     currentLayer: Layer;
+    renderPreviewPosition: number;
 
     layerList: Array<Layer>; // The renderer draw layers in order.
     currentTool: Tool;
@@ -57,10 +58,13 @@ export class Project {
         this.previewLayer = new Layer(this.dimensions);
         this.currentLayer = new Layer(this.dimensions);
 
-        this.layerList = [this.currentLayer, this.previewLayer]; // The renderer draw layers in order.
+        this.layerList = [this.currentLayer]; // The renderer draw layers in order + preview layer position specified by renderPreviewPosition.
+        this.renderPreviewPosition = -1; // -1 is at the end.
+
         this.currentTool = null;
         this.ui = ui;
         this.redraw = false;
+
 
         /** selection is a table of int between 0 and 255 that represents selected
          * pixels (initialized with number of pixels of current layer)
@@ -214,6 +218,7 @@ export class Project {
 
     async applyAction (action: ActionInterface, selectionHandler: PixelSelectionHandler, generateHistory: boolean): Promise<ActionInterface> {
         if (action.type == ActionType.ToolApply) {
+            this.renderPreviewPosition = -1;
             let tool = this.toolRegistry.getToolByName(action.toolName);
             tool.reset();
             tool.getSettings().importParameters(action.toolSettings, selectionHandler, this.getUI());
@@ -273,6 +278,14 @@ export class Project {
             tool.updateData(action.actionData);
 
             this.previewLayer.reset();
+            if (tool.readahead) {
+                // The tool can see what is in the layer on application.
+                let draw_layer = action.toolSettings["layer"];
+                this.previewLayer.getContext().drawImage(this.layerList[draw_layer].getHTMLElement(), 0, 0);
+                this.renderPreviewPosition = draw_layer;
+            } else {
+                this.renderPreviewPosition = -1;
+            }
             tool.drawPreview(this.previewLayer);
 
             if (!tool.overrideSelectionMask) {
@@ -286,7 +299,7 @@ export class Project {
             let i = action.actionData;
             let indexNewCurrentLayer;
 
-            for(let j=0; j<this.layerList.length-1; j++) {
+            for(let j=0; j<this.layerList.length; j++) {
                 if (this.currentLayer == this.layerList[j]){
                     if (i<j) { // if deleted layer is before selected layer, we have to decrease by 1
                         indexNewCurrentLayer = j-1;
@@ -299,15 +312,15 @@ export class Project {
 
             let backupContent: string;
 
-            if (i >= this.layerList.length -1 || i < 0) {
+            if (i >= this.layerList.length || i < 0) {
                 throw "try to delete a layer that doesn't exist";
             }
-            else if (this.layerList.length -1 == 1) {
+            else if (this.layerList.length == 1) {
                 console.warn("impossible to delete the only layer remaining");
             }
             else if (this.currentLayer == this.layerList[i]) {
                 backupContent = this.layerList[i].getHTMLElement().toDataURL();
-                if (i == this.layerList.length -2) { // if layer i is the last layer
+                if (i == this.layerList.length - 1) { // if layer i is the last layer
                     indexNewCurrentLayer = i-1;
                     this.selectLayer(indexNewCurrentLayer);
                 }
@@ -393,7 +406,7 @@ export class Project {
         let action = {
             toolName: "AddLayer",
             actionData: {
-                position: this.layerList.length - 1,
+                position: this.layerList.length,
                 content: ""
             },
             type: ActionType.AddLayer,
@@ -407,7 +420,7 @@ export class Project {
      * @param {number} i
      */
     selectLayer (i: number){
-        if (i >= this.layerList.length -1 || i < 0){
+        if (i >= this.layerList.length || i < 0){
             throw "try to select a layer that doesn't exist"
                 ;
         }

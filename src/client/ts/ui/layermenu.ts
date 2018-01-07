@@ -41,7 +41,7 @@ export function setup_layer_menu(controller: UIController, base_element: HTMLEle
     let layer_menu_controller = new LayerMenuController(base_element);
 
     let layer_list = controller.project.getLayerList();
-    let l = layer_list.length -1; // -1 to remove the preview layer
+    let l = layer_list.length;
     for (let i=0 ; i<l ; i++) { // add layers representations to HTML horizontal bar
         let div = $("<div/>");
         let p = $("<p/>");
@@ -102,7 +102,7 @@ export function setup_layer_menu(controller: UIController, base_element: HTMLEle
  */
 export function highlight_layer(controller: UIController, i: number) {
     let layer_list = controller.project.getLayerList();
-    let l = layer_list.length -1; // -1 to remove the preview layer
+    let l = layer_list.length;
     // erase highlight of all layers:
     for (let j=0 ; j<l ; j++) {
         document.getElementById("layer"+j.toString()).style.background = "transparent";

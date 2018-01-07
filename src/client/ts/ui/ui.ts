@@ -171,9 +171,6 @@ export class UIController {
             }.bind(this);
             img.src = data.data[i];
         }
-        // Update preview layer to last layer.
-        let last = this.project.layerList.length - 1;
-        this.project.previewLayer = this.project.layerList[last];
 
         this.layer_menu_controller = setup_layer_menu(this, document.getElementById("layerManager_container"));
     }
@@ -217,7 +214,6 @@ export class UIController {
         this.redraw = true;
 
         this.project = new Project(this, this.project_name, dimensions);
-        this.viewport.setLayerList(this.project.layerList);
         $("#toolbox-container").children().removeClass("hovered"); // Unselect tools.
 
         // display the layer menu:
@@ -444,9 +440,9 @@ export class UIController {
 
         if (this.redraw) {
             if (this.project != null) {
-                this.viewport.renderLayers([this.project.currentSelection]);
+                this.viewport.renderLayers(this.project.layerList, this.project.previewLayer, this.project.renderPreviewPosition, [this.project.currentSelection]);
             } else {
-                this.viewport.renderLayers([]);
+                this.viewport.renderLayers([], null, 0,[]);
             }
 
         }

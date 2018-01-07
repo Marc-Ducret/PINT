@@ -374,13 +374,14 @@ function menu_toolbox_create(controller: UIController): HTMLElement {
     p.appendChild(create_tool_entry_icon("HandTool","gamepad"));
     p.appendChild(create_tool_entry_icon("SelectionTool", "photo_size_select_small"));
     p.appendChild(create_tool_entry_picture("AutoSelectTool", "assets/magic.png"));
+    p.appendChild(create_tool_entry_icon("EyedropperTool","colorize"));
     p.appendChild(create_separator());
     p.appendChild(create_tool_entry_icon("FreehandTool","brush"));
     p.appendChild(create_tool_entry_icon("LineTool","mode_edit"));
     p.appendChild(create_tool_entry_icon("ShapeTool","check_box_outline_blank"));
     p.appendChild(create_tool_entry_icon("FillTool","format_color_fill"));
     p.appendChild(create_tool_entry_icon("GradientTool","gradient"));
-    p.appendChild(create_tool_entry_icon("EyedropperTool","colorize"));
+    p.appendChild(create_tool_entry_icon("EraserTool","flip"));
     p.appendChild(create_separator());
     p.appendChild(scheduleUpdates(
         create_function_icon("this.project.testSquare(elem);", "Test Square", "build"),

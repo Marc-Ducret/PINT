@@ -15,8 +15,13 @@ export class Viewport {
     currentTranslation: Vec2;
     currentScale: number;
 
-    layerList: Array<Layer> = [];
     fallbackDisplay: HTMLImageElement;
+    private layerList: Array<Layer>;
+    private previewLayer: Layer;
+    private previewIndex: number;
+    private pixelSelection: Array<PixelSelectionHandler>;
+
+
 
     /**
      * Constructs the viewport handler. Should be unique.
@@ -42,21 +47,6 @@ export class Viewport {
         this.viewportDimensions = new Vec2(this.canvas.width, this.canvas.height);
 
         window.requestAnimationFrame(this.renderLayers.bind(this));
-    };
-
-    /**
-     * Updates the list of rendered layers.
-     * @param newLayerList
-     */
-    setLayerList (newLayerList: Array<Layer>) {
-        if (newLayerList.length == 0) {
-            this.layerDimensions.x = 0;
-            this.layerDimensions.y = 0;
-        } else {
-            this.layerDimensions.x = newLayerList[0].getWidth();
-            this.layerDimensions.y = newLayerList[0].getHeight();
-        }
-        this.layerList = newLayerList;
     };
 
     /**
@@ -94,20 +84,35 @@ export class Viewport {
     /**
      * Render layers one by one in order, applying transformations such as zoom and translation.
      */
-    renderLayers (pixelSelection: Array<PixelSelectionHandler>) {
+    renderLayers(layerList: Array<Layer>, previewLayer: Layer, previewIndex: number, pixelSelection: Array<PixelSelectionHandler>) {
+        if (layerList != undefined) {
+            this.layerList = layerList;
+        }
+        if (previewLayer != undefined) {
+            this.previewLayer = previewLayer;
+        }
+        if (previewIndex != undefined) {
+            this.previewIndex = previewIndex;
+        }
+        if (pixelSelection != undefined) {
+            this.pixelSelection = pixelSelection;
+        }
+
+        if (layerList.length > 0) {
+            this.layerDimensions.x = layerList[0].getWidth();
+            this.layerDimensions.y = layerList[0].getHeight();
+        }
+
         // Reset canvas
         this.resetCanvas();
 
-        // fallback drawing a logo at the center of the picture.
-        if (this.layerList.length == 0) {
-
-            let scale = this.viewportDimensions.x/(2*this.fallbackDisplay.width);
-            this.context.scale(scale, scale);
-            this.context.globalAlpha = 0.2;
-            this.context.drawImage(this.fallbackDisplay,this.fallbackDisplay.width/2,(this.viewportDimensions.y/scale/2 - (this.fallbackDisplay.height/scale/2)));
-            this.context.setTransform(1, 0, 0, 1, 0, 0);
-            return;
-        }
+        // drawing a logo at the center of the picture.
+        let scale = this.viewportDimensions.x/(2*this.fallbackDisplay.width);
+        this.context.save();
+        this.context.scale(scale, scale);
+        this.context.globalAlpha = 0.2;
+        this.context.drawImage(this.fallbackDisplay,this.fallbackDisplay.width/2,(this.viewportDimensions.y/scale/2 - (this.fallbackDisplay.height/scale/2)));
+        this.context.restore();
 
         this.context.imageSmoothingEnabled = false;
         this.context.webkitImageSmoothingEnabled = false;
@@ -126,9 +131,35 @@ export class Viewport {
         let translation_base = translation.divide(this.currentScale, true);
 
         // Render elements.
-        for (let i in this.layerList) {
+        for (let i=0; i < this.layerList.length; i++) {
+            if (i == this.previewIndex) {
+                this.context.drawImage(
+                    this.previewLayer.getHTMLElement(),
+                    -this.currentTranslation.x-translation_base.x,
+                    -this.currentTranslation.y-translation_base.y,
+                    crop_dimensions.x,
+                    crop_dimensions.y,
+                    0,
+                    0,
+                    this.viewportDimensions.x,
+                    this.viewportDimensions.y);
+            } else {
+                this.context.drawImage(
+                    this.layerList[i].getHTMLElement(),
+                    -this.currentTranslation.x-translation_base.x,
+                    -this.currentTranslation.y-translation_base.y,
+                    crop_dimensions.x,
+                    crop_dimensions.y,
+                    0,
+                    0,
+                    this.viewportDimensions.x,
+                    this.viewportDimensions.y);
+            }
+        }
+
+        if (this.previewIndex == -1 && this.previewLayer != null) {
             this.context.drawImage(
-                this.layerList[i].getHTMLElement(),
+                this.previewLayer.getHTMLElement(),
                 -this.currentTranslation.x-translation_base.x,
                 -this.currentTranslation.y-translation_base.y,
                 crop_dimensions.x,
@@ -141,8 +172,8 @@ export class Viewport {
 
         this.context.setTransform(1, 0, 0, 1, 0, 0);
 
-        if (pixelSelection.length > 0) {
-            this.renderBorder(pixelSelection[0].getBorder(), pixelSelection[0].getValues());
+        if (this.pixelSelection.length > 0) {
+            this.renderBorder(this.pixelSelection[0].getBorder(), this.pixelSelection[0].getValues());
         }
     };
 

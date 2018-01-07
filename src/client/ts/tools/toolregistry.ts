@@ -11,6 +11,7 @@ import {GradientTool} from "./gradientTool";
 import {CopyTool} from "./copyTool";
 import {PasteTool} from "./pasteTool";
 import {EyedropperTool} from "./eyedropperTool";
+import {EraserTool} from "./eraserTool";
 
 /**
  * Basically a hashmap interface.
@@ -30,6 +31,7 @@ export class ToolRegistry {
         this.registerTool(new CopyTool());
         this.registerTool(new PasteTool());
         this.registerTool(new EyedropperTool());
+        this.registerTool(new EraserTool());
     }
 
     /**
