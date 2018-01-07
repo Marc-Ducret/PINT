@@ -291,7 +291,7 @@ export class Project {
      * Add a Layer in the layerList, just before the previewLayer and the selectionLayer
      */
     addLayer (){
-        // we substract 3 to let preview and selection in the two last positions of LayerList:
+        // we substract 2 to let preview/selection layer in last positions of layerList:
         let n_last_layer : number = this.layerList.length - 2; // index of old last "real" layer
         let l = new Layer(this.dimensions); // added layer
         l.reset(); // set added layer transparent
@@ -363,7 +363,7 @@ export class Project {
      * @param {number} j Second layer to switch, index starting from 0
      */
     exchangeLayers (i: number, j: number){
-        if (i >= this.layerList.length || j >= this.layerList.length){
+        if (i >= this.layerList.length -1 || j >= this.layerList.length -1){
             throw "try to exchange a layer that doesn't exist with another one"
                 ;
         }
@@ -373,15 +373,6 @@ export class Project {
             this.layerList[j] = temp;
         }
     };
-
-    /**
-     * Remove a Layer
-     * @param {number} i Layer to remove starting from 0
-     */
-
-    removeLayer (i: number){
-        this.layerList.splice(i,1); // remove 1 element in position i
-    }
 
     /**
      * Saves the current project as a download of the resulting image
