@@ -231,15 +231,9 @@ export class UIController {
      */
     addLayer () {
         // add a layer to the current project:
-        this.project.addLayer();
-        // update the layer manager menu:
-        this.layer_menu_controller = setup_layer_menu(this, document.getElementById("layerManager_container"));
-        // update viewport LayerList
-        this.viewport.setLayerList(this.project.layerList);
-
-        let layer_list = this.project.getLayerList();
-        let l = layer_list.length;
-        highlight_layer(this, l-2);
+        if (this.project != null) {
+            this.project.addLayer();
+        }
     }
 
     /**
@@ -259,17 +253,12 @@ export class UIController {
      * @param {number} i: index of the layer to delete
      */
     deleteLayer (i:number) {
-        // delete layer i of current project and return the index of new currentLayer:
-        let indexNewCurrentLayer = this.project.deleteLayer(i);
-
-        // update the layer manager menu:
-        this.layer_menu_controller = setup_layer_menu(this, document.getElementById("layerManager_container"));
-        // update viewport LayerList
-        this.viewport.setLayerList(this.project.layerList);
-
-        // update of layer menu display:
-        highlight_layer(this, indexNewCurrentLayer);
+        // delete layer i of current project
+        if (this.project != null) {
+            this.project.deleteLayer(i);
+        }
     }
+
 
     setTool (tool: Tool) {
         if (this.project != null) {

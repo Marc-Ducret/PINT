@@ -10,13 +10,13 @@ import {PixelSelectionHandler} from "./selection/selection";
 import {UIController} from "./ui/ui";
 import {mask} from "./selection/selectionUtils";
 import {PintHistory} from "./history/history";
-import {HistoryEntry} from "./history/historyEntry";
 import * as squareRecon from "./image_utils/squareRecon";
 import {ActionInterface, ActionType} from "./tools/actionInterface";
 import {NetworkLink} from "./actionLink/networkLink";
 import {ToolRegistry} from "./tools/toolregistry";
 import {ActionLink} from "./actionLink/actionLink";
 import {LocalLink} from "./actionLink/localLink";
+import {highlight_layer, setup_layer_menu} from "./ui/layermenu";
 
 /**
  * Project manager.
@@ -269,6 +269,84 @@ export class Project {
 
             this.redraw = true;
             return null;
+        } else if (action.type == ActionType.DeleteLayer) {
+            let i = action.actionData;
+            let indexNewCurrentLayer;
+
+            for(let j=0; j<this.layerList.length-1; j++) {
+                if (this.currentLayer == this.layerList[j]){
+                    if (i<j) { // if deleted layer is before selected layer, we have to decrease by 1
+                        indexNewCurrentLayer = j-1;
+                    }
+                    else {
+                        indexNewCurrentLayer = j;
+                    }
+                }
+            }
+
+            let backupContent: string;
+
+            if (i >= this.layerList.length -1 || i < 0) {
+                throw "try to delete a layer that doesn't exist";
+            }
+            else if (this.layerList.length -1 == 1) {
+                console.warn("impossible to delete the only layer remaining");
+            }
+            else if (this.currentLayer == this.layerList[i]) {
+                backupContent = this.layerList[i].getHTMLElement().toDataURL();
+                if (i == this.layerList.length -2) { // if layer i is the last layer
+                    indexNewCurrentLayer = i-1;
+                    this.selectLayer(indexNewCurrentLayer);
+                }
+                else {
+                    this.selectLayer(i+1);
+                    indexNewCurrentLayer = i;
+                }
+                // delete layer i:
+                this.layerList.splice(i,1);
+
+            }
+            else {
+                backupContent = this.layerList[i].getHTMLElement().toDataURL();
+                // delete layer i:
+                this.layerList.splice(i,1);
+            }
+
+            // update the layer manager menu:
+            this.ui.layer_menu_controller = setup_layer_menu(this.ui, document.getElementById("layerManager_container"));
+
+            // update of layer menu display:
+            highlight_layer(this.ui, indexNewCurrentLayer);
+
+
+            return {
+                toolName: "AddLayer",
+                actionData: backupContent,
+                type: ActionType.AddLayer,
+                toolSettings: {}
+            };
+        } else if (action.type == ActionType.AddLayer) {
+            // we substract 2 to let preview in the last positions of LayerList:
+            let n_last_layer : number = this.layerList.length - 2; // index of old last "real" layer
+            let l = new Layer(this.dimensions); // added layer
+            l.reset(); // set added layer transparent
+            // add the newly created Layer to layerList, just before position indexed by n_last_layer+1:
+            this.layerList.splice(n_last_layer+1, 0, l);
+            this.currentLayer = l;
+
+            if (action.actionData != "") {
+                await l.drawDataUrl(action.actionData, 0, 0);
+            }
+
+            this.ui.layer_menu_controller = setup_layer_menu(this.ui, document.getElementById("layerManager_container"));
+            highlight_layer(this.ui, n_last_layer + 1);
+
+            return {
+                toolName: "DeleteLayer",
+                actionData: n_last_layer + 1,
+                type: ActionType.DeleteLayer,
+                toolSettings: {}
+            };
         }
     }
 
@@ -295,13 +373,13 @@ export class Project {
      * Add a Layer in the layerList, just before the previewLayer and the selectionLayer
      */
     addLayer (){
-        // we substract 3 to let preview and selection in the two last positions of LayerList:
-        let n_last_layer : number = this.layerList.length - 2; // index of old last "real" layer
-        let l = new Layer(this.dimensions); // added layer
-        l.reset(); // set added layer transparent
-        // add the newly created Layer to layerList, just before position indexed by n_last_layer+1:
-        this.layerList.splice(n_last_layer+1, 0, l);
-        this.currentLayer = l;
+        let action = {
+            toolName: "AddLayer",
+            actionData: "",
+            type: ActionType.AddLayer,
+            toolSettings: {}
+        };
+        this.link.sendAction(action);
     };
 
     /**
@@ -321,44 +399,15 @@ export class Project {
     /**
      * Delete layer of index i
      * @param {number} i
-     * @return {number}
      */
-    deleteLayer (i: number):number {
-        let ret = 0;
-        for(let j=0; j<this.layerList.length-1; j++) {
-            if (this.currentLayer == this.layerList[j]){
-                if (i<j) { // if deleted layer is before selected layer, we have to decrease by 1
-                    ret = j-1;
-                }
-                else {
-                    ret = j;
-                }
-            }
-        }
-        if (i >= this.layerList.length -1 || i < 0) {
-            throw "try to delete a layer that doesn't exist";
-        }
-        else if (this.layerList.length -1 == 1) {
-            console.warn("impossible to delete the only layer remaining");
-        }
-        else if (this.currentLayer == this.layerList[i]) {
-            if (i == this.layerList.length -2) { // if layer i is the last layer
-                ret = i-1;
-                this.selectLayer(ret);
-            }
-            else {
-                this.selectLayer(i+1);
-                ret = i;
-            }
-            // delete layer i:
-            this.layerList.splice(i,1);
-
-        }
-        else {
-            // delete layer i:
-            this.layerList.splice(i,1);
-        }
-        return ret;
+    deleteLayer (i: number) {
+        let action = {
+            toolName: "DeleteLayer",
+            actionData: i,
+            type: ActionType.DeleteLayer,
+            toolSettings: {}
+        };
+        this.link.sendAction(action);
     };
 
     /**

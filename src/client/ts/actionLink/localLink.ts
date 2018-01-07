@@ -28,7 +28,10 @@ export class LocalLink extends ActionLink {
                     .then(null);
             }
         } else {
-            if (action.type == ActionType.ToolApply) {
+            if (action.type == ActionType.ToolApply
+                || action.type == ActionType.AddLayer
+                || action.type == ActionType.DeleteLayer)
+            {
                 this.project.applyAction(action, this.project.currentSelection, true)
                     .then(undo_action => {
 
