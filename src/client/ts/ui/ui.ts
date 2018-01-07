@@ -5,7 +5,7 @@ import {SettingsInterface} from "../tool_settings/settingsInterface";
 import {Viewport} from "./viewport";
 import {ToolRegistry} from "../tools/toolregistry";
 import {Vec2} from "../vec2";
-import {MenuController, setup_menu} from "./menu";
+import {MenuCategories, MenuController, setup_menu} from "./menu";
 import * as io from 'socket.io-client';
 import {highlight_layer, LayerMenuController, setup_layer_menu} from "./layermenu"
 import {KeyboardManager} from "./keyboardManager";
@@ -39,8 +39,9 @@ export class UIController {
     project_name: string;
     socket: SocketIOClient.Socket;
 
+    private is_online: boolean;
+
     constructor (){
-        this.socket = io.connect('//');
 
         let fallbackImage = document.createElement("img");
         this.viewport = new Viewport(<JQuery<HTMLCanvasElement>> $("#viewport"), fallbackImage);
@@ -56,11 +57,54 @@ export class UIController {
 
         this.project_name = "Untitled";
         this.redraw = true;
+        this.is_online = false;
+
+
+        let indicator = $(".indicator");
+
+        let on_failed = function() {
+            this.is_online = false;
+            if (this.menu_controller.displayedCategory !== MenuCategories.Working) {
+                this.menu_controller.updateStatus(this.hasProjectOpen(), this.isOnline());
+            }
+            indicator.removeClass("green");
+            indicator.removeClass("orange");
+            indicator.addClass("red");
+        }.bind(this);
+
+
+        let on_connection_pending = function() {
+            this.is_online = false;
+            if (this.menu_controller.displayedCategory !== MenuCategories.Working) {
+                this.menu_controller.updateStatus(this.hasProjectOpen(), this.isOnline());
+            }
+            indicator.removeClass("green");
+            indicator.addClass("orange");
+            indicator.removeClass("red");
+        }.bind(this);
+
+        let on_connected = function() {
+            this.is_online = true;
+            if (this.menu_controller.displayedCategory !== MenuCategories.Working) {
+                this.menu_controller.updateStatus(this.hasProjectOpen(), this.isOnline());
+            }
+
+            indicator.addClass("green");
+            indicator.removeClass("orange");
+            indicator.removeClass("red");
+        }.bind(this);
 
         // On connect, allow load from server.
-        this.socket.on("connect", function() {
-            this.loadServerHosted("main");
-        }.bind(this));
+        this.socket = io.connect('//');
+        this.socket.on("connect", on_connected);
+        this.socket.on("reconnect", on_connected);
+        this.socket.on("reconnecting", on_connection_pending);
+        this.socket.on("reconnect_error", on_failed);
+        this.socket.on("reconnect_failed", on_failed);
+        this.socket.on("disconnect", on_failed);
+        this.socket.on("connect_error", on_failed);
+        this.socket.on("connect_timeout", on_failed);
+        this.socket.on("error", on_failed);
 
         this.socket.on("joined", this.loadServerHostedCallback.bind(this));
 
@@ -82,6 +126,18 @@ export class UIController {
         }.bind(this));
 
         window.requestAnimationFrame(this.onStep.bind(this));
+
+        let url = new URL(window.location.href);
+        let online = url.searchParams.get("online");
+        let project_name = url.searchParams.get("project");
+
+        if (online != null && project_name != null) {
+            if (online == "true") {
+                this.socket.emit('join', {"name": project_name, "dimensions": new Vec2(800, 600), "image_data": ""});
+            } else {
+                //TODO: Load from local storage.
+            }
+        }
     }
 
     filenameUpdate (new_title: string) {
@@ -91,7 +147,31 @@ export class UIController {
         this.project_name = new_title;
     }
 
-    loadImageFromFile() {
+
+
+
+    loadServerHosted (name: string, dimensions: Vec2, image_data: string) {
+        this.socket.emit('join', {"name": name, "dimensions": dimensions, "image_data": image_data});
+    }
+
+
+    /// Data contains project dimensions, image data
+    loadServerHostedCallback (data) {
+        this.newProject(data.dimensions);
+        this.project.enableNetwork(this.socket);
+
+
+
+        /// TODO: Work with multiple layers.
+        let img = new Image;
+        img.onload = function(){
+            this.project.currentLayer.getContext().drawImage(img,0,0);
+            this.project.redraw = true;
+        }.bind(this);
+        img.src = data.data;
+    }
+
+    newProjectFromFile() {
         let input = document.createElement("input");
         input.type = "file";
         input.accept = ".jpg, .jpeg, .png";
@@ -105,8 +185,15 @@ export class UIController {
             reader.onload = function(event) {
                 imgtag.src = reader.result;
                 imgtag.addEventListener("load", function() {
-                    self.newProject(new Vec2(imgtag.width, imgtag.height));
-                    self.project.currentLayer.getContext().drawImage(imgtag, 0, 0);
+                    if ($("#share_online_checkbox").is(":checked")) {
+                        self.menu_controller.switchCategory(MenuCategories.Working);
+                        self.redraw = true;
+
+                        self.loadServerHosted(self.project_name, new Vec2(imgtag.width, imgtag.height), reader.result);
+                    } else {
+                        self.newProject(new Vec2(imgtag.width, imgtag.height));
+                        self.project.currentLayer.getContext().drawImage(imgtag, 0, 0);
+                    }
                 });
             };
             reader.readAsDataURL(selectedFile);
@@ -117,38 +204,26 @@ export class UIController {
         return false;
     }
 
-
-    loadServerHosted (name: string) {
-        this.socket.emit('join', name);
-    }
-
-
-    /// Data contains project dimensions, image data
-    loadServerHostedCallback (data) {
-        this.newProject(data.dimensions);
-        this.project.enableNetwork(this.socket);
-
-        /// TODO: Work with multiple layers.
-        let img = new Image;
-        img.onload = function(){
-            this.project.currentLayer.getContext().drawImage(img,0,0);
-            this.project.redraw = true;
-        }.bind(this);
-        img.src = data.data;
-    }
-
-
     newProject (dimensions: Vec2) {
-        this.menu_controller.switchCategory(1);
 
+        this.menu_controller.switchCategory(MenuCategories.Working);
         this.redraw = true;
+
         this.project = new Project(this, this.project_name, dimensions);
         this.viewport.setLayerList(this.project.layerList);
         $("#toolbox-container").children().removeClass("hovered"); // Unselect tools.
 
         // display the layer menu:
         this.layer_menu_controller = setup_layer_menu(this, document.getElementById("layerManager_container"));
+    }
 
+
+    hasProjectOpen(): boolean {
+        return this.project !== null;
+    }
+
+    isOnline(): boolean {
+        return this.is_online;
     }
 
     /**
@@ -156,15 +231,9 @@ export class UIController {
      */
     addLayer () {
         // add a layer to the current project:
-        this.project.addLayer();
-        // update the layer manager menu:
-        this.layer_menu_controller = setup_layer_menu(this, document.getElementById("layerManager_container"));
-        // update viewport LayerList
-        this.viewport.setLayerList(this.project.layerList);
-
-        let layer_list = this.project.getLayerList();
-        let l = layer_list.length;
-        highlight_layer(this, l-2);
+        if (this.project != null) {
+            this.project.addLayer();
+        }
     }
 
     /**
@@ -184,17 +253,12 @@ export class UIController {
      * @param {number} i: index of the layer to delete
      */
     deleteLayer (i:number) {
-        // delete layer i of current project and return the index of new currentLayer:
-        let indexNewCurrentLayer = this.project.deleteLayer(i);
-
-        // update the layer manager menu:
-        this.layer_menu_controller = setup_layer_menu(this, document.getElementById("layerManager_container"));
-        // update viewport LayerList
-        this.viewport.setLayerList(this.project.layerList);
-
-        // update of layer menu display:
-        highlight_layer(this, indexNewCurrentLayer);
+        // delete layer i of current project
+        if (this.project != null) {
+            this.project.deleteLayer(i);
+        }
     }
+
 
     setTool (tool: Tool) {
         if (this.project != null) {
@@ -433,6 +497,7 @@ export class UIController {
 
         document.addEventListener("keyup", this.keyboard_manager.handleEvent.bind(this.keyboard_manager));
     }
+
 }
 
 function onTouch(evt: TouchEvent) {

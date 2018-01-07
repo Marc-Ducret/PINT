@@ -7,6 +7,8 @@ export interface ActionInterface {
 
 
 export enum ActionType {
+    AddLayer,
+    DeleteLayer,
     ToolApplyHistory,
     Undo,
     Redo,

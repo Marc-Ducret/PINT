@@ -30,11 +30,11 @@ export class Layer {
         return this.context;
     };
 
-    reset = function() {
+    reset() {
         this.context.clearRect(0,0,this.width,this.height);
     };
 
-    fill = function() {
+    fill() {
         this.context.fillStyle = "#ffffff";
         this.context.strokeStyle = "#ffffff";
         this.context.fillRect(0,0,this.width,this.height);
@@ -87,6 +87,12 @@ export class Layer {
      */
     applyMask(selection: PixelSelectionHandler) {
         this.context.globalCompositeOperation = 'destination-in';
+        this.context.drawImage(selection.getMask(), 0, 0);
+        this.context.globalCompositeOperation = 'source-over';
+    }
+
+    applyInvMask(selection: PixelSelectionHandler) {
+        this.context.globalCompositeOperation = 'destination-out';
         this.context.drawImage(selection.getMask(), 0, 0);
         this.context.globalCompositeOperation = 'source-over';
     }

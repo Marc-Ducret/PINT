@@ -1,9 +1,11 @@
-import {Project} from "./docState";
-import {ActionInterface, ActionType} from "./tools/actionInterface";
+import {Project} from "../docState";
+import {ActionInterface, ActionType} from "../tools/actionInterface";
 import {
     PixelSelectionHandler, PixelSelectionHandlerFromSerialized,
     SerializedPixelSelectionHandler
-} from "./selection/selection";
+} from "../selection/selection";
+
+import {ActionLink} from "./actionLink";
 
 export interface ActionNetworkPacket {
     data: ActionInterface,
@@ -15,7 +17,7 @@ export interface HelloNetworkPacket {
     serializedSelection: SerializedPixelSelectionHandler,
 }
 
-export class NetworkLink {
+export class NetworkLink extends ActionLink {
     private socket: SocketIOClient.Socket;
     private project: Project;
     private me: string;
@@ -23,6 +25,7 @@ export class NetworkLink {
     private selectionHandlers: {[id: string]: PixelSelectionHandler};
 
     constructor (project: Project, socket: SocketIOClient.Socket) {
+        super();
         this.socket = socket;
         this.project = project;
 

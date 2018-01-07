@@ -1,5 +1,5 @@
 import {Project} from "../docState";
-import {ActionNetworkPacket} from "../networkLink";
+import {ActionNetworkPacket} from "../actionLink/networkLink";
 import {ActionInterface} from "../tools/actionInterface";
 import {HistoryEntry} from "./historyEntry";
 

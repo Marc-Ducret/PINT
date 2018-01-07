@@ -110,7 +110,6 @@ export class Viewport {
         }
 
         this.context.imageSmoothingEnabled = false;
-        this.context.mozImageSmoothingEnabled = false;
         this.context.webkitImageSmoothingEnabled = false;
 
         let translation = this.viewportDimensions

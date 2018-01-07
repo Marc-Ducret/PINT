@@ -23,7 +23,7 @@ deploy:
     local_dir: build
     on:
       repo: VengeurK/PINT
-      branch: server
+      branch: master
 before_install:
 - export CHROME_BIN=chromium-browser
 - export DISPLAY=:99.0
