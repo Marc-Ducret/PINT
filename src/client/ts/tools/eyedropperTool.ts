@@ -4,7 +4,7 @@ import {ActionInterface, ActionType} from "./actionInterface";
 import {Layer} from "../ui/layer";
 
 /**
- * Draw a shape tool.
+ * Pick a color and put it into strokeColor or fillColor.
  */
 export class EyedropperTool extends Tool {
     private img: ImageData;

@@ -22,38 +22,71 @@ export class Layer {
         this.height = dimensions.y;
     }
 
+    /**
+     * Get HTML canvas element.
+     * @returns {HTMLCanvasElement}
+     */
     getHTMLElement () {
         return this.canvasElement[0];
     };
 
+    /**
+     * Get canvas context.
+     * @returns {CanvasRenderingContext2D}
+     */
     getContext(): CanvasRenderingContext2D {
         return this.context;
     };
 
+    /**
+     * Reset layer to full transparency.
+     */
     reset() {
         this.context.clearRect(0,0,this.width,this.height);
     };
 
+    /**
+     * Fill layer to a white background.
+     */
     fill() {
         this.context.fillStyle = "#ffffff";
         this.context.strokeStyle = "#ffffff";
         this.context.fillRect(0,0,this.width,this.height);
     };
 
+    /**
+     * Get layer width.
+     * @returns {number}
+     */
     getWidth() : number {
         return this.width;
     }
 
+    /**
+     * Get layer height.
+     * @returns {number}
+     */
     getHeight() : number {
         return this.height;
     }
 
+    /**
+     * Create a new layer having the same content as this.
+     * @returns {Layer}
+     */
     clone(): Layer {
         let layer = new Layer(new Vec2(this.width, this.height));
         layer.getContext().drawImage(this.getHTMLElement(), 0, 0);
         return layer;
     }
 
+    /**
+     * Draw image from a Base64 encoded input into the layer.
+     * @param {string} data Base64 encoded data.
+     * @param {number} x First coordinate of destination.
+     * @param {number} y Second coordinate of destination.
+     * @returns {Promise<any>}
+     */
     drawDataUrl(data: string, x: number, y: number): Promise<any> {
         return new Promise(resolve => {
             if(typeof process === 'object' && process + '' === '[object process]'){
@@ -82,7 +115,7 @@ export class Layer {
     }
 
     /***
-     *
+     * Apply selection mask to the layer, keeping what is selected.
      * @param {PixelSelectionHandler} selection
      */
     applyMask(selection: PixelSelectionHandler) {
@@ -91,6 +124,10 @@ export class Layer {
         this.context.globalCompositeOperation = 'source-over';
     }
 
+    /***
+     * Apply inverse selection mask to the layer, removing what is selected.
+     * @param {PixelSelectionHandler} selection
+     */
     applyInvMask(selection: PixelSelectionHandler) {
         this.context.globalCompositeOperation = 'destination-out';
         this.context.drawImage(selection.getMask(), 0, 0);

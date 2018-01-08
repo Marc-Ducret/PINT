@@ -30,8 +30,6 @@ export function colorSelect(img: ImageData, pos: Vec2, threshold: number): Uint8
     explored[flatten(pos,w)] = 1;
 
     /**
-<<<<<<< HEAD
-=======
      * Returns the integer corresponding to the pixel color of a flattened position.
      * @param {number} i The flattened position.
      * @returns {number}
@@ -44,7 +42,6 @@ export function colorSelect(img: ImageData, pos: Vec2, threshold: number): Uint8
     };
 
     /**
->>>>>>> 81ceaa1a66ec55beeca9b872d03995c688d0c037
      * Add a position in the stack only if it has not be seen yet.
      * @param {Vec2} p Position to add.
      */

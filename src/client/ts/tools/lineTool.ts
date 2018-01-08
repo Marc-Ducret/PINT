@@ -4,7 +4,7 @@ import {ActionInterface, ActionType} from "./actionInterface";
 import {Layer} from "../ui/layer";
 
 /**
- * Draw a shape tool.
+ * Draw a line tool.
  */
 export class LineTool extends Tool {
     constructor () {

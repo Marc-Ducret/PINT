@@ -1,8 +1,3 @@
-/**
- * Change current selection
- * @params {Selection}
- */
-
 import {Tool} from "./tool";
 import {Vec2} from "../vec2";
 import {Project} from "../docState";

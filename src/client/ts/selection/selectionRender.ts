@@ -6,7 +6,7 @@ import {Vec2} from "../vec2";
  * @param {ImageData} img Image data to update.
  * @param {number} w Canvas width.
  * @param {number} h Canvas height.
- * @deprecated
+ * @deprecated Now the border is drawn by the viewport
  */
 export function drawSelection(img: ImageData, border: Array<Vec2>, w: number, h: number) {
     const pattern = 10;

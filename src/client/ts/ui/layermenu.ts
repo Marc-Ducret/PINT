@@ -1,11 +1,11 @@
 import {UIController} from "./ui";
 
 /**
- * layer manager menu
+ * Layer manager menu
  */
 
 /**
- * @brief: class that represent the controller for the layer manager menu
+ * Class that represent the controller for the layer manager menu
  */
 export class LayerMenuController {
     menu_container: HTMLElement;
@@ -28,10 +28,10 @@ export class LayerMenuController {
 }
 
 /**
- * @ brief: update the layer menu and display it in given HTMLElement
+ * Update the layer menu and display it in given HTMLElement
  * @param {UIController} controller
  * @param {HTMLElement} base_element
- * @returns {LayerMenuController}: the updated layer menu controller
+ * @returns {LayerMenuController} The updated layer menu controller
  */
 export function setup_layer_menu(controller: UIController, base_element: HTMLElement) {
 
@@ -96,9 +96,9 @@ export function setup_layer_menu(controller: UIController, base_element: HTMLEle
 }
 
 /**
- * @ brief: highlight layer of index i (selected layer)
+ * Highlight layer of index i (selected layer)
  * @param {UIController} controller
- * @param {number} i: index of selected layer
+ * @param {number} i Index of selected layer
  */
 export function highlight_layer(controller: UIController, i: number) {
     let layer_list = controller.project.getLayerList();

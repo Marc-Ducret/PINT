@@ -1,7 +1,3 @@
-/**
- * A couple of (Internal name, Display name), used to represent
- * multiple options in a Select.
- */
 import {PixelSelectionHandler} from "../selection/selection";
 import {UIController} from "../ui/ui";
 
@@ -98,6 +94,7 @@ export class SettingsRequester {
      */
     add (req: SettingRequest) {
         if (req.inputType == InputType.Special) {
+            // Settings can be sent over network if it does not request user_interface.
             if (req.name === "user_interface") {
                 this.cbson = false;
             }
@@ -144,14 +141,26 @@ export class SettingsRequester {
         }
     }
 
+    /**
+     * Request list instance getter
+     * @returns {Array<SettingRequest>}
+     */
     getRequests() {
         return this.requests;
     }
 
+    /**
+     * Tell if the settings can be sent over network.
+     * @returns {boolean}
+     */
     canBeSentOverNetwork() {
         return this.cbson;
     }
 
+    /**
+     * Export parameters in a dictionary that can be sent over network.
+     * @returns {{[p: string]: any}}
+     */
     exportParameters(): {[name: string]: any} {
         let data = {};
         for (let req of this.requests) {
@@ -163,6 +172,12 @@ export class SettingsRequester {
         return data;
     }
 
+    /**
+     * Import parameters from a dictionary that has been previously exported.
+     * @param {{[p: string]: any}} settings Dictionary input
+     * @param {PixelSelectionHandler} selectionHandler Selection to bind on request
+     * @param {UIController} ui User interface to bind on request
+     */
     importParameters(settings: { [p: string]: any }, selectionHandler: PixelSelectionHandler, ui: UIController) {
         for (let req of this.requests) {
             if (req.inputType !== InputType.Special) {

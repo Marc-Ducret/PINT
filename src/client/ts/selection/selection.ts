@@ -4,21 +4,37 @@
  *@params {number, number} size in pixels
  */
 import {Vec2} from "../vec2";
-import {drawSelection, resetBorder} from "./selectionRender";
 import {computeBorder} from "./selectionUtils";
 import {Layer} from "../ui/layer";
 
+/**
+ * Serializable instance of PixelSelectionHandler that can be sent over the network.
+ */
 export interface SerializedPixelSelectionHandler {
+    /**
+     * Base64 encoded selectioned content
+     */
     dataUrl: string;
+    /**
+     * Image width
+     */
     width: number;
+    /**
+     * Image height
+     */
     height: number;
 }
 
+/**
+ * Build a PixelSelectionHandler from its serialized instance.
+ * @param {SerializedPixelSelectionHandler} serialized
+ * @returns {PixelSelectionHandler}
+ * @constructor
+ */
 export function PixelSelectionHandlerFromSerialized (serialized: SerializedPixelSelectionHandler): PixelSelectionHandler {
     let w = serialized.width;
     let h = serialized.height;
     let obj = new PixelSelectionHandler(w, h);
-
 
     let img = new Image;
     img.onload = function(){
@@ -29,9 +45,13 @@ export function PixelSelectionHandlerFromSerialized (serialized: SerializedPixel
         });
     }.bind(this);
     img.src = serialized.dataUrl;
+
     return obj;
 }
 
+/**
+ * Selection manager.
+ */
 export class PixelSelectionHandler {
     private width: number;
     private height: number;
@@ -40,12 +60,15 @@ export class PixelSelectionHandler {
 
     private mask: Layer;
 
+    /**
+     * Create a serialized instance of the object.
+     * @returns {SerializedPixelSelectionHandler}
+     */
     serialize(): SerializedPixelSelectionHandler {
         return {dataUrl: this.mask.getHTMLElement().toDataURL(),
                 width: this.width,
                 height: this.height};
     }
-
 
     constructor(w: number, h: number) {
         this.width = w;
@@ -61,23 +84,29 @@ export class PixelSelectionHandler {
         for (let i = 0; i < w * h; i++) {
             this.values[i] = 0xFF;
         }
-
-
     }
 
+    /**
+     * Returns a canvas where the transparency layer represents the current selection
+     * @returns {HTMLCanvasElement}
+     */
     getMask(): HTMLCanvasElement {
         return this.mask.getHTMLElement();
     }
 
+    /**
+     * Returns a reference to the raw array that contains the selection (0 is transparent, 255 is fully selected)
+     * @returns {Uint8ClampedArray}
+     */
     getValues(): Uint8ClampedArray {
         return this.values;
     }
 
 
     /**
-     *@brief add pixels to the selection
-     *@param {Vec2} p Coordinates
-     *@param {number} intensity (between 0 and 1)
+     * Add a single pixel to the selection
+     * @param {Vec2} p Coordinates
+     * @param {number} intensity (between 0 and 255)
      */
     add(p: Vec2, intensity: number) {
         let i = Math.floor(p.x) + Math.floor(p.y) * this.width;
@@ -91,17 +120,17 @@ export class PixelSelectionHandler {
     }
 
     /**
-     *@brief retrieve pixels from the selection
-     *@param {Vec2} p Coordinates
-     *@param {number} intensity (between 0 and 1)
+     * Retrieve a single pixel from the selection
+     * @param {Vec2} p Coordinates
+     * @param {number} intensity (between 0 and 255)
      */
     retrieve(p: Vec2, intensity: number) {
         this.values[p.x + p.y * this.width] = Math.max(0, this.values[p.x + p.y * this.width] - intensity);
     }
 
     /**
-     * @brief add a whole region to the selection
-     * @param {Uint8ClampedArray} sel the region to add
+     * Add a whole region to the selection
+     * @param {Uint8ClampedArray} sel The region to add
      */
     addRegion(sel: Uint8ClampedArray) {
         let imagedata = this.mask.getContext().getImageData(0, 0, this.width, this.height);
@@ -149,6 +178,10 @@ export class PixelSelectionHandler {
         }
     }
 
+    /**
+     * Border instance getter
+     * @returns {Array<Vec2>}
+     */
     getBorder(): Array<Vec2> {
         return this.border;
     }

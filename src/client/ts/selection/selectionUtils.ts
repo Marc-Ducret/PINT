@@ -1,5 +1,11 @@
 import {Vec2} from "../vec2";
 
+/**
+ * Naive implementation of selection masking on image data.
+ * @param {Uint8ClampedArray} selection Selection array
+ * @param {ImageData} img Image data
+ * @returns {ImageData}
+ */
 export function mask(selection: Uint8ClampedArray, img: ImageData) {
     selection.forEach(function(value: number, index: number) {
         img.data[4*index+3] = value*img.data[4*index+3]/255;
@@ -39,7 +45,15 @@ export function computeBorder(selection: Uint8ClampedArray, w: number, h: number
     return border;
 }
 
-
+/**
+ * Returns if the (x, y) pixel is in the border of the selection.
+ * @param {number} x First coordinate
+ * @param {number} y Second coordinate
+ * @param {Uint8ClampedArray} selection Selection array
+ * @param {number} w Image width
+ * @param {number} h Image height
+ * @returns {boolean}
+ */
 export function inBorder(x: number, y: number, selection: Uint8ClampedArray, w: number, h: number) {
     return (isSelected(selection, x, y, w, h)
             && (!isSelected(selection, x-1, y, w, h)

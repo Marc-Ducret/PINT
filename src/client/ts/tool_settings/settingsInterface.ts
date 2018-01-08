@@ -102,12 +102,13 @@ export class SettingsInterface {
     /**
      * Setups the interface and bindings for a given tool.
      * @param {Tool} tool
+     * @param project
      */
     public setupToolSettings (tool : Tool, project: Project) {
         this.container.empty();
         const self = this;
         for (let request of tool.settingsGetRequests()) {
-            if (request.inputType == InputType.Special) {
+            if (request.inputType == InputType.Special) { // Special requests that use the project instance.
                 let name = request.name;
                 if (name === "project_selection") {
                     /// A tool can request to update the selection setting.
@@ -115,7 +116,7 @@ export class SettingsInterface {
                 } else if (name === "user_interface") {
                     tool.settingsSetGetter("user_interface", (function () {return this.getUI()}).bind(project));
                 }
-            } else if (request.inputType == InputType.Hidden) {
+            } else if (request.inputType == InputType.Hidden) { // The tool requests a variable that should not be shown but it remains shared between tools.
                 let getter_setter_function = function(name: string, value_to_set: any) {
                     if (value_to_set !== null) {// use as a setter
                         this.savedSettings[name] = value_to_set;
@@ -125,12 +126,13 @@ export class SettingsInterface {
                 };
 
                 tool.settingsSetGetter(request.name, getter_setter_function.bind(this, request.name));
-            } else {
+            } else { // A standard request that will be instanciated in the container with an input of the correct type.
                 const name = request.name;
                 const desc = request.descName;
 
                 if (this.savedSettings[name] !== undefined) {
-                    request.defaultValue = this.savedSettings[name]; /** @warning This assumes that settings request of the same name requires the same types. **/
+                    /** @warning This assumes that settings request of the same name requires the same types. **/
+                    request.defaultValue = this.savedSettings[name];
                 }
 
                 /*

@@ -185,6 +185,9 @@ export class Project {
         }
     };
 
+    /**
+     * Undo last action.
+     */
     undo() {
         let action = {
             toolName: "Undo",
@@ -195,6 +198,9 @@ export class Project {
         this.link.sendAction(action);
     }
 
+    /**
+     * Redo last action.
+     */
     redo() {
         let action = {
             toolName: "Redo",
@@ -205,15 +211,30 @@ export class Project {
         this.link.sendAction(action);
     }
 
-
+    /**
+     * Apply action to the document.
+     * If generateHistory is set to true and the action is a tool application,
+     * promises a non-null ActionInterface to cancel last action.
+     * @param {ActionInterface} action
+     * @param {PixelSelectionHandler} selectionHandler
+     * @param {boolean} generateHistory
+     * @returns {Promise<ActionInterface>}
+     */
     async applyAction (action: ActionInterface, selectionHandler: PixelSelectionHandler, generateHistory: boolean): Promise<ActionInterface> {
+
         if (action.type == ActionType.ToolApply) {
-            this.renderPreviewPosition = -1;
+            /*
+             * GET TOOL AND SET TOOL STATE.
+             */
             let tool = this.toolRegistry.getToolByName(action.toolName);
             tool.reset();
             tool.getSettings().importParameters(action.toolSettings, selectionHandler, this.getUI());
             tool.updateData(action.actionData);
 
+            /*
+             * RESET
+             */
+            this.renderPreviewPosition = -1;
             this.previewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
 
             let draw_layer = action.toolSettings["layer"];
@@ -221,18 +242,19 @@ export class Project {
 
             if (!tool.overrideSelectionMask) { /// Applying selection mask.
                 let history_save = "";
-                if (generateHistory) {
+                if (generateHistory) { // Backup layer content
                     history_save = this.layerList[draw_layer].getHTMLElement().toDataURL();
                 }
 
-                if (tool.readahead) {
-                    // The tool can see what is in the layer on application.
+                if (tool.readahead) { // The tool can see what is in the layer on application.
                     this.previewLayer.getContext().drawImage(this.layerList[draw_layer].getHTMLElement(), 0, 0);
                     this.layerList[draw_layer].applyInvMask(selectionHandler);
                 }
 
+                /*
+                 * Apply tool and generate undo if needed.
+                 */
                 let undo = await tool.applyTool(this.previewLayer, generateHistory);
-
                 if (undo != null && undo.type == ActionType.ToolApplyHistory) {
 
                     undo.type = ActionType.ToolApply;

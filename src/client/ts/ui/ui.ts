@@ -5,7 +5,7 @@ import {SettingsInterface} from "../tool_settings/settingsInterface";
 import {Viewport} from "./viewport";
 import {ToolRegistry} from "../tools/toolregistry";
 import {Vec2} from "../vec2";
-import {MenuCategories, MenuController, setup_menu} from "./menu";
+import {MenuState, MenuController, setup_menu} from "./menu";
 import * as io from 'socket.io-client';
 import {highlight_layer, LayerMenuController, setup_layer_menu} from "./layermenu"
 import {KeyboardManager} from "./keyboardManager";
@@ -42,8 +42,13 @@ export class UIController {
 
     private is_online: boolean;
 
+    /**
+     * Build the user interface and bind events.
+     */
     constructor (){
-
+        /*
+         * VIEWPORT
+         */
         let fallbackImage = document.createElement("img");
         this.viewport = new Viewport(<JQuery<HTMLCanvasElement>> $("#viewport"), fallbackImage);
         fallbackImage.addEventListener("load", function() {
@@ -51,9 +56,15 @@ export class UIController {
         }.bind(this));
         fallbackImage.src= "assets/"+(1+Math.floor(Math.random()*10))+".png";
 
+        /*
+         * TOOLS AND SETTINGS
+         */
         this.settingsUI = new SettingsInterface(<JQuery<HTMLElement>> $("#toolsettings_container"));
         this.toolRegistry = new ToolRegistry();
 
+        /*
+         * MENU
+         */
         this.menu_controller = setup_menu(this, document.getElementById("top-nav"));
 
         this.project_name = "Untitled";
@@ -61,11 +72,13 @@ export class UIController {
         this.is_online = false;
 
 
+        /*
+         * NETWORK INDICATOR
+         */
         let indicator = $(".indicator");
-
         let on_failed = function() {
             this.is_online = false;
-            if (this.menu_controller.displayedCategory !== MenuCategories.Working) {
+            if (this.menu_controller.displayedCategory !== MenuState.Working) {
                 this.menu_controller.updateStatus(this.hasProjectOpen(), this.isOnline());
             }
             indicator.removeClass("green");
@@ -76,7 +89,7 @@ export class UIController {
 
         let on_connection_pending = function() {
             this.is_online = false;
-            if (this.menu_controller.displayedCategory !== MenuCategories.Working) {
+            if (this.menu_controller.displayedCategory !== MenuState.Working) {
                 this.menu_controller.updateStatus(this.hasProjectOpen(), this.isOnline());
             }
             indicator.removeClass("green");
@@ -86,7 +99,7 @@ export class UIController {
 
         let on_connected = function() {
             this.is_online = true;
-            if (this.menu_controller.displayedCategory !== MenuCategories.Working) {
+            if (this.menu_controller.displayedCategory !== MenuState.Working) {
                 this.menu_controller.updateStatus(this.hasProjectOpen(), this.isOnline());
             }
 
@@ -95,6 +108,9 @@ export class UIController {
             indicator.removeClass("red");
         }.bind(this);
 
+        /*
+         * NETWORK EVENTS
+         */
         // On connect, allow load from server.
         this.socket = io.connect('//');
         this.socket.on("connect", on_connected);
@@ -109,6 +125,9 @@ export class UIController {
 
         this.socket.on("joined", this.loadServerHostedCallback.bind(this));
 
+        /*
+         * KEYBOARD SHORTCUTS
+         */
         this.keyboard_manager = new KeyboardManager(this);
         this.keyboard_manager.registerBinding("Ctrl-a", function() {
            if (this.project != null) {
@@ -126,8 +145,9 @@ export class UIController {
            }
         }.bind(this));
 
-        window.requestAnimationFrame(this.onStep.bind(this));
-
+        /*
+         * AUTOLOAD FROM URL
+         */
         let url = new URL(window.location.href);
         let online = url.searchParams.get("online");
         let project_name = url.searchParams.get("project");
@@ -139,8 +159,14 @@ export class UIController {
                 //TODO: Load from local storage.
             }
         }
+
+        window.requestAnimationFrame(this.onStep.bind(this));
     }
 
+    /**
+     * Update project name according to input.
+     * @param {string} new_title
+     */
     filenameUpdate (new_title: string) {
         if (this.project != null) {
             this.project.name = new_title;
@@ -148,15 +174,20 @@ export class UIController {
         this.project_name = new_title;
     }
 
-
-
-
+    /**
+     * Request to join/create an online project.
+     * @param {string} name Workspace name
+     * @param {Vec2} dimensions Drawing dimension if the workspace doesn't exist.
+     * @param {string} image_data Image to load.
+     */
     loadServerHosted (name: string, dimensions: Vec2, image_data: string) {
         this.socket.emit('join', {"name": name, "dimensions": dimensions, "image_data": image_data});
     }
 
-
-    /// Data contains project dimensions, image data
+    /**
+     * Setup local version of the project according to server data.
+     * @param data
+     */
     loadServerHostedCallback (data) {
         this.newProject(data.dimensions);
         this.project.enableNetwork(this.socket);
@@ -177,6 +208,10 @@ export class UIController {
         this.layer_menu_controller = setup_layer_menu(this, document.getElementById("layerManager_container"));
     }
 
+    /**
+     * Create a project by importing a picture file.
+     * @returns {boolean}
+     */
     newProjectFromFile() {
         let input = document.createElement("input");
         input.type = "file";
@@ -192,7 +227,7 @@ export class UIController {
                 imgtag.src = reader.result;
                 imgtag.addEventListener("load", function() {
                     if ($("#share_online_checkbox").is(":checked")) {
-                        self.menu_controller.switchCategory(MenuCategories.Working);
+                        self.menu_controller.switchCategory(MenuState.Working);
                         self.redraw = true;
 
                         self.loadServerHosted(self.project_name, new Vec2(imgtag.width, imgtag.height), reader.result);
@@ -210,9 +245,12 @@ export class UIController {
         return false;
     }
 
+    /**
+     * Create a new project.
+     * @param {Vec2} dimensions Project dimensions.
+     */
     newProject (dimensions: Vec2) {
-
-        this.menu_controller.switchCategory(MenuCategories.Working);
+        this.menu_controller.switchCategory(MenuState.Working);
         this.redraw = true;
 
         this.project = new Project(this, this.project_name, dimensions);
@@ -222,17 +260,24 @@ export class UIController {
         this.layer_menu_controller = setup_layer_menu(this, document.getElementById("layerManager_container"));
     }
 
-
+    /**
+     * Checks if there is an active project.
+     * @returns {boolean}
+     */
     hasProjectOpen(): boolean {
         return this.project !== null;
     }
 
+    /**
+     * Checks if there is a socket link between page and server.
+     * @returns {boolean}
+     */
     isOnline(): boolean {
         return this.is_online;
     }
 
     /**
-     * @brief: add a layer to the project (in ending position)
+     * Add a layer to the project at the end.
      */
     addLayer () {
         // add a layer to the current project:
@@ -242,10 +287,10 @@ export class UIController {
     }
 
     /**
-     * @brief: select a layer to the project (in ending position)
-     * @param {number} i: index of selected layer
+     * Select a layer to the project (in ending position).
+     * @param {number} i Index of the selected layer.
      */
-    selectLayer (i:number) {
+    selectLayer (i: number) {
         // select layer i in current project:
         this.project.selectLayer(i);
 
@@ -254,17 +299,20 @@ export class UIController {
     }
 
     /**
-     * @brief: delete layer of index i
-     * @param {number} i: index of the layer to delete
+     * Delete layer of index i
+     * @param {number} i Index of the layer to delete
      */
-    deleteLayer (i:number) {
+    deleteLayer (i: number) {
         // delete layer i of current project
         if (this.project != null) {
             this.project.deleteLayer(i);
         }
     }
 
-
+    /**
+     * Update project's tool if a project is open.
+     * @param {Tool} tool
+     */
     setTool (tool: Tool) {
         if (this.project != null) {
             this.project.changeTool(tool);
@@ -284,9 +332,8 @@ export class UIController {
     }
 
     /**
-     * @function onToolboxClicked
-     * @description Event handler triggered when one of the toolbox buttons is clicked.
-     * @param event Event object (see JQuery documentation).
+     * Event handler triggered when one of the toolbox buttons is clicked.
+     * @param {Event} event Event object (see JQuery documentation).
      * @this UIController
      * @memberOf UIController
      */
@@ -316,10 +363,18 @@ export class UIController {
 
     };
 
+    /**
+     * Update what is displayed in the name container.
+     * @param {string} name
+     */
     static displayName(name: string) {
         $("#name_container").html(name);
     }
 
+    /**
+     * Triggered when one of the toolbox element is hovered.
+     * @param {Event} event
+     */
     onToolboxHovered (event: Event) {
         let toolname = (<Element> event.target).getAttribute("data-tool");
         if(toolname !== null) {
@@ -331,6 +386,10 @@ export class UIController {
         }
     }
 
+    /**
+     * Triggered when one of the toolbox element is not hovered annymore.
+     * @param {Event} event
+     */
     onToolboxHoverLeft (event: Event) {
         if (this.project == null) {
             UIController.displayName("");
@@ -390,7 +449,10 @@ export class UIController {
         this.redraw = true;
     };
 
-
+    /**
+     * Event handler triggered on mouse scroll.
+     * @param {WheelEvent} event
+     */
     onMouseWheel (event: WheelEvent) {
         // offset from the center.
         let ofsX = this.viewport.viewportDimensions.x/2 - event.offsetX;
@@ -410,17 +472,24 @@ export class UIController {
         this.translate(new Vec2(deltaX, deltaY));
     };
 
+    /**
+     * Multiply the scale by 1.001^value.
+     * @param {number} value
+     */
     zoom (value: number) {
         this.viewport.setScale(this.viewport.getScale()*Math.pow(1.001, value));
         this.redraw = true;
     }
 
+    /**
+     * Translate picture by the given translation.
+     * @param {Vec2} translation Translation in layer scale.
+     */
     translate (translation: Vec2) {
         let realTranslation = this.viewport.getTranslation().add(translation.divide(this.viewport.getScale(),true), true);
         this.viewport.setTranslation(realTranslation);
         this.redraw = true;
     }
-
 
     /**
      * @function onStep
@@ -465,9 +534,6 @@ export class UIController {
         this.viewport.viewportDimensionsChanged();
     };
 
-
-
-
     /**
      * Given the UI DOM elements as an input, bind events to the controller.
      * @TODO : add layer_container argument wherever bindEvents is called
@@ -505,6 +571,10 @@ export class UIController {
 
 }
 
+/**
+ * Touch event handler that converts it in a mouse event.
+ * @param {TouchEvent} evt
+ */
 function onTouch(evt: TouchEvent) {
     evt.preventDefault();
     if (evt.touches.length > 1 || (evt.type == "touchend" && evt.touches.length > 0))

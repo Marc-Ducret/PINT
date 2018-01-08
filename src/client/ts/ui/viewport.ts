@@ -85,6 +85,9 @@ export class Viewport {
      * Render layers one by one in order, applying transformations such as zoom and translation.
      */
     renderLayers(layerList: Array<Layer>, previewLayer: Layer, previewIndex: number, pixelSelection: Array<PixelSelectionHandler>) {
+        /*
+         * Use saved settings if no parameters are set.
+         */
         if (layerList != undefined) {
             this.layerList = layerList;
         }
@@ -103,10 +106,14 @@ export class Viewport {
             this.layerDimensions.y = layerList[0].getHeight();
         }
 
-        // Reset canvas
+        /*
+         * Reset canvas
+         */
         this.resetCanvas();
 
-        // drawing a logo at the center of the picture.
+        /*
+         * Draw a logo at the center of the picture.
+         */
         let scale = this.viewportDimensions.x/(2*this.fallbackDisplay.width);
         this.context.save();
         this.context.scale(scale, scale);
@@ -117,22 +124,24 @@ export class Viewport {
         this.context.imageSmoothingEnabled = false;
         this.context.webkitImageSmoothingEnabled = false;
 
+        /*
+         * Compute appropriate scale and translation.
+         */
         let translation = this.viewportDimensions
             .divide(2,true)
             .subtract(
                 this.layerDimensions
                     .divide(2/this.currentScale,true)
                 ,true);
-            //.add(this.currentTranslation, true);
-
-        // Set appropriate scale and translation.
 
         let crop_dimensions = this.viewportDimensions.divide(this.currentScale, true);
         let translation_base = translation.divide(this.currentScale, true);
 
-        // Render elements.
+        /*
+         * Render layers.
+         */
         for (let i=0; i < this.layerList.length; i++) {
-            if (i == this.previewIndex) {
+            if (i == this.previewIndex) { // Preview layer replaces current layer
                 this.context.drawImage(
                     this.previewLayer.getHTMLElement(),
                     -this.currentTranslation.x-translation_base.x,
@@ -143,7 +152,7 @@ export class Viewport {
                     0,
                     this.viewportDimensions.x,
                     this.viewportDimensions.y);
-            } else {
+            } else { // Normal layer rendering
                 this.context.drawImage(
                     this.layerList[i].getHTMLElement(),
                     -this.currentTranslation.x-translation_base.x,
@@ -157,7 +166,7 @@ export class Viewport {
             }
         }
 
-        if (this.previewIndex == -1 && this.previewLayer != null) {
+        if (this.previewIndex == -1 && this.previewLayer != null) { // Preview layer is drawn last.
             this.context.drawImage(
                 this.previewLayer.getHTMLElement(),
                 -this.currentTranslation.x-translation_base.x,
@@ -170,20 +179,25 @@ export class Viewport {
                 this.viewportDimensions.y);
         }
 
-        this.context.setTransform(1, 0, 0, 1, 0, 0);
+        this.context.setTransform(1, 0, 0, 1, 0, 0); // Reset scale and translation.
 
+        /*
+         * Render selection.
+         */
         if (this.pixelSelection.length > 0) {
             this.renderBorder(this.pixelSelection[0].getBorder(), this.pixelSelection[0].getValues());
         }
     };
 
+    /**
+     * Render the border of selection. It's viewport-aware because it needs to be 1-pixel wide at every scale.
+     * @param {Array<Vec2>} border Border to render.
+     * @param {Uint8ClampedArray} values Selection value array.
+     */
     renderBorder(border: Array<Vec2>, values: Uint8ClampedArray) {
         const pattern = 10;
         const period = 500;
         const offset = (Date.now() % period) * pattern * 2 / period;
-
-        const w = this.layerDimensions.x;
-        const h = this.layerDimensions.y;
 
         const pixels_per_pixels = 1+this.currentScale;
         for (let i in border) {
@@ -217,7 +231,12 @@ export class Viewport {
         }
     }
 
-
+    /**
+     * Draw a pixel according to the selection pattern.
+     * @param x First coordinate.
+     * @param y Second coordinate.
+     * @param offset Time-dependant offset.
+     */
     putSelectionPixel(x, y, offset) {
         const pattern = 10;
 
@@ -276,6 +295,13 @@ export class Viewport {
             .add(translation, true);
     }
 
+    /**
+     * Locally compose layer and selection according to method.
+     * The composition is computed only in the part of the picture that is rendered.
+     * @param {Layer} layer
+     * @param {PixelSelectionHandler} selection
+     * @param {string} method
+     */
     applyComposition(layer: Layer, selection: PixelSelectionHandler, method: string) {
         let viewport_local_width = this.viewportDimensions.x / this.currentScale;
         let viewport_local_height = this.viewportDimensions.y / this.currentScale;
@@ -307,10 +333,20 @@ export class Viewport {
         layer.getContext().globalCompositeOperation = 'source-over';
     }
 
+    /**
+     * Remove pixels in layer that are not selected.
+     * @param {Layer} layer
+     * @param {PixelSelectionHandler} selection
+     */
     applyMask(layer: Layer, selection: PixelSelectionHandler) {
         this.applyComposition(layer, selection, 'destination-in');
     }
 
+    /**
+     * Remove pixels in layer that are selected.
+     * @param {Layer} layer
+     * @param {PixelSelectionHandler} selection
+     */
     applyInvMask(layer: Layer, selection: PixelSelectionHandler) {
         this.applyComposition(layer, selection, 'destination-out');
     }

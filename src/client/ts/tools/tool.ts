@@ -4,6 +4,9 @@ import {HistoryEntry} from "../history/historyEntry";
 import {Layer} from "../ui/layer";
 import {ActionInterface, ActionType} from "./actionInterface";
 
+/**
+ * Abstraction of a tool.
+ */
 export abstract class Tool {
     private name: string;
     private desc: string;
@@ -59,10 +62,6 @@ export abstract class Tool {
      */
     abstract drawPreview(layer: Layer);
 
-    updateData (data: any) {
-        this.data = data;
-    }
-
     /**
      *
      * @param {Layer} layer on which the tool is applied
@@ -88,11 +87,14 @@ export abstract class Tool {
         return this.settings.get(name);
     }
 
-
+    /**
+     * Updates the value of a parameter.
+     * @param {string} key Parameter
+     * @param value Value to set
+     */
     protected setSetting(key: string, value: any) {
         this.settings.set(key, value);
     }
-
 
     /**
      * Get the name of the tool.
@@ -135,10 +137,26 @@ export abstract class Tool {
         return this.settings.getRequests();
     }
 
+    /**
+     * Get tool internal state.
+     * @returns {any}
+     */
     getData() {
         return this.data;
     }
 
+    /**
+     * Update tool internal state.
+     * @param data Internal state
+     */
+    updateData (data: any) {
+        this.data = data;
+    }
+
+    /**
+     * Get tool settings manager.
+     * @returns {SettingsRequester}
+     */
     getSettings(): SettingsRequester {
         return this.settings;
     }
