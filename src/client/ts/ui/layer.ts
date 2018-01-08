@@ -120,7 +120,7 @@ export class Layer {
      */
     applyMask(selection: PixelSelectionHandler) {
         this.context.globalCompositeOperation = 'destination-in';
-        this.context.drawImage(selection.getMask(), 0, 0);
+        this.context.drawImage(selection.getMask().getHTMLElement(), 0, 0);
         this.context.globalCompositeOperation = 'source-over';
     }
 
@@ -130,7 +130,7 @@ export class Layer {
      */
     applyInvMask(selection: PixelSelectionHandler) {
         this.context.globalCompositeOperation = 'destination-out';
-        this.context.drawImage(selection.getMask(), 0, 0);
+        this.context.drawImage(selection.getMask().getHTMLElement(), 0, 0);
         this.context.globalCompositeOperation = 'source-over';
     }
 

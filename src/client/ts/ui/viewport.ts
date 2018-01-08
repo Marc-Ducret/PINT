@@ -320,7 +320,7 @@ export class Viewport {
         let size_y = Math.min(end_y - begin_y, layer.getHeight() - begin_y);
 
         layer.getContext().globalCompositeOperation = method;
-        layer.getContext().drawImage(selection.getMask(),
+        layer.getContext().drawImage(selection.getMask().getHTMLElement(),
             begin_x,
             begin_y,
             size_x,

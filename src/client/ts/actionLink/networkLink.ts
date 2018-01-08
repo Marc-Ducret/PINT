@@ -111,6 +111,7 @@ export class NetworkLink extends ActionLink {
      */
     onHello(packet: HelloNetworkPacket) {
         console.log("I've got the selection data of "+packet.sender);
+        console.log(packet);
         this.selectionHandlers[packet.sender] = PixelSelectionHandlerFromSerialized(packet.serializedSelection);
     }
 }

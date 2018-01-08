@@ -34,12 +34,13 @@ export interface SerializedPixelSelectionHandler {
 export function PixelSelectionHandlerFromSerialized (serialized: SerializedPixelSelectionHandler): PixelSelectionHandler {
     let w = serialized.width;
     let h = serialized.height;
-    let obj = new PixelSelectionHandler(w, h);
+    let obj: PixelSelectionHandler = new PixelSelectionHandler(w, h);
 
     let img = new Image;
     img.onload = function(){
-        obj.getMask().getContext('2d').drawImage(img, 0, 0);
-        let imgdata = obj.getMask().getContext('2d').getImageData(0, 0, w, h);
+        obj.getMask().reset();
+        obj.getMask().getContext().drawImage(img, 0, 0);
+        let imgdata = obj.getMask().getContext().getImageData(0, 0, w, h);
         obj.values.forEach((val, i) => {
             obj.values[i] = imgdata[4*i];
         });
@@ -90,8 +91,8 @@ export class PixelSelectionHandler {
      * Returns a canvas where the transparency layer represents the current selection
      * @returns {HTMLCanvasElement}
      */
-    getMask(): HTMLCanvasElement {
-        return this.mask.getHTMLElement();
+    getMask(): Layer {
+        return this.mask;
     }
 
     /**
