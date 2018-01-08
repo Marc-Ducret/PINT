@@ -33,9 +33,9 @@ export class AutoSelectTool extends Tool {
         this.data = colorSelect(img, new Vec2(Math.floor(pos.x), Math.floor(pos.y)), this.getSetting("wand_threshold")).buffer;
     };
 
-    endUse (pos) {};
+    endUse (pos: Vec2) {};
 
-    continueUse (pos) {};
+    continueUse (pos: Vec2) {};
 
     drawPreview(layer: Layer) {
         let selection = this.getSetting("project_selection");

@@ -2,6 +2,7 @@ import {Tool} from "./tool";
 import {InputType} from "../tool_settings/settingsRequester";
 import {ActionInterface, ActionType} from "./actionInterface";
 import {Layer} from "../ui/layer";
+import {Vec2} from "../vec2";
 
 /**
  * Draw a linear gradient of two colors.
@@ -26,7 +27,7 @@ export class GradientTool extends Tool {
 
     reset () {}
 
-    startUse (img, pos) {
+    startUse (img: ImageData, pos: Vec2) {
         this.data = {
             firstCorner: pos,
             lastCorner: pos,
@@ -36,11 +37,11 @@ export class GradientTool extends Tool {
 
     };
 
-    continueUse (pos) {
+    continueUse (pos: Vec2) {
         this.data.lastCorner = pos;
     };
 
-    endUse (pos) {
+    endUse (pos: Vec2) {
         this.continueUse(pos);
     };
 

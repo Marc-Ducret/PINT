@@ -37,11 +37,11 @@ export class SelectionTool extends Tool {
         };
     };
 
-    continueUse(pos) {
+    continueUse(pos: Vec2) {
         this.data.lastCorner = pos;
     };
 
-    endUse(pos) {
+    endUse(pos: Vec2) {
         this.continueUse(pos);
     };
 

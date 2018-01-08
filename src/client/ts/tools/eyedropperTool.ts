@@ -2,6 +2,7 @@ import {Tool} from "./tool";
 import {InputType} from "../tool_settings/settingsRequester";
 import {ActionInterface, ActionType} from "./actionInterface";
 import {Layer} from "../ui/layer";
+import {Vec2} from "../vec2";
 
 /**
  * Pick a color and put it into strokeColor or fillColor.
@@ -20,12 +21,12 @@ export class EyedropperTool extends Tool {
 
     reset () {}
 
-    startUse (img, pos) {
+    startUse (img: ImageData, pos: Vec2) {
         this.img = img;
         this.continueUse(pos);
     };
 
-    continueUse (pos) {
+    continueUse (pos: Vec2) {
         let img = this.img;
         let intToRGB = function(i: number){
             var c = (i & 0x00FFFFFF)
@@ -50,7 +51,7 @@ export class EyedropperTool extends Tool {
         }
     };
 
-    endUse (pos) {
+    endUse (pos: Vec2) {
         this.continueUse(pos);
         this.icon.removeAttribute("style");
     };

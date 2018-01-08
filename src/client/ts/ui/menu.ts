@@ -271,7 +271,7 @@ export function setup_menu(controller: UIController, base_element: HTMLElement) 
  * @param callback Function to call on click.
  * @returns {HTMLElement}
  */
-function menu_title_create(callback): HTMLElement {
+function menu_title_create(callback: () => void): HTMLElement {
     let container = document.createElement("div");
     let a = document.createElement("a");
     a.className = "title";
@@ -314,7 +314,7 @@ function menu_share_online_create(): HTMLElement {
  * @param callback
  * @returns {HTMLElement}
  */
-function menu_filename_create(callback): HTMLElement {
+function menu_filename_create(callback: () => void): HTMLElement {
     let p = document.createElement("p");
     let input = document.createElement("input");
     input.type = "text";
@@ -329,7 +329,7 @@ function menu_filename_create(callback): HTMLElement {
  * @param callback
  * @returns {HTMLElement}
  */
-function menu_newproject_create(callback): HTMLElement {
+function menu_newproject_create(callback: (dimensions: Vec2) => void): HTMLElement {
     let p = document.createElement("p");
     p.className = "newproject-container";
 
@@ -404,7 +404,7 @@ function menu_newproject_create(callback): HTMLElement {
  * @param callback Called on button click.
  * @returns {HTMLElement}
  */
-function menu_button_create(text, callback): HTMLElement {
+function menu_button_create(text: string, callback: () => void): HTMLElement {
     let p = document.createElement("p");
     let a = document.createElement("a");
     a.className = "btn-large flex";
@@ -479,7 +479,7 @@ function create_function_icon(function_call: string, description: string, icon: 
  * @param update
  * @returns {HTMLElement}
  */
-function scheduleUpdates(elem: HTMLElement, update): HTMLElement {
+function scheduleUpdates(elem: HTMLElement, update: (elem: HTMLElement) => void): HTMLElement {
     setInterval(function() {
         update(elem);
     }, 500);

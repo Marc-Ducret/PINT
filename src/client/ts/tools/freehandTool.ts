@@ -43,7 +43,7 @@ export class FreehandTool extends Tool {
      * @param {Vec2} pos Mouse position.
      * @param {Project} project Ignored.
      */
-    startUse (img, pos) {
+    startUse (img: ImageData, pos: Vec2) {
         this.data = {
             positions: [],
         };
@@ -56,7 +56,7 @@ export class FreehandTool extends Tool {
      * @param {Vec2} pos Mouse position
      * @returns {any} null means redraw according to the preview canvas.
      */
-    endUse (pos) {
+    endUse (pos: Vec2) {
         this.continueUse(pos);
     };
 
@@ -64,7 +64,7 @@ export class FreehandTool extends Tool {
      * If given position is not too close from the last position, aggregate position into the position table.
      * @param {Vec2} pos Mouse position
      */
-    continueUse (pos) {
+    continueUse (pos: Vec2) {
         let n_elem = this.data.positions.length;
         if(n_elem == 0
             || pos.distance(this.data.positions[n_elem - 1]) > 0)

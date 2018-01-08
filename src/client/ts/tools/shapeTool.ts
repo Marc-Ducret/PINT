@@ -60,20 +60,20 @@ export class ShapeTool extends Tool {
                                         {name: "ellipse", desc: "Ellipse"}]});
     }
 
-    startUse (img, pos) {
+    startUse (img: ImageData, pos: Vec2) {
         this.data = {
             firstCorner: pos,
             lastCorner: pos,
         };
     };
 
-    continueUse (pos) {
+    continueUse (pos: Vec2) {
         this.data.lastCorner = pos;
     };
 
     reset () {}
 
-    endUse (pos) {
+    endUse (pos: Vec2) {
         this.continueUse(pos);
     };
 

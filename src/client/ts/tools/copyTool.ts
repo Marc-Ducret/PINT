@@ -30,8 +30,8 @@ export class CopyTool extends Tool {
 
     };
 
-    continueUse(pos) {};
-    endUse(pos) {
+    continueUse(pos: Vec2) {};
+    endUse(pos: Vec2) {
         this.data = pos;
 
         let layer: Layer = this.getSetting("user_interface").project.currentLayer.clone();

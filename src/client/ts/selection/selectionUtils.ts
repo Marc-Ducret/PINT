@@ -22,7 +22,7 @@ export function mask(selection: Uint8ClampedArray, img: ImageData) {
  * @param h Image height.
  * @returns {boolean}
  */
-export function isSelected(selection: Uint8ClampedArray, x, y, w, h) {
+export function isSelected(selection: Uint8ClampedArray, x: number, y: number, w: number, h: number) {
     return x >= 0 && x < w && y >= 0 && y < h && selection[x + y * w] > 0;
 }
 

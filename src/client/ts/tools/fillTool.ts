@@ -56,9 +56,9 @@ export class FillTool extends Tool {
         };
     };
 
-    continueUse (pos) {};
+    continueUse (pos: Vec2) {};
 
-    endUse (pos) {};
+    endUse (pos: Vec2) {};
 
 
     drawPreview(layer: Layer) {

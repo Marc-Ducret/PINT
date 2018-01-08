@@ -44,7 +44,7 @@ export class HandTool extends Tool {
      * Update last position.
      * @param {Vec2} pos Position in local coordinates.
      */
-    continueUse(pos) {
+    continueUse(pos: Vec2) {
         this.data.fcx = this.data.lcx;
         this.data.fcy = this.data.lcy;
         let lc = this.getSetting("user_interface").viewport.localToGlobalPosition(pos);
@@ -57,7 +57,7 @@ export class HandTool extends Tool {
      * @param {Vec2} pos Position in local coordinates.
      * @returns {boolean}
      */
-    endUse(pos) {
+    endUse(pos: Vec2) {
         this.continueUse(pos);
     };
 

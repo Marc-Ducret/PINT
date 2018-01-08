@@ -65,7 +65,7 @@ export function colorSelect(img: ImageData, pos: Vec2, threshold: number): Uint8
             s += Math.abs(img.data[i * 4 + j] - img.data[indexToMatch * 4 + j]);
         }
         return s;
-    }
+    };
 
     /**
      * Depth first search to gather pixels of the connected component.
