@@ -71,7 +71,7 @@ export class Project {
 
         /** selection is a table of int between 0 and 255 that represents selected
          * pixels (initialized with number of pixels of current layer)
-         * @todo : standardize selection dimention - layers ...
+         * @todo : standardize selection dimension - layers ...
          */
         this.currentSelection = new PixelSelectionHandler(this.dimensions.x, this.dimensions.y);
         this.currentLayer.fill();
