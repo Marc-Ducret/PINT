@@ -392,7 +392,7 @@ export class Project {
         } else if (action.type == ActionType.UpdateLayerInfo) {
             console.log("UPDATE RECV", action.actionData.content);
 
-            let prevInfo = this.layerList[action.actionData.position].layerInfo;
+            let prevInfo = this.layerList[action.actionData.position].layerInfo.data();
             this.layerList[action.actionData.position].layerInfo = new LayerInfo();
             this.layerList[action.actionData.position].layerInfo.copyFrom(action.actionData.content);
             if (this.ui != null) {
@@ -480,7 +480,7 @@ export class Project {
             toolName: "UpdateLayerInfo",
             actionData: {
                 position: this.layerList.indexOf(layer),
-                content: layerInfo,
+                content: layerInfo.data(),
             },
             type: ActionType.UpdateLayerInfo,
             toolSettings: {}

@@ -196,4 +196,11 @@ export class LayerInfo {
         this.name = layerInfo.name;
         this.blur = layerInfo.blur;
     }
+
+    data(): Object {
+        return {
+            name: this.name,
+            blur: this.blur,
+        };
+    }
 }
