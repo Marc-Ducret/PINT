@@ -50,7 +50,7 @@ export class HandTool extends Tool {
         let lc = this.getSetting("user_interface").viewport.localToGlobalPosition(pos);
         this.data.lcx = lc.x;
         this.data.lcy = lc.y;
-    };
+    }
 
     /**
      * Update last position
@@ -59,7 +59,7 @@ export class HandTool extends Tool {
      */
     endUse(pos: Vec2) {
         this.continueUse(pos);
-    };
+    }
 
     /**
      * It's not really a preview, it applies the translation.
@@ -67,7 +67,7 @@ export class HandTool extends Tool {
      */
     drawPreview(layer: Layer) {
         this.getSetting("user_interface").translate(new Vec2(this.data.lcx - this.data.fcx, this.data.lcy - this.data.fcy));
-    };
+    }
 
     async applyTool(layer: Layer, generate_undo: boolean): Promise<ActionInterface> {
         this.drawPreview(layer);

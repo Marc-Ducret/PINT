@@ -24,7 +24,7 @@ export class EyedropperTool extends Tool {
     startUse (img: ImageData, pos: Vec2) {
         this.img = img;
         this.continueUse(pos);
-    };
+    }
 
     continueUse (pos: Vec2) {
         let img = this.img;
@@ -49,17 +49,17 @@ export class EyedropperTool extends Tool {
         if(this.icon != null) {
             this.icon.setAttribute("style", "color: "+color);
         }
-    };
+    }
 
     endUse (pos: Vec2) {
         this.continueUse(pos);
         this.icon.removeAttribute("style");
-    };
+    }
 
     drawPreview(layer: Layer) {
-    };
+    }
 
     async applyTool(layer: Layer, generate_undo: boolean): Promise<ActionInterface> {
-          return null;
+        return null;
     }
 }

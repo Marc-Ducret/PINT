@@ -6,7 +6,7 @@ import {Layer} from "../ui/layer";
 
 
 function drawEllipse(ctx, x, y, w, h) {
-    var kappa = .5522848,
+    let kappa = .5522848, /* TODO explain this value?*/
         ox = (w / 2) * kappa, // control point offset horizontal
         oy = (h / 2) * kappa, // control point offset vertical
         xe = x + w,           // x-end
@@ -23,7 +23,6 @@ function drawEllipse(ctx, x, y, w, h) {
     //ctx.closePath(); // not used correctly, see comments (use to close off open path)
     ctx.stroke();
 }
-
 
 /**
  * Draw a shape tool.
@@ -65,17 +64,17 @@ export class ShapeTool extends Tool {
             firstCorner: pos,
             lastCorner: pos,
         };
-    };
+    }
 
     continueUse (pos: Vec2) {
         this.data.lastCorner = pos;
-    };
+    }
 
     reset () {}
 
     endUse (pos: Vec2) {
         this.continueUse(pos);
-    };
+    }
 
     drawPreview(layer: Layer) {
         let context = layer.getContext();
@@ -116,7 +115,7 @@ export class ShapeTool extends Tool {
         context.globalAlpha = this.getSetting("strokeAlpha")/100;
         context.stroke();
         context.globalAlpha = 1;
-    };
+    }
 
     async applyTool(layer: Layer, generate_undo: boolean): Promise<ActionInterface> {
         this.drawPreview(layer);

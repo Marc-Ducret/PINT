@@ -31,7 +31,7 @@ export class AutoSelectTool extends Tool {
      */
     startUse(img: ImageData, pos: Vec2) {
         this.data = colorSelect(img, new Vec2(Math.floor(pos.x), Math.floor(pos.y)), this.getSetting("wand_threshold")).buffer;
-    };
+    }
 
     endUse (pos: Vec2) {};
 
@@ -42,7 +42,7 @@ export class AutoSelectTool extends Tool {
         selection.reset();
         selection.addRegion(new Uint8ClampedArray(this.data, 0));
         selection.updateBorder();
-    };
+    }
 
     async applyTool(layer: Layer, generate_undo: boolean): Promise<ActionInterface> {
         // Save old selection.
@@ -59,6 +59,5 @@ export class AutoSelectTool extends Tool {
             this.drawPreview(layer);
             return null;
         }
-
     }
 }

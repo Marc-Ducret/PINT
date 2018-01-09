@@ -28,9 +28,10 @@ export class CopyTool extends Tool {
     startUse(img: ImageData, pos: Vec2) {
         this.data = {};
 
-    };
+    }
 
-    continueUse(pos: Vec2) {};
+    continueUse(pos: Vec2) {}
+
     endUse(pos: Vec2) {
         this.data = pos;
 
@@ -40,12 +41,12 @@ export class CopyTool extends Tool {
         this.setSetting("project_clipboard", layer.getHTMLElement().toDataURL());
         this.setSetting("project_clipboard_x", pos.x);
         this.setSetting("project_clipboard_y", pos.y);
-    };
+    }
 
-    drawPreview(layer: Layer) {};
+    drawPreview(layer: Layer) {}
 
     async applyTool(layer: Layer, generate_undo: boolean): Promise<ActionInterface> {
         // Can't undo a copy.
         return null;
-    };
+    }
 }

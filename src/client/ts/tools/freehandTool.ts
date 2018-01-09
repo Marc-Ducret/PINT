@@ -49,7 +49,7 @@ export class FreehandTool extends Tool {
         };
 
         this.continueUse(pos);
-    };
+    }
 
     /**
      * Last mouse event handler. Just aggregate the data.
@@ -58,7 +58,7 @@ export class FreehandTool extends Tool {
      */
     endUse (pos: Vec2) {
         this.continueUse(pos);
-    };
+    }
 
     /**
      * If given position is not too close from the last position, aggregate position into the position table.
@@ -71,7 +71,7 @@ export class FreehandTool extends Tool {
         {
             this.data.positions.push(pos);
         }
-    };
+    }
 
     /**
      * Rendering using canvas features.
@@ -101,7 +101,7 @@ export class FreehandTool extends Tool {
 
         context.stroke();
         context.globalAlpha = 1;
-    };
+    }
 
     async applyTool(layer: Layer, generate_undo: boolean): Promise<ActionInterface> {
         this.drawPreview(layer);
@@ -117,5 +117,4 @@ export class FreehandTool extends Tool {
             return null;
         }
     }
-
 }

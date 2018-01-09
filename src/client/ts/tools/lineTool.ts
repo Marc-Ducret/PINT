@@ -30,15 +30,15 @@ export class LineTool extends Tool {
             firstCorner: pos,
             lastCorner: pos,
         };
-    };
+    }
 
     continueUse (pos: Vec2) {
         this.data.lastCorner = pos;
-    };
+    }
 
     endUse (pos: Vec2) {
         this.continueUse(pos);
-    };
+    }
 
     drawPreview(layer: Layer) {
         let context = layer.getContext();
@@ -50,7 +50,7 @@ export class LineTool extends Tool {
         context.lineTo(this.data.lastCorner.x + 0.5, this.data.lastCorner.y + 0.5);
         context.stroke();
         context.globalAlpha = 1;
-    };
+    }
 
     async applyTool(layer: Layer, generate_undo: boolean): Promise<ActionInterface> {
         this.drawPreview(layer);

@@ -44,35 +44,35 @@ export class EraserTool extends Tool {
      * @param {Vec2} pos Mouse position.
      * @param {Project} project Ignored.
      */
-    startUse (img: ImageData, pos: Vec2) {
+    startUse(img: ImageData, pos: Vec2) {
         this.data = {
             positions: [],
         };
 
         this.continueUse(pos);
-    };
+    }
 
     /**
      * Last mouse event handler. Just aggregate the data.
      * @param {Vec2} pos Mouse position
      * @returns {any} null means redraw according to the preview canvas.
      */
-    endUse (pos: Vec2) {
+    endUse(pos: Vec2) {
         this.continueUse(pos);
-    };
+    }
 
     /**
      * If given position is not too close from the last position, aggregate position into the position table.
      * @param {Vec2} pos Mouse position
      */
-    continueUse (pos: Vec2) {
+    continueUse(pos: Vec2) {
         let n_elem = this.data.positions.length;
         if(n_elem == 0
             || pos.distance(this.data.positions[n_elem - 1]) > 0)
         {
             this.data.positions.push(pos);
         }
-    };
+    }
 
     /**
      * Rendering using canvas features.
@@ -103,7 +103,7 @@ export class EraserTool extends Tool {
 
         context.stroke();
         context.restore();
-    };
+    }
 
     async applyTool(layer: Layer, generate_undo: boolean): Promise<ActionInterface> {
         this.drawPreview(layer);
@@ -119,5 +119,4 @@ export class EraserTool extends Tool {
             return null;
         }
     }
-
 }

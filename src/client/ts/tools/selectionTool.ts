@@ -35,15 +35,15 @@ export class SelectionTool extends Tool {
             width: img.width,
             height: img.height,
         };
-    };
+    }
 
     continueUse(pos: Vec2) {
         this.data.lastCorner = pos;
-    };
+    }
 
     endUse(pos: Vec2) {
         this.continueUse(pos);
-    };
+    }
 
     drawPreview(layer: Layer) {
         let context = layer.getContext();
@@ -84,7 +84,7 @@ export class SelectionTool extends Tool {
                 console.error("No shape selected.");
                 break;
         }
-    };
+    }
 
     async applyTool(layer: Layer, generate_undo: boolean): Promise<ActionInterface> {
         let width = this.data.width;

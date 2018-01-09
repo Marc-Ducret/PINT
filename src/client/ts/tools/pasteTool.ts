@@ -54,13 +54,14 @@ export class PasteTool extends Tool {
     startUse(img: ImageData, pos: Vec2) {
         this.data = {};
 
-    };
+    }
 
-    continueUse(pos: Vec2) {};
+    continueUse(pos: Vec2) {}
+
     endUse(pos: Vec2) {
         this.data = pos;
 
-    };
+    }
 
     drawPreview(layer: Layer) {};
 
@@ -87,6 +88,6 @@ export class PasteTool extends Tool {
             actionData: {},
             toolSettings: {}
         };
-    };
+    }
 }
 

@@ -34,16 +34,15 @@ export class GradientTool extends Tool {
             width: img.width,
             height: img.height,
         };
-
-    };
+    }
 
     continueUse (pos: Vec2) {
         this.data.lastCorner = pos;
-    };
+    }
 
     endUse (pos: Vec2) {
         this.continueUse(pos);
-    };
+    }
 
     drawPreview(layer: Layer) {
         let context = layer.getContext();
@@ -56,7 +55,7 @@ export class GradientTool extends Tool {
         context.fillStyle = gradient;
         context.fillRect(0, 0, this.data.width, this.data.height);
         context.globalAlpha = 1;
-    };
+    }
 
     async applyTool(layer: Layer, generate_undo: boolean): Promise<ActionInterface> {
         this.drawPreview(layer);

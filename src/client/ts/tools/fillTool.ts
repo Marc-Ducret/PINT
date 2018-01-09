@@ -40,6 +40,7 @@ export class FillTool extends Tool {
     reset () {
         this.newImage = null;
     }
+
     /**
      * On click, computes the connex component containing the click position and fill it with the parameter color.
      * @param {ImageData} img Content of the drawing canvas.
@@ -54,12 +55,11 @@ export class FillTool extends Tool {
             width: img.width,
             height: img.height,
         };
-    };
+    }
 
-    continueUse (pos: Vec2) {};
+    continueUse (pos: Vec2) {}
 
-    endUse (pos: Vec2) {};
-
+    endUse (pos: Vec2) {}
 
     drawPreview(layer: Layer) {
         if (this.newImage == null) {
@@ -99,14 +99,11 @@ export class FillTool extends Tool {
             console.log("Fill tool: nfilled = "+nfilled);
         }
         layer.getContext().putImageData(this.newImage, 0, 0);
-    };
-
+    }
 
     async applyTool(layer: Layer, generate_undo: boolean): Promise<ActionInterface> {
-
         if (generate_undo) {
             this.drawPreview(layer);
-
             return {
                 type: ActionType.ToolApplyHistory,
                 toolName: "PasteTool",
