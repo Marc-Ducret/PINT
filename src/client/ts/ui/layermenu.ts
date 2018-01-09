@@ -131,7 +131,17 @@ export function setup_layer_menu(controller: UIController, base_element: HTMLEle
                         info.blur = false;
                         controller.project.updateLayerInfo(layer, info);
                     }
-                    layer.applyLayerInfo();
+                });
+                addButton(layer.layerInfo.shadow ? "layers_clear" : "layers", function (button) {
+                    if (button.get(0).textContent == "layers") {
+                        let info = layer.layerInfo.clone();
+                        info.shadow = true;
+                        controller.project.updateLayerInfo(layer, info);
+                    } else {
+                        let info = layer.layerInfo.clone();
+                        info.shadow = false;
+                        controller.project.updateLayerInfo(layer, info);
+                    }
                 });
                 if(i > 0) {
                     addButton("arrow_upward", function(button) {

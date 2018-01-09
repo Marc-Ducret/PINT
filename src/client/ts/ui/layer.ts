@@ -157,13 +157,6 @@ export class Layer {
         blank.height = this.height;
         return this.getHTMLElement().toDataURL() === blank.toDataURL();
     }
-
-    /**
-     * Update the layer according the properties specified in layerInfo
-     */
-    applyLayerInfo() {
-        // this.filter(this.layerInfo.filter); TODO rm?
-    }
 }
 
 /**
@@ -172,15 +165,24 @@ export class Layer {
 export class LayerInfo {
     public name: string;
     public blur: boolean;
+    public shadow: boolean;
 
     constructor() {
         this.name = "Layer";
         this.blur = false;
+        this.shadow = false;
     }
 
     getFilter(): string {
-        if (this.blur) {
-            return "blur(10px)";
+        if (this.blur || this.shadow) {
+            let s = "";
+            if (this.blur) {
+                s += "blur(5px) ";
+            }
+            if (this.shadow) {
+                s += "drop-shadow(5px 5px 5px #000000) ";
+            }
+            return s;
         } else {
             return "none";
         }
@@ -195,12 +197,14 @@ export class LayerInfo {
     copyFrom(layerInfo: LayerInfo) {
         this.name = layerInfo.name;
         this.blur = layerInfo.blur;
+        this.shadow = layerInfo.shadow;
     }
 
     data(): Object {
         return {
             name: this.name,
             blur: this.blur,
+            shadow: this.shadow,
         };
     }
 }
