@@ -480,9 +480,9 @@ function create_function_icon(function_call: string, description: string, icon: 
  * @returns {HTMLElement}
  */
 function scheduleUpdates(elem: HTMLElement, update: (elem: HTMLElement) => void): HTMLElement {
-   /* setInterval(function() {
+   setInterval(function() {
         update(elem);
-    }, 500);*/
+    }, 500);
     return elem;
 }
 
@@ -513,7 +513,7 @@ function menu_toolbox_create(controller: UIController): HTMLElement {
     p.appendChild(create_tool_entry_icon("EraserTool","flip"));
     p.appendChild(create_separator());
     p.appendChild(scheduleUpdates(
-        create_function_icon("this.project.testSquare(elem);", "Test Square", "build"),
+        create_function_icon("if(this.project != null) { this.project.testSquare(elem); }", "Test Square", "picture_in_picture"),
         function(elem) {
             if (controller.project != null) {
                 controller.project.testSquare(elem);
