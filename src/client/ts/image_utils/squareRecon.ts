@@ -1,7 +1,12 @@
 import * as convnetjs from "../lib/convnet/index";
 import {Vec2} from "../vec2";
 import {Layer} from "../ui/layer";
+import {LayerOptions} from "../lib/convnet/layers";
+import {NetJSON} from "../lib/convnet/convnet_net";
 
+/**
+ * A Generator is an object that holds a generate function and the type of inputs generated (1 for positive and 0 for negative)
+ */
 class Generator {
     public generate;
     public type: number;
@@ -12,13 +17,17 @@ class Generator {
     }
 }
 
+/**
+ * A Classifier is an object that tries to classify input images as containing squares or not depending on its training
+ */
 export class Classifier {
-    private layer_defs;
-    private net;
-    private trainer;
+    private layer_defs: Array<LayerOptions>;
+    private net: convnetjs.Net;
+    private trainer: convnetjs.SGDTrainer;
     private generators: Array<Generator>;
 
     constructor(generators: Array<Generator>) {
+        // Description of the neural network used to encode the classification function
         this.layer_defs = [];
         this.layer_defs.push({type:'input', out_sx:32, out_sy:32, out_depth:1});
         this.layer_defs.push({type:'conv', sx:5, filters:16, stride:1, pad:2, activation:'relu'});
@@ -39,8 +48,8 @@ export class Classifier {
 
     train(n: number) {
         console.log('training on '+n+' samples');
-        for(let i = 0; i < n; i++) {
-            let gen = this.generators[Math.floor(Math.random() * this.generators.length)];
+        for(let i: number = 0; i < n; i++) {
+            let gen: Generator = this.generators[Math.floor(Math.random() * this.generators.length)];
             this.trainer.train(asVol(gen.generate()), gen.type);
             if((i+1) % 500 == 0) {
                 console.log('did '+(100*(i+1)/n)+'%');
@@ -54,7 +63,7 @@ export class Classifier {
         this.export();
     }
 
-    testAccuracyOnGenerated(n: number) {
+    testAccuracyOnGenerated(n: number): Array<number> {
         let acc = [];
         for(let g = 0; g < this.generators.length; g++) {
             let gen = this.generators[g];
@@ -69,37 +78,37 @@ export class Classifier {
         return acc;
     }
 
-    classify(img): boolean {
+    classify(img: Array<number>): boolean {
         this.net.forward(asVol(img));
         return this.net.getPrediction() == 1;
     }
 
     export() {
         let download = function(text, name, type) {
-            var a = document.createElement("a");
-            var file = new Blob([text], {type: type});
+            let a = document.createElement("a");
+            let file = new Blob([text], {type: type});
             a.href = URL.createObjectURL(file);
             a.download = name;
             a.click();
-        }
+        };
         download(JSON.stringify(this.net.toJSON()), 'net.json', 'text/plain');
     }
 
-    import(savedNet) {
+    import(savedNet: NetJSON) {
         this.net.fromJSON(savedNet);
     }
 }
 
-function asVol(img) {
-    let size = 32;
-    var x = new convnetjs.Vol(size, size, 1, 0.0);
+function asVol(img: Array<number>) {
+    let size: number = 32;
+    let x = new convnetjs.Vol(size, size, 1, 0.0);
     for(let i = 0; i < size * size; i ++) {
         x.w[i] = img[i];
     }
     return x;
 }
 
-function generatePositive() {
+function generatePositive(): Array<number> {
     let img = [];
     let size = 32;
 
@@ -126,10 +135,10 @@ function generatePositive() {
     return img;
 }
 
-function generateNegative() {
+function generateNegative(): Array<number> {
     let img = [];
     let size = 32;
-    let noise = 0 * Math.random();
+    let noise = .1 * Math.random();
     let color = Math.random() * (1 - noise);
     for(let i = 0; i < size * size; i ++) {
         img.push(color + Math.random() * noise);
@@ -137,7 +146,7 @@ function generateNegative() {
     return img;
 }
 
-function generateNegativeCircle() {
+function generateNegativeCircle(): Array<number> {
     let img = [];
     let size = 32;
 
@@ -165,7 +174,7 @@ function generateNegativeCircle() {
     return img;
 }
 
-function generateNegativeRandom() {
+function generateNegativeRandom(): Array<number> {
     let img = [];
     let size = 32;
 
@@ -197,19 +206,28 @@ function generateNegativeRandom() {
     return img;
 }
 
-var classifier: Classifier;
+let classifier: Classifier;
 
-export function initClassifier(savedNet) {
+/**
+ * Initializes the classifier according to a saved version.
+ * @param {NetJSON} savedNet
+ */
+export function initClassifier(savedNet: NetJSON) {
     classifier = new Classifier([]);
     classifier.import(savedNet);
 }
 
+/**
+ * Initializes the classifier by training it.
+ * Takes a few hours to complete.
+ */
 export function initClassifierByTraining() {
     let generators: Array<Generator> = [];
     generators.push(new Generator(generatePositive, 1));
     generators.push(new Generator(generateNegative, 0));
     generators.push(new Generator(generateNegativeCircle, 0));
     generators.push(new Generator(generateNegativeRandom, 0));
+    // TODO: Add more generators to handle more cases like gradients
     for(let i = 0; i < generators.length; i++) {
         console.log('generator '+i+' of type '+generators[i].type);
         logImg(generators[i].generate());
@@ -218,7 +236,13 @@ export function initClassifierByTraining() {
     classifier.train(500000);
 }
 
-function downgreyscale(img: ImageData) {
+/**
+ * Takes a RGB ImageData of arbitrary size and returns a 32x32 greyscale
+ * image in the Array<number> format. This format is the input format of the neural network.
+ * @param {ImageData} img
+ * @returns {Array<number>}
+ */
+function downgreyscale(img: ImageData): Array<number> {
     let size = 32;
     let imgOut = [];
     let counts = [];
@@ -243,6 +267,12 @@ function downgreyscale(img: ImageData) {
     return imgOut;
 }
 
+/**
+ * Attempts to detect a square in the provided image.
+ * Assumes that the classifier is initialized.
+ * @param {ImageData} img
+ * @returns {boolean}
+ */
 export function hasSquare(img: ImageData): boolean {
     let sample = downgreyscale(img);
     // console.log('downgreyscale sample');
@@ -250,7 +280,7 @@ export function hasSquare(img: ImageData): boolean {
     return classifier.classify(sample);
 }
 
-function logImg(img) {
+function logImg(img: Array<number>) {
     let size = 32;
     let layer: Layer = new Layer(new Vec2(size, size));
     let imgData: ImageData = layer.getContext().getImageData(0, 0, size, size);
