@@ -64,4 +64,8 @@ export enum ActionType {
      * Update Layer info action
      */
     UpdateLayerInfo,
+    /**
+     * Exchange Layers action
+     */
+    ExchangeLayers,
 }

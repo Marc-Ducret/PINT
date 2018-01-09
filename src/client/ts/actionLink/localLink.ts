@@ -39,10 +39,7 @@ export class LocalLink extends ActionLink {
                     .then(null);
             }
         } else {
-            if (action.type == ActionType.ToolApply
-                || action.type == ActionType.AddLayer
-                || action.type == ActionType.DeleteLayer
-                || action.type == ActionType.UpdateLayerInfo) // Action that generates history
+            if (action.type != ActionType.ToolPreview) // Action that generates history
             {
                 this.project.applyAction(action, this.project.currentSelection, true)
                     .then(undo_action => {
@@ -56,7 +53,6 @@ export class LocalLink extends ActionLink {
                 this.project.applyAction(action, this.project.currentSelection, false)
                     .then(null);
             }
-
         }
     }
 }

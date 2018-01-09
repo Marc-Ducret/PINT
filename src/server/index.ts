@@ -183,10 +183,7 @@ io.on("connection", function (socket: SocketIO.Socket) {
             for (let socket_id in clients[name]) {
                 clients[name][socket_id].emit("action", data);
             }
-            if (data.data.type == ActionType.ToolApply
-                || data.data.type == ActionType.AddLayer
-                || data.data.type == ActionType.DeleteLayer
-                || data.data.type == ActionType.UpdateLayerInfo) {
+            if (data.data.type != ActionType.ToolPreview) {
                 projects[name].applyAction(data.data, selectionHandlers[data.sender], true).then(undo_action => {
                     history.register_action(data, undo_action);
                 });

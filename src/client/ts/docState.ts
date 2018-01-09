@@ -45,12 +45,12 @@ export class Project {
      * @param {string} name Name of the project
      * @param {Vec2} dimensions Dimensions of the picture
      */
-    constructor (ui: UIController, name: string, dimensions: Vec2) {
+    constructor(ui: UIController, name: string, dimensions: Vec2) {
         this.name = name;
 
         this.toolRegistry = new ToolRegistry();
         if (dimensions == null) {
-            this.dimensions = new Vec2(800,600);
+            this.dimensions = new Vec2(800, 600);
         } else {
             this.dimensions = dimensions;
         }
@@ -85,7 +85,7 @@ export class Project {
      * Current tool getter.
      * @returns {Tool} Current tool used in the project.
      */
-    getCurrentTool() : Tool {
+    getCurrentTool(): Tool {
         return this.currentTool;
     }
 
@@ -93,7 +93,7 @@ export class Project {
      * User interface handler getter.
      * @returns {UIController} The user interface handler.
      */
-    getUI() : UIController {
+    getUI(): UIController {
         return this.ui;
     }
 
@@ -101,7 +101,7 @@ export class Project {
      * Update current tool.
      * @param {Tool} tool Tool to use.
      */
-    changeTool (tool: Tool){
+    changeTool(tool: Tool) {
         this.currentTool = tool;
     };
 
@@ -109,7 +109,7 @@ export class Project {
      * Mouse click handler, transfers the event to the current tool, if one is selected.
      * @param {Vec2} vect Local coordinates in the drawing canvas.
      */
-    mouseClick (vect: Vec2){
+    mouseClick(vect: Vec2) {
         if (this.currentTool !== null) {
             this.usingTool = true;
 
@@ -128,8 +128,8 @@ export class Project {
      * @param {Vec2} vect Local coordinates in the drawing canvas.
      * @returns true if the function updated one of the layers, else returns false.
      */
-    mouseMove (vect: Vec2){
-        if (this.currentTool !== null && this.usingTool === true){
+    mouseMove(vect: Vec2) {
+        if (this.currentTool !== null && this.usingTool === true) {
             this.currentTool.continueUse(vect);
 
             let action = {
@@ -157,7 +157,7 @@ export class Project {
      * Then clears the pre-rendering canvas and ask the renderer to redraw.
      * @param {Vec2} vect coordinates in the canvas
      */
-    mouseRelease (vect: Vec2) {
+    mouseRelease(vect: Vec2) {
         if (this.currentTool !== null && this.usingTool === true) {
             this.usingTool = false;
             /// TODO: Work on it.
@@ -216,197 +216,218 @@ export class Project {
      * @param {boolean} generateHistory
      * @returns {Promise<ActionInterface>}
      */
-    async applyAction (action: ActionInterface, selectionHandler: PixelSelectionHandler, generateHistory: boolean): Promise<ActionInterface> {
-        if (action.type == ActionType.ToolApply) {
-            /*
-             * GET TOOL AND SET TOOL STATE.
-             */
-            let tool = this.toolRegistry.getToolByName(action.toolName);
-            tool.reset();
-            tool.getSettings().importParameters(action.toolSettings, selectionHandler, this.getUI());
-            tool.updateData(action.actionData);
-
-            /*
-             * RESET
-             */
-            this.previewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
-
-            let draw_layer = action.toolSettings["layer"];
-            console.log("Action on layer: " + draw_layer);
-
-            if (!tool.overrideSelectionMask) { /// Applying selection mask.
-                let history_save = "";
-                if (generateHistory) { // Backup layer content
-                    history_save = this.layerList[draw_layer].getHTMLElement().toDataURL();
-                }
-
-                if (tool.readahead) { // The tool can see what is in the layer on application.
-                    this.previewLayer.getContext().drawImage(this.layerList[draw_layer].getHTMLElement(), 0, 0);
-                    this.layerList[draw_layer].applyInvMask(selectionHandler);
-                }
+    async applyAction(action: ActionInterface, selectionHandler: PixelSelectionHandler, generateHistory: boolean): Promise<ActionInterface> {
+        switch (action.type) {
+            case ActionType.ToolApply: {
+                /*
+                 * GET TOOL AND SET TOOL STATE.
+                 */
+                let tool = this.toolRegistry.getToolByName(action.toolName);
+                tool.reset();
+                tool.getSettings().importParameters(action.toolSettings, selectionHandler, this.getUI());
+                tool.updateData(action.actionData);
 
                 /*
-                 * Apply tool and generate undo if needed.
+                 * RESET
                  */
-                let undo = await tool.applyTool(this.previewLayer, generateHistory);
-                if (undo != null && undo.type == ActionType.ToolApplyHistory) {
+                this.previewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
 
-                    undo.type = ActionType.ToolApply;
-                    undo.toolName = "PasteTool";
-                    undo.toolSettings = {
-                        project_clipboard: history_save,
-                        project_clipboard_x: 0,
-                        project_clipboard_y: 0,
-                        layer: draw_layer,
-                        mode: "copy"
-                    };
-                    undo.actionData = {x: 0, y: 0};
+                let draw_layer = action.toolSettings["layer"];
+                console.log("Action on layer: " + draw_layer);
+
+                if (!tool.overrideSelectionMask) { /// Applying selection mask.
+                    let history_save = "";
+                    if (generateHistory) { // Backup layer content
+                        history_save = this.layerList[draw_layer].getHTMLElement().toDataURL();
+                    }
+
+                    if (tool.readahead) { // The tool can see what is in the layer on application.
+                        this.previewLayer.getContext().drawImage(this.layerList[draw_layer].getHTMLElement(), 0, 0);
+                        this.layerList[draw_layer].applyInvMask(selectionHandler);
+                    }
+
+                    /*
+                     * Apply tool and generate undo if needed.
+                     */
+                    let undo = await tool.applyTool(this.previewLayer, generateHistory);
+                    if (undo != null && undo.type == ActionType.ToolApplyHistory) {
+
+                        undo.type = ActionType.ToolApply;
+                        undo.toolName = "PasteTool";
+                        undo.toolSettings = {
+                            project_clipboard: history_save,
+                            project_clipboard_x: 0,
+                            project_clipboard_y: 0,
+                            layer: draw_layer,
+                            mode: "copy"
+                        };
+                        undo.actionData = {x: 0, y: 0};
+                    }
+
+
+                    this.previewLayer.applyMask(selectionHandler);
+                    this.layerList[draw_layer].getContext().drawImage(this.previewLayer.getHTMLElement(), 0, 0);
+
+                    this.previewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
+                    this.redraw = true;
+                    return undo;
+                } else { /// Or not.
+                    let undo = await tool.applyTool(this.layerList[draw_layer], generateHistory);
+
+                    this.previewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
+                    this.redraw = true;
+                    return undo;
+                }
+            }
+
+            case ActionType.ToolPreview: {
+                if (this.ui == null) {
+                    return null; // No work on server side for preview.
                 }
 
+                let tool = this.toolRegistry.getToolByName(action.toolName);
+                tool.reset();
+                tool.getSettings().importParameters(action.toolSettings, selectionHandler, this.getUI());
+                tool.updateData(action.actionData);
 
-                this.previewLayer.applyMask(selectionHandler);
-                this.layerList[draw_layer].getContext().drawImage(this.previewLayer.getHTMLElement(), 0, 0);
+                this.previewLayer.reset();
+                if (tool.readahead) {
+                    // The tool can see what is in the layer on application.
+                    let draw_layer = action.toolSettings["layer"];
+                    this.previewLayer.getContext().drawImage(this.layerList[draw_layer].getHTMLElement(), 0, 0);
+                    this.workingLayer.reset();
+                    this.workingLayer.getContext().drawImage(this.layerList[draw_layer].getHTMLElement(), 0, 0);
+                }
+                tool.drawPreview(this.previewLayer);
 
-                this.previewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
+                if (!tool.overrideSelectionMask) {
+                    // Optimized masking according to what is displayed.
+                    this.ui.viewport.applyMask(this.previewLayer, selectionHandler);
+                    this.ui.viewport.applyInvMask(this.workingLayer, selectionHandler);
+
+                    this.previewLayer.getContext().drawImage(this.workingLayer.getHTMLElement(), 0, 0);
+                }
+
                 this.redraw = true;
-                return undo;
-            } else { /// Or not.
-                let undo = await tool.applyTool(this.layerList[draw_layer], generateHistory);
-
-                this.previewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
-                this.redraw = true;
-                return undo;
+                return null;
             }
 
-        } else if (action.type == ActionType.ToolPreview) {
-            if (this.ui == null) {
-                return null; // No work on server side for preview.
-            }
+            case ActionType.DeleteLayer: {
+                let i = action.actionData;
+                let indexNewCurrentLayer;
 
-            let tool = this.toolRegistry.getToolByName(action.toolName);
-            tool.reset();
-            tool.getSettings().importParameters(action.toolSettings, selectionHandler, this.getUI());
-            tool.updateData(action.actionData);
+                for (let j = 0; j < this.layerList.length; j++) {
+                    if (this.currentLayer == this.layerList[j]) {
+                        if (i < j) { // if deleted layer is before selected layer, we have to decrease by 1
+                            indexNewCurrentLayer = j - 1;
+                        }
+                        else {
+                            indexNewCurrentLayer = j;
+                        }
+                    }
+                }
 
-            this.previewLayer.reset();
-            if (tool.readahead) {
-                // The tool can see what is in the layer on application.
-                let draw_layer = action.toolSettings["layer"];
-                this.previewLayer.getContext().drawImage(this.layerList[draw_layer].getHTMLElement(), 0, 0);
-                this.workingLayer.reset();
-                this.workingLayer.getContext().drawImage(this.layerList[draw_layer].getHTMLElement(), 0, 0);
-            }
-            tool.drawPreview(this.previewLayer);
+                let backupContent: string;
 
-            if (!tool.overrideSelectionMask) {
-                // Optimized masking according to what is displayed.
-                this.ui.viewport.applyMask(this.previewLayer, selectionHandler);
-                this.ui.viewport.applyInvMask(this.workingLayer, selectionHandler);
-
-                this.previewLayer.getContext().drawImage(this.workingLayer.getHTMLElement(), 0, 0);
-            }
-
-            this.redraw = true;
-            return null;
-        } else if (action.type == ActionType.DeleteLayer) {
-            let i = action.actionData;
-            let indexNewCurrentLayer;
-
-            for(let j=0; j<this.layerList.length; j++) {
-                if (this.currentLayer == this.layerList[j]){
-                    if (i<j) { // if deleted layer is before selected layer, we have to decrease by 1
-                        indexNewCurrentLayer = j-1;
+                if (i >= this.layerList.length || i < 0) {
+                    throw "try to delete a layer that doesn't exist";
+                }
+                else if (this.layerList.length == 1) {
+                    console.warn("impossible to delete the only layer remaining");
+                }
+                else if (this.currentLayer == this.layerList[i]) {
+                    backupContent = this.layerList[i].getHTMLElement().toDataURL();
+                    if (i == this.layerList.length - 1) { // if layer i is the last layer
+                        indexNewCurrentLayer = i - 1;
+                        this.selectLayer(indexNewCurrentLayer);
                     }
                     else {
-                        indexNewCurrentLayer = j;
+                        this.selectLayer(i + 1);
+                        indexNewCurrentLayer = i;
                     }
-                }
-            }
+                    // delete layer i:
+                    this.layerList.splice(i, 1);
 
-            let backupContent: string;
-
-            if (i >= this.layerList.length || i < 0) {
-                throw "try to delete a layer that doesn't exist";
-            }
-            else if (this.layerList.length == 1) {
-                console.warn("impossible to delete the only layer remaining");
-            }
-            else if (this.currentLayer == this.layerList[i]) {
-                backupContent = this.layerList[i].getHTMLElement().toDataURL();
-                if (i == this.layerList.length - 1) { // if layer i is the last layer
-                    indexNewCurrentLayer = i-1;
-                    this.selectLayer(indexNewCurrentLayer);
                 }
                 else {
-                    this.selectLayer(i+1);
-                    indexNewCurrentLayer = i;
+                    backupContent = this.layerList[i].getHTMLElement().toDataURL();
+                    // delete layer i:
+                    this.layerList.splice(i, 1);
                 }
-                // delete layer i:
-                this.layerList.splice(i,1);
 
-            }
-            else {
-                backupContent = this.layerList[i].getHTMLElement().toDataURL();
-                // delete layer i:
-                this.layerList.splice(i,1);
-            }
+                if (this.ui != null) {
+                    // update the layer manager menu:
+                    this.ui.layer_menu_controller = setup_layer_menu(this.ui, document.getElementById("layerManager_container"));
+                    // update of layer menu display:
+                    highlight_layer(this.ui, indexNewCurrentLayer);
+                }
 
-            if (this.ui != null) {
-                // update the layer manager menu:
-                this.ui.layer_menu_controller = setup_layer_menu(this.ui, document.getElementById("layerManager_container"));
-                // update of layer menu display:
-                highlight_layer(this.ui, indexNewCurrentLayer);
-            }
-
-            return {
-                toolName: "AddLayer",
-                actionData: {
-                    position: i,
-                    content: backupContent
-                },
-                type: ActionType.AddLayer,
-                toolSettings: {}
-            };
-        } else if (action.type == ActionType.AddLayer) {
-            let l = new Layer(this.dimensions); // added layer
-            l.reset(); // set added layer transparent
-            // add the newly created Layer to layerList, just before position indexed by n_last_layer+1:
-            this.layerList.splice(action.actionData.position, 0, l);
-            this.currentLayer = l;
-
-            if (action.actionData.content != "") {
-                await l.drawDataUrl(action.actionData.content, 0, 0);
+                return {
+                    toolName: "AddLayer",
+                    actionData: {
+                        position: i,
+                        content: backupContent
+                    },
+                    type: ActionType.AddLayer,
+                    toolSettings: {}
+                };
             }
 
-            if (this.ui != null) {
-                this.ui.layer_menu_controller = setup_layer_menu(this.ui, document.getElementById("layerManager_container"));
-                highlight_layer(this.ui, action.actionData.position);
+            case ActionType.AddLayer: {
+                let l = new Layer(this.dimensions); // added layer
+                l.reset(); // set added layer transparent
+                // add the newly created Layer to layerList, just before position indexed by n_last_layer+1:
+                this.layerList.splice(action.actionData.position, 0, l);
+                this.currentLayer = l;
+
+                if (action.actionData.content != "") {
+                    await l.drawDataUrl(action.actionData.content, 0, 0);
+                }
+
+                if (this.ui != null) {
+                    this.ui.layer_menu_controller = setup_layer_menu(this.ui, document.getElementById("layerManager_container"));
+                    highlight_layer(this.ui, action.actionData.position);
+                }
+
+                return {
+                    toolName: "DeleteLayer",
+                    actionData: action.actionData.position,
+                    type: ActionType.DeleteLayer,
+                    toolSettings: {}
+                };
             }
 
-            return {
-                toolName: "DeleteLayer",
-                actionData: action.actionData.position,
-                type: ActionType.DeleteLayer,
-                toolSettings: {}
-            };
-        } else if (action.type == ActionType.UpdateLayerInfo) {
-            let prevInfo = this.layerList[action.actionData.position].layerInfo.data();
-            this.layerList[action.actionData.position].layerInfo = new LayerInfo();
-            this.layerList[action.actionData.position].layerInfo.copyFrom(action.actionData.content);
-            if (this.ui != null) {
-                this.ui.layer_menu_controller = setup_layer_menu(this.ui, document.getElementById("layerManager_container"));
-                highlight_layer(this.ui, this.layerList.indexOf(this.currentLayer));
+            case ActionType.UpdateLayerInfo: {
+                let prevInfo = this.layerList[action.actionData.position].layerInfo.data();
+                this.layerList[action.actionData.position].layerInfo = new LayerInfo();
+                this.layerList[action.actionData.position].layerInfo.copyFrom(action.actionData.content);
+                if (this.ui != null) {
+                    this.ui.layer_menu_controller = setup_layer_menu(this.ui, document.getElementById("layerManager_container"));
+                    highlight_layer(this.ui, this.layerList.indexOf(this.currentLayer));
+                }
+
+                return {
+                    toolName: "UpdateLayerInfo",
+                    actionData: {
+                        position: action.actionData.position,
+                        content: prevInfo,
+                    },
+                    type: ActionType.UpdateLayerInfo,
+                    toolSettings: {}
+                };
             }
 
-            return {
-                toolName: "UpdateLayerInfo",
-                actionData: {
-                    position: action.actionData.position,
-                    content: prevInfo,
-                },
-                type: ActionType.UpdateLayerInfo,
-                toolSettings: {}
-            };
+            case ActionType.ExchangeLayers: {
+                var temp = this.layerList[action.actionData.positionA];
+                this.layerList[action.actionData.positionA] = this.layerList[action.actionData.positionB];
+                this.layerList[action.actionData.positionB] = temp;
+                if (this.ui != null) {
+                    this.ui.layer_menu_controller = setup_layer_menu(this.ui, document.getElementById("layerManager_container"));
+                    highlight_layer(this.ui, this.layerList.indexOf(this.currentLayer));
+                }
+
+                return action;
+            }
         }
     }
 
@@ -414,7 +435,7 @@ export class Project {
      * Tells whether the selection layer should be redrawn.
      * @returns {boolean} true if a redraw is needed, else false.
      */
-    renderSelection () : boolean {
+    renderSelection(): boolean {
         if (this.currentSelection.getBorder().length > 0) {
             return true;
         } else {
@@ -425,14 +446,14 @@ export class Project {
     /**
      * Getter for layerList (for layerManager)
      */
-    getLayerList () : Array<Layer> {
+    getLayerList(): Array<Layer> {
         return this.layerList
     };
 
     /**
      * Add a Layer in the layerList, just before the previewLayer and the selectionLayer
      */
-    addLayer (){
+    addLayer() {
         let action = {
             toolName: "AddLayer",
             actionData: {
@@ -449,12 +470,12 @@ export class Project {
      * Set layer of index i as the current layer
      * @param {number} i
      */
-    selectLayer (i: number){
-        if (i >= this.layerList.length || i < 0){
+    selectLayer(i: number) {
+        if (i >= this.layerList.length || i < 0) {
             throw "try to select a layer that doesn't exist"
                 ;
         }
-        else{
+        else {
             this.currentLayer = this.layerList[i];
         }
     };
@@ -463,7 +484,7 @@ export class Project {
      * Delete layer of index i
      * @param {number} i
      */
-    deleteLayer (i: number) {
+    deleteLayer(i: number) {
         let action = {
             toolName: "DeleteLayer",
             actionData: i,
@@ -491,31 +512,32 @@ export class Project {
      * @param {number} i First layer to switch, index starting from 0
      * @param {number} j Second layer to switch, index starting from 0
      */
-    exchangeLayers (i: number, j: number){
-        if (i >= this.layerList.length -1 || j >= this.layerList.length -1){
-            throw "try to exchange a layer that doesn't exist with another one"
-                ;
-        }
-        else{
-            var temp = this.layerList[i];
-            this.layerList[i] = this.layerList[j];
-            this.layerList[j] = temp;
-        }
+    exchangeLayers(i: number, j: number) {
+        let action = {
+            toolName: "ExchangeLayers",
+            actionData: {
+                positionA: i,
+                positionB: j,
+            },
+            type: ActionType.ExchangeLayers,
+            toolSettings: {}
+        };
+        this.link.sendAction(action);
     };
 
     /**
      * Saves the current project as a download of the resulting image
      * for the user
      */
-    saveProject () {
+    saveProject() {
         this.workingLayer.reset();
-        for (let i=0; i<this.layerList.length; i++) {
+        for (let i = 0; i < this.layerList.length; i++) {
             this.workingLayer.getContext().drawImage(this.layerList[i].getHTMLElement(), 0, 0);
         }
 
         let content = this.workingLayer.getHTMLElement()
             .toDataURL("image/png")
-            .replace("image/png","image/octet-stream");
+            .replace("image/png", "image/octet-stream");
         let fake_link = document.createElement('a');
         fake_link.download = this.name + '.png';
         fake_link.href = content;
@@ -526,11 +548,11 @@ export class Project {
 
     testSquare(elem: HTMLElement) {
         let color: string;
-        if(squareRecon.hasSquare(this.currentLayer.getContext().getImageData(0, 0, this.dimensions.x, this.dimensions.y))) {
+        if (squareRecon.hasSquare(this.currentLayer.getContext().getImageData(0, 0, this.dimensions.x, this.dimensions.y))) {
             color = "#6aeb70";
         } else {
             color = "#cc3058";
         }
-        elem.setAttribute("style", "color: "+color);
+        elem.setAttribute("style", "color: " + color);
     }
 }
