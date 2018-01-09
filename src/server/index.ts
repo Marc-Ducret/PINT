@@ -62,11 +62,13 @@ io.on("connection", function (socket: SocketIO.Socket) {
         let data = {
             dimensions: projects[packet.name].dimensions,
             data: [],
+            infos: [],
         };
 
         // Send all layers
         for (let i=0; i < projects[packet.name].layerList.length; i++) {
             data.data.push(projects[packet.name].layerList[i].getHTMLElement().toDataURL());
+            data.infos.push(projects[packet.name].layerList[i].layerInfo.data());
         }
 
         socket.emit("joined", data);

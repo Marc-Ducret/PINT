@@ -11,7 +11,7 @@ import {highlight_layer, LayerMenuController, setup_layer_menu} from "./layermen
 import {KeyboardManager} from "./keyboardManager";
 import {Tool} from "../tools/tool";
 import {ActionType} from "../tools/actionInterface";
-import {Layer} from "./layer";
+import {Layer, LayerInfo} from "./layer";
 
 /**
  * @file User interface handler
@@ -191,13 +191,14 @@ export class UIController {
      * Setup local version of the project according to server data.
      * @param data
      */
-    loadServerHostedCallback (data: {dimensions: Vec2, data: Array<string>}) {
+    loadServerHostedCallback (data: {dimensions: Vec2, data: Array<string>, infos: Array<Object>}) {
         this.newProject(data.dimensions);
         this.project.enableNetwork(this.socket);
         for (let i = 0; i < data.data.length; i++) {
             if (i != 0) {
                 this.project.layerList.push(new Layer(data.dimensions));
             }
+            this.project.layerList[i].layerInfo.copyFrom(<LayerInfo> data.infos[i]);
             let img = new Image;
             img.onload = function(){
                 this.project.layerList[i].getContext().globalCompositeOperation = "copy";
