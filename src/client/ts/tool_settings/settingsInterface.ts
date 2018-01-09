@@ -55,7 +55,8 @@ export class SettingsInterface {
         input.attr("value",defaultValue);
         input.attr("id",id);
         input.attr("name",id);
-        input.attr("class", "browser-default");
+        input.css("color", "#FFFFFF");
+        input.css("font-size", "25px");
 
         if (type === InputType.Number) {
             input.attr("min", 0);
