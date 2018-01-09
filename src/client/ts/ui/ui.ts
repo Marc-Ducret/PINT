@@ -529,7 +529,7 @@ export class UIController {
      * @memberOf UIController
      */
     onWindowResize (newSize: Vec2) {
-        var offset = $("#viewport").offset();
+        let offset = $("#viewport").offset();
         $("#viewport").height(newSize.y - offset.top);
         this.viewport.viewportDimensionsChanged();
     };

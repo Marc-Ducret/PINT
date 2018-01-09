@@ -46,7 +46,9 @@ export class Viewport {
         this.canvas.height = this.canvas.scrollHeight;
         this.viewportDimensions = new Vec2(this.canvas.width, this.canvas.height);
 
-        window.requestAnimationFrame(this.renderLayers.bind(this));
+        window.requestAnimationFrame(function() {
+            this.renderLayers(this.layerList, this.previewLayer, this.previewIndex, this.pixelSelection);
+        }.bind(this));
     };
 
     /**
@@ -86,20 +88,12 @@ export class Viewport {
      */
     renderLayers(layerList: Array<Layer>, previewLayer: Layer, previewIndex: number, pixelSelection: Array<PixelSelectionHandler>) {
         /*
-         * Use saved settings if no parameters are set.
+         * Save settings.
          */
-        if (layerList != undefined) {
-            this.layerList = layerList;
-        }
-        if (previewLayer != undefined) {
-            this.previewLayer = previewLayer;
-        }
-        if (previewIndex != undefined) {
-            this.previewIndex = previewIndex;
-        }
-        if (pixelSelection != undefined) {
-            this.pixelSelection = pixelSelection;
-        }
+        this.layerList = layerList;
+        this.previewLayer = previewLayer;
+        this.previewIndex = previewIndex;
+        this.pixelSelection = pixelSelection;
 
         if (layerList.length > 0) {
             this.layerDimensions.x = layerList[0].getWidth();
@@ -115,11 +109,13 @@ export class Viewport {
          * Draw a logo at the center of the picture.
          */
         let scale = this.viewportDimensions.x/(2*this.fallbackDisplay.width);
-        this.context.save();
         this.context.scale(scale, scale);
         this.context.globalAlpha = 0.2;
         this.context.drawImage(this.fallbackDisplay,this.fallbackDisplay.width/2,(this.viewportDimensions.y/scale/2 - (this.fallbackDisplay.height/scale/2)));
-        this.context.restore();
+
+        this.context.scale(1, 1);
+        this.context.globalAlpha = 1;
+        this.context.setTransform(1, 0, 0, 1, 0, 0); // Reset scale and translation.
 
         this.context.imageSmoothingEnabled = false;
         this.context.webkitImageSmoothingEnabled = false;
