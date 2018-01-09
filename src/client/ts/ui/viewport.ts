@@ -161,19 +161,6 @@ export class Viewport {
             }
         }
 
-        if (this.previewIndex == -1 && this.previewLayer != null) { // Preview layer is drawn last.
-            this.context.drawImage(
-                this.previewLayer.getHTMLElement(),
-                -this.currentTranslation.x-translation_base.x,
-                -this.currentTranslation.y-translation_base.y,
-                crop_dimensions.x,
-                crop_dimensions.y,
-                0,
-                0,
-                this.viewportDimensions.x,
-                this.viewportDimensions.y);
-        }
-
         this.context.setTransform(1, 0, 0, 1, 0, 0); // Reset scale and translation.
 
         /*
