@@ -137,20 +137,19 @@ export class Viewport {
          * Render layers.
          */
         for (let i=0; i < this.layerList.length; i++) {
-            if (i == this.previewIndex) { // Preview layer replaces current layer
+            this.context.drawImage( // Draw normal layer
+                this.layerList[i].getHTMLElement(),
+                -this.currentTranslation.x-translation_base.x,
+                -this.currentTranslation.y-translation_base.y,
+                crop_dimensions.x,
+                crop_dimensions.y,
+                0,
+                0,
+                this.viewportDimensions.x,
+                this.viewportDimensions.y);
+            if (i == this.previewIndex) { // Preview layer drawn on top
                 this.context.drawImage(
                     this.previewLayer.getHTMLElement(),
-                    -this.currentTranslation.x-translation_base.x,
-                    -this.currentTranslation.y-translation_base.y,
-                    crop_dimensions.x,
-                    crop_dimensions.y,
-                    0,
-                    0,
-                    this.viewportDimensions.x,
-                    this.viewportDimensions.y);
-            } else { // Normal layer rendering
-                this.context.drawImage(
-                    this.layerList[i].getHTMLElement(),
                     -this.currentTranslation.x-translation_base.x,
                     -this.currentTranslation.y-translation_base.y,
                     crop_dimensions.x,

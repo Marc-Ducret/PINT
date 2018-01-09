@@ -28,8 +28,6 @@ export class Project {
     currentLayer: Layer;
     workingLayer: Layer;
 
-    renderPreviewPosition: number;
-
     layerList: Array<Layer>; // The renderer draw layers in order.
     currentTool: Tool;
     currentSelection: PixelSelectionHandler;
@@ -62,7 +60,6 @@ export class Project {
         this.workingLayer = new Layer(this.dimensions);
 
         this.layerList = [this.currentLayer]; // The renderer draw layers in order + preview layer position specified by renderPreviewPosition.
-        this.renderPreviewPosition = -1; // -1 is at the end.
 
         this.currentTool = null;
         this.ui = ui;
@@ -233,7 +230,6 @@ export class Project {
             /*
              * RESET
              */
-            this.renderPreviewPosition = -1;
             this.previewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
 
             let draw_layer = action.toolSettings["layer"];
@@ -300,10 +296,6 @@ export class Project {
                 this.previewLayer.getContext().drawImage(this.layerList[draw_layer].getHTMLElement(), 0, 0);
                 this.workingLayer.reset();
                 this.workingLayer.getContext().drawImage(this.layerList[draw_layer].getHTMLElement(), 0, 0);
-
-                this.renderPreviewPosition = draw_layer;
-            } else {
-                this.renderPreviewPosition = -1;
             }
             tool.drawPreview(this.previewLayer);
 
@@ -382,7 +374,7 @@ export class Project {
             l.reset(); // set added layer transparent
             // add the newly created Layer to layerList, just before position indexed by n_last_layer+1:
             this.layerList.splice(action.actionData.position, 0, l);
-            this.currentLayer = l;
+            this.currentLayer = l; //????
 
             if (action.actionData.content != "") {
                 await l.drawDataUrl(action.actionData.content, 0, 0);
