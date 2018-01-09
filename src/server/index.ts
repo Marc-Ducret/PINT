@@ -39,6 +39,7 @@ interface JoinPacket {
 }
 
 io.on("connection", function (socket: SocketIO.Socket) {
+    console.log(socket.id + " connected.");
     socket.on("join", function (packet: JoinPacket) {
         /**
          * Project creation.
@@ -125,6 +126,8 @@ io.on("connection", function (socket: SocketIO.Socket) {
     socket.on("disconnect", function() {
         console.log(socket.id + " left.");
     });
+
+
 
     socket.on("action", function (data: ActionNetworkPacket) {
         if (data.sender !== socket.id) {

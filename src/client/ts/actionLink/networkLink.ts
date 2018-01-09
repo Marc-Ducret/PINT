@@ -68,7 +68,7 @@ export class NetworkLink extends ActionLink {
         this.socket.on("action", this.onAction.bind(this));
         this.socket.on("hello", this.onHello.bind(this));
         this.socket.on("reconnect", function () {
-            delete this.selectionHandlers[this.me];
+            console.log("Socket reconnected with id "+this.socket.id);
             this.me = this.socket.id;
             this.selectionHandlers[this.me] = this.project.currentSelection;
         }.bind(this));
@@ -82,7 +82,7 @@ export class NetworkLink extends ActionLink {
         // Pack data and emit the packet.
         this.socket.emit("action", {
             data: action,
-            sender: this.me,
+            sender: this.socket.id,
         });
     }
 
@@ -92,7 +92,7 @@ export class NetworkLink extends ActionLink {
      */
     onAction(action: ActionNetworkPacket) {
         // Preview is pre-rendered before being sent, thus it doesn't need to be applied again.
-        if (action.sender == this.me && action.data.type == ActionType.ToolPreview) {
+        if (action.sender == this.socket.id && action.data.type == ActionType.ToolPreview) {
             return;
         }
 

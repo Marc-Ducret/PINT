@@ -77,6 +77,7 @@ export class UIController {
          */
         let indicator = $(".indicator");
         let on_failed = function() {
+            console.log("Socket disconnected");
             this.is_online = false;
             if (this.menu_controller.displayedCategory !== MenuState.Working) {
                 this.menu_controller.updateStatus(this.hasProjectOpen(), this.isOnline());
@@ -88,6 +89,7 @@ export class UIController {
 
 
         let on_connection_pending = function() {
+            console.log("Socket connection pending");
             this.is_online = false;
             if (this.menu_controller.displayedCategory !== MenuState.Working) {
                 this.menu_controller.updateStatus(this.hasProjectOpen(), this.isOnline());
@@ -98,6 +100,7 @@ export class UIController {
         }.bind(this);
 
         let on_connected = function() {
+            console.log("Socket connected with id "+this.socket.id);
             this.is_online = true;
             if (this.menu_controller.displayedCategory !== MenuState.Working) {
                 this.menu_controller.updateStatus(this.hasProjectOpen(), this.isOnline());
