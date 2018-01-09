@@ -44,14 +44,14 @@ export class NetworkLink extends ActionLink {
     private project: Project;
     private me: string;
 
-    private selectionHandlers: {[id: string]: PixelSelectionHandler};
+    private selectionHandlers: { [id: string]: PixelSelectionHandler };
 
     /**
      * Bind networks event to link client and server.
      * @param {Project} project Working project
      * @param {SocketIOClient.Socket} socket Socket.IO client instance
      */
-    constructor (project: Project, socket: SocketIOClient.Socket) {
+    constructor(project: Project, socket: SocketIOClient.Socket) {
         super();
         // Save parameters
         this.socket = socket;
@@ -68,7 +68,7 @@ export class NetworkLink extends ActionLink {
         this.socket.on("action", this.onAction.bind(this));
         this.socket.on("hello", this.onHello.bind(this));
         this.socket.on("reconnect", function () {
-            console.log("Socket reconnected with id "+this.socket.id);
+            console.log("Socket reconnected with id " + this.socket.id);
             this.me = this.socket.id;
             this.selectionHandlers[this.me] = this.project.currentSelection;
         }.bind(this));
@@ -98,7 +98,7 @@ export class NetworkLink extends ActionLink {
 
         // Action debug
         if (action.data.type != ActionType.ToolPreview) {
-            console.log("Action from "+action.sender+" with tool "+action.data.toolName);
+            console.log("Action from " + action.sender + " with tool " + action.data.toolName);
         }
 
         // Action forward.
@@ -110,7 +110,7 @@ export class NetworkLink extends ActionLink {
      * @param {HelloNetworkPacket} packet
      */
     onHello(packet: HelloNetworkPacket) {
-        console.log("I've got the selection data of "+packet.sender);
+        console.log("I've got the selection data of " + packet.sender);
         console.log(packet);
         this.selectionHandlers[packet.sender] = PixelSelectionHandlerFromSerialized(packet.serializedSelection);
     }

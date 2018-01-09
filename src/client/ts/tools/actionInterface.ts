@@ -17,7 +17,7 @@ export interface ActionInterface {
     /**
      * Tool parameters
      */
-    toolSettings: {[name: string]: any };
+    toolSettings: { [name: string]: any };
 }
 
 /**

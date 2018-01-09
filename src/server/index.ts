@@ -7,7 +7,7 @@ import {Vec2} from "../client/ts/vec2";
 import {Project} from "../client/ts/docState";
 import {ActionNetworkPacket, HelloNetworkPacket} from "../client/ts/actionLink/networkLink";
 import {PixelSelectionHandler} from "../client/ts/selection/selection";
-import {ActionInterface, ActionType} from "../client/ts/tools/actionInterface";
+import {ActionType} from "../client/ts/tools/actionInterface";
 import {PintHistory} from "../client/ts/history/history";
 
 let app = express();
@@ -17,7 +17,7 @@ const port = process.env.PORT || 8080;
 let server = http.createServer(app);
 let io: SocketIO.Server = socketio(server);
 
-server.listen(port, function() {
+server.listen(port, function () {
     console.log('Server listening on port %d', port);
 });
 
@@ -25,16 +25,15 @@ app.use('/src/', serveStatic(path.join(__dirname, '../../src/')));
 app.use('/', serveStatic(path.join(__dirname, '../client/')));
 
 
-
-let clients: {[pid: string] : {[uid: string]: SocketIO.Socket}} = {};
-let projects: {[pid: string]: Project}  = {};
-let selectionHandlers: {[uid: string]: PixelSelectionHandler}  = {};
-let histories: {[pid: string]: PintHistory} = {};
-let client_project: {[uid: string]: string} = {};
+let clients: { [pid: string]: { [uid: string]: SocketIO.Socket } } = {};
+let projects: { [pid: string]: Project } = {};
+let selectionHandlers: { [uid: string]: PixelSelectionHandler } = {};
+let histories: { [pid: string]: PintHistory } = {};
+let client_project: { [uid: string]: string } = {};
 
 interface JoinPacket {
     name: string;
-    dimensions: {x: number, y: number};
+    dimensions: { x: number, y: number };
     image_data: string;
 }
 
@@ -45,19 +44,19 @@ io.on("connection", function (socket: SocketIO.Socket) {
          * Project creation.
          */
         if (projects[packet.name] === undefined) {
-            console.log(socket.id + " creates the drawing `"+packet.name+"`");
-             let project = new Project(null, packet.name, new Vec2(packet.dimensions.x,packet.dimensions.y));
-             let history: PintHistory = new PintHistory(project);
+            console.log(socket.id + " creates the drawing `" + packet.name + "`");
+            let project = new Project(null, packet.name, new Vec2(packet.dimensions.x, packet.dimensions.y));
+            let history: PintHistory = new PintHistory(project);
 
-             projects[packet.name] = project;
-             histories[packet.name] = history;
-             clients[packet.name] = {};
+            projects[packet.name] = project;
+            histories[packet.name] = history;
+            clients[packet.name] = {};
         }
 
         /**
          * Client synchronization to drawing
          */
-        console.log(socket.id + " joining drawing `"+packet.name+"`");
+        console.log(socket.id + " joining drawing `" + packet.name + "`");
 
         let data = {
             dimensions: projects[packet.name].dimensions,
@@ -66,7 +65,7 @@ io.on("connection", function (socket: SocketIO.Socket) {
         };
 
         // Send all layers
-        for (let i=0; i < projects[packet.name].layerList.length; i++) {
+        for (let i = 0; i < projects[packet.name].layerList.length; i++) {
             data.data.push(projects[packet.name].layerList[i].getHTMLElement().toDataURL());
             data.infos.push(projects[packet.name].layerList[i].layerInfo.data());
         }
@@ -81,7 +80,7 @@ io.on("connection", function (socket: SocketIO.Socket) {
                 sender: id,
                 serializedSelection: selectionHandlers[id].serialize(),
             };
-            socket.emit ("hello", hello);
+            socket.emit("hello", hello);
         }
 
 
@@ -125,18 +124,17 @@ io.on("connection", function (socket: SocketIO.Socket) {
         }
     });
 
-    socket.on("disconnect", function() {
+    socket.on("disconnect", function () {
         console.log(socket.id + " left.");
     });
 
 
-
     socket.on("action", function (data: ActionNetworkPacket) {
         if (data.sender !== socket.id) {
-          console.warn("Some guy is trying to fuck everything up.");
-          console.warn("Socket:" + socket.id);
-          console.warn("Sender:" + data.sender);
-          return;
+            console.warn("Some guy is trying to fuck everything up.");
+            console.warn("Socket:" + socket.id);
+            console.warn("Sender:" + data.sender);
+            return;
         }
 
         let name = client_project[socket.id];
@@ -146,18 +144,18 @@ io.on("connection", function (socket: SocketIO.Socket) {
         }
 
         if (projects[name] == undefined || projects[name] == null) {
-            console.error("Project manager "+name+" not found.");
+            console.error("Project manager " + name + " not found.");
             return;
         }
 
         let history = histories[name];
         if (history == undefined || history == null) {
-            console.error("History manager not found for project "+name);
+            console.error("History manager not found for project " + name);
             return;
         }
 
         if (data.data.type != ActionType.ToolPreview) {
-            console.log("On project: "+name);
+            console.log("On project: " + name);
             console.log("Action by " + data.sender + " with tool " + data.data.toolName);
         }
 

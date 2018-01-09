@@ -13,15 +13,30 @@ export class CopyTool extends Tool {
     constructor() {
         super("CopyTool", "Copy", "c");
 
-        this.addSetting({name: "project_clipboard", descName: "Clipboard", inputType: InputType.Hidden, defaultValue: ""});
-        this.addSetting({name: "project_clipboard_x", descName: "Clipboard X", inputType: InputType.Hidden, defaultValue: 0});
-        this.addSetting({name: "project_clipboard_y", descName: "Clipboard Y", inputType: InputType.Hidden, defaultValue: 0});
+        this.addSetting({
+            name: "project_clipboard",
+            descName: "Clipboard",
+            inputType: InputType.Hidden,
+            defaultValue: ""
+        });
+        this.addSetting({
+            name: "project_clipboard_x",
+            descName: "Clipboard X",
+            inputType: InputType.Hidden,
+            defaultValue: 0
+        });
+        this.addSetting({
+            name: "project_clipboard_y",
+            descName: "Clipboard Y",
+            inputType: InputType.Hidden,
+            defaultValue: 0
+        });
 
         this.addSetting({name: "project_selection", descName: "", inputType: InputType.Special, defaultValue: 0});
         this.addSetting({name: "user_interface", descName: "", inputType: InputType.Special, defaultValue: 0});
     }
 
-    reset () {
+    reset() {
         this.updated = false;
     }
 
@@ -30,7 +45,8 @@ export class CopyTool extends Tool {
 
     }
 
-    continueUse(pos: Vec2) {}
+    continueUse(pos: Vec2) {
+    }
 
     endUse(pos: Vec2) {
         this.data = pos;
@@ -43,7 +59,8 @@ export class CopyTool extends Tool {
         this.setSetting("project_clipboard_y", pos.y);
     }
 
-    drawPreview(layer: Layer) {}
+    drawPreview(layer: Layer) {
+    }
 
     async applyTool(layer: Layer, generate_undo: boolean): Promise<ActionInterface> {
         // Can't undo a copy.

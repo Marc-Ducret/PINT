@@ -28,51 +28,66 @@ function drawEllipse(ctx, x, y, w, h) {
  * Draw a shape tool.
  */
 export class ShapeTool extends Tool {
-    constructor () {
+    constructor() {
         super("ShapeTool", "Shape", "q");
-        this.addSetting({name: "strokeColor", descName: "Stroke color", inputType: InputType.Color, defaultValue: "#ffffff"});
+        this.addSetting({
+            name: "strokeColor",
+            descName: "Stroke color",
+            inputType: InputType.Color,
+            defaultValue: "#ffffff"
+        });
         this.addSetting({
             name: "strokeAlpha",
             descName: "Stroke transparency",
             inputType: InputType.Range,
             defaultValue: 100,
             options: [
-                {name:"maxValue", desc: "100"},
-                {name:"minValue", desc: "0"}
-            ]});
+                {name: "maxValue", desc: "100"},
+                {name: "minValue", desc: "0"}
+            ]
+        });
 
-        this.addSetting({name: "fillColor", descName: "Fill color", inputType: InputType.Color, defaultValue: "#000000"});
+        this.addSetting({
+            name: "fillColor",
+            descName: "Fill color",
+            inputType: InputType.Color,
+            defaultValue: "#000000"
+        });
         this.addSetting({
             name: "fillAlpha",
             descName: "Fill transparency",
             inputType: InputType.Range,
             defaultValue: 100,
             options: [
-                {name:"maxValue", desc: "100"},
-                {name:"minValue", desc: "0"}
-            ]});
+                {name: "maxValue", desc: "100"},
+                {name: "minValue", desc: "0"}
+            ]
+        });
 
         this.addSetting({name: "lineWidth", descName: "Line width", inputType: InputType.Number, defaultValue: "5"});
-        this.addSetting({name: "shape", descName: "Shape", inputType: InputType.Select, defaultValue: "square",
-                                options: [{name: "square", desc: "Square"},
-                                        {name: "circle", desc: "Circle"},
-                                        {name: "ellipse", desc: "Ellipse"}]});
+        this.addSetting({
+            name: "shape", descName: "Shape", inputType: InputType.Select, defaultValue: "square",
+            options: [{name: "square", desc: "Square"},
+                {name: "circle", desc: "Circle"},
+                {name: "ellipse", desc: "Ellipse"}]
+        });
     }
 
-    startUse (img: ImageData, pos: Vec2) {
+    startUse(img: ImageData, pos: Vec2) {
         this.data = {
             firstCorner: pos,
             lastCorner: pos,
         };
     }
 
-    continueUse (pos: Vec2) {
+    continueUse(pos: Vec2) {
         this.data.lastCorner = pos;
     }
 
-    reset () {}
+    reset() {
+    }
 
-    endUse (pos: Vec2) {
+    endUse(pos: Vec2) {
         this.continueUse(pos);
     }
 
@@ -110,9 +125,9 @@ export class ShapeTool extends Tool {
                 console.error("No shape selected.");
                 break;
         }
-        context.globalAlpha = this.getSetting("fillAlpha")/100;
+        context.globalAlpha = this.getSetting("fillAlpha") / 100;
         context.fill();
-        context.globalAlpha = this.getSetting("strokeAlpha")/100;
+        context.globalAlpha = this.getSetting("strokeAlpha") / 100;
         context.stroke();
         context.globalAlpha = 1;
     }

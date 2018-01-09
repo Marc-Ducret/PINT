@@ -29,33 +29,33 @@ export class Classifier {
     constructor(generators: Array<Generator>) {
         // Description of the neural network used to encode the classification function
         this.layer_defs = [];
-        this.layer_defs.push({type:'input', out_sx:32, out_sy:32, out_depth:1});
-        this.layer_defs.push({type:'conv', sx:5, filters:16, stride:1, pad:2, activation:'relu'});
-        this.layer_defs.push({type:'pool', sx:2, stride:2});
-        this.layer_defs.push({type:'conv', sx:5, filters:20, stride:1, pad:2, activation:'relu'});
-        this.layer_defs.push({type:'pool', sx:2, stride:2});
-        this.layer_defs.push({type:'conv', sx:5, filters:20, stride:1, pad:2, activation:'relu'});
-        this.layer_defs.push({type:'pool', sx:2, stride:2});
-        this.layer_defs.push({type:'softmax', num_classes:2});
+        this.layer_defs.push({type: 'input', out_sx: 32, out_sy: 32, out_depth: 1});
+        this.layer_defs.push({type: 'conv', sx: 5, filters: 16, stride: 1, pad: 2, activation: 'relu'});
+        this.layer_defs.push({type: 'pool', sx: 2, stride: 2});
+        this.layer_defs.push({type: 'conv', sx: 5, filters: 20, stride: 1, pad: 2, activation: 'relu'});
+        this.layer_defs.push({type: 'pool', sx: 2, stride: 2});
+        this.layer_defs.push({type: 'conv', sx: 5, filters: 20, stride: 1, pad: 2, activation: 'relu'});
+        this.layer_defs.push({type: 'pool', sx: 2, stride: 2});
+        this.layer_defs.push({type: 'softmax', num_classes: 2});
 
         this.net = new convnetjs.Net();
         this.net.makeLayers(this.layer_defs);
 
-        this.trainer = new convnetjs.SGDTrainer(this.net, {method:'adadelta', batch_size:4, l2_decay:0.0001});
+        this.trainer = new convnetjs.SGDTrainer(this.net, {method: 'adadelta', batch_size: 4, l2_decay: 0.0001});
 
         this.generators = generators;
     }
 
     train(n: number) {
-        console.log('training on '+n+' samples');
-        for(let i: number = 0; i < n; i++) {
+        console.log('training on ' + n + ' samples');
+        for (let i: number = 0; i < n; i++) {
             let gen: Generator = this.generators[Math.floor(Math.random() * this.generators.length)];
             this.trainer.train(asVol(gen.generate()), gen.type);
-            if((i+1) % 500 == 0) {
-                console.log('did '+(100*(i+1)/n)+'%');
-                if((i+1) % 5000 == 0) {
+            if ((i + 1) % 500 == 0) {
+                console.log('did ' + (100 * (i + 1) / n) + '%');
+                if ((i + 1) % 5000 == 0) {
                     let acc = this.testAccuracyOnGenerated(100);
-                    console.log('accuracy: '+acc);
+                    console.log('accuracy: ' + acc);
                 }
             }
         }
@@ -65,11 +65,11 @@ export class Classifier {
 
     testAccuracyOnGenerated(n: number): Array<number> {
         let acc = [];
-        for(let g = 0; g < this.generators.length; g++) {
+        for (let g = 0; g < this.generators.length; g++) {
             let gen = this.generators[g];
             let success = 0;
-            for(let i = 0; i < n; i ++) {
-                if(this.classify(gen.generate()) === (gen.type === 1)) {
+            for (let i = 0; i < n; i++) {
+                if (this.classify(gen.generate()) === (gen.type === 1)) {
                     success += 1;
                 }
             }
@@ -84,7 +84,7 @@ export class Classifier {
     }
 
     export() {
-        let download = function(text, name, type) {
+        let download = function (text, name, type) {
             let a = document.createElement("a");
             let file = new Blob([text], {type: type});
             a.href = URL.createObjectURL(file);
@@ -102,7 +102,7 @@ export class Classifier {
 function asVol(img: Array<number>) {
     let size: number = 32;
     let x = new convnetjs.Vol(size, size, 1, 0.0);
-    for(let i = 0; i < size * size; i ++) {
+    for (let i = 0; i < size * size; i++) {
         x.w[i] = img[i];
     }
     return x;
@@ -116,19 +116,19 @@ function generatePositive(): Array<number> {
     let bg = Math.random() * (1 - noise);
     let fg = Math.random() * (1 - noise);
 
-    while(Math.abs(fg - bg) < (1 - noise) / 3) {
+    while (Math.abs(fg - bg) < (1 - noise) / 3) {
         fg = Math.random() * (1 - noise);
     }
 
-    for(let i = 0; i < size * size; i ++) {
+    for (let i = 0; i < size * size; i++) {
         img.push(bg + Math.random() * noise);
     }
     let w = Math.floor((.2 + Math.random() * .6) * size);
     let h = Math.floor((.2 + Math.random() * .6) * size);
     let x = Math.floor(Math.random() * (size - w));
     let y = Math.floor(Math.random() * (size - h));
-    for(let j = 0; j < h; j ++) {
-        for(let i = 0; i < w; i ++) {
+    for (let j = 0; j < h; j++) {
+        for (let i = 0; i < w; i++) {
             img[(y + j) * size + (x + i)] = fg + Math.random() * noise;
         }
     }
@@ -140,7 +140,7 @@ function generateNegative(): Array<number> {
     let size = 32;
     let noise = .1 * Math.random();
     let color = Math.random() * (1 - noise);
-    for(let i = 0; i < size * size; i ++) {
+    for (let i = 0; i < size * size; i++) {
         img.push(color + Math.random() * noise);
     }
     return img;
@@ -153,20 +153,20 @@ function generateNegativeCircle(): Array<number> {
     let noise = .1 * Math.random();
     let bg = Math.random() * (1 - noise);
     let fg = Math.random() * (1 - noise);
-    while(Math.abs(fg - bg) < (1 - noise) / 3) {
+    while (Math.abs(fg - bg) < (1 - noise) / 3) {
         fg = Math.random() * (1 - noise);
     }
 
-    for(let i = 0; i < size * size; i ++) {
+    for (let i = 0; i < size * size; i++) {
         img.push(bg + Math.random() * noise);
     }
     let w = Math.floor((.2 + Math.random() * .6) * size);
     let h = Math.floor((.2 + Math.random() * .6) * size);
-    let x = Math.floor(w/2 + Math.random() * (size - w));
-    let y = Math.floor(h/2 + Math.random() * (size - h));
-    for(let j = 0; j < size; j ++) {
-        for(let i = 0; i < size; i ++) {
-            if(((i-x)/w) ** 2 + ((j-y)/h) ** 2 < 1/4) {
+    let x = Math.floor(w / 2 + Math.random() * (size - w));
+    let y = Math.floor(h / 2 + Math.random() * (size - h));
+    for (let j = 0; j < size; j++) {
+        for (let i = 0; i < size; i++) {
+            if (((i - x) / w) ** 2 + ((j - y) / h) ** 2 < 1 / 4) {
                 img[j * size + i] = fg + Math.random() * noise;
             }
         }
@@ -181,23 +181,23 @@ function generateNegativeRandom(): Array<number> {
     let noise = .1 * Math.random();
     let bg = Math.random() * (1 - noise);
     let fg = Math.random() * (1 - noise);
-    while(Math.abs(fg - bg) < (1 - noise) / 3) {
+    while (Math.abs(fg - bg) < (1 - noise) / 3) {
         fg = Math.random() * (1 - noise);
     }
 
-    for(let i = 0; i < size * size; i ++) {
+    for (let i = 0; i < size * size; i++) {
         img.push(bg + Math.random() * noise);
     }
     let x = Math.floor(Math.random() * size);
     let y = Math.floor(Math.random() * size);
-    while(Math.random() > 8 / size**2) {
+    while (Math.random() > 8 / size ** 2) {
         let sign = Math.random() > .5 ? +1 : -1;
-        if(Math.random() > .5) {
+        if (Math.random() > .5) {
             x += sign;
         } else {
             y += sign;
         }
-        if(x < 0 || x >= size || y < 0 || y >= size) {
+        if (x < 0 || x >= size || y < 0 || y >= size) {
             break;
         }
         img[y * size + x] = fg + Math.random() * noise;
@@ -228,8 +228,8 @@ export function initClassifierByTraining() {
     generators.push(new Generator(generateNegativeCircle, 0));
     generators.push(new Generator(generateNegativeRandom, 0));
     // TODO: Add more generators to handle more cases like gradients
-    for(let i = 0; i < generators.length; i++) {
-        console.log('generator '+i+' of type '+generators[i].type);
+    for (let i = 0; i < generators.length; i++) {
+        console.log('generator ' + i + ' of type ' + generators[i].type);
         logImg(generators[i].generate());
     }
     classifier = new Classifier(generators);
@@ -246,22 +246,22 @@ function downgreyscale(img: ImageData): Array<number> {
     let size = 32;
     let imgOut = [];
     let counts = [];
-    for(let i = 0; i < size*size; i++) {
+    for (let i = 0; i < size * size; i++) {
         imgOut.push(0);
         counts.push(0);
     }
-    for(let y = 0; y < img.height; y++) {
-        for(let x = 0; x < img.width; x++) {
+    for (let y = 0; y < img.height; y++) {
+        for (let x = 0; x < img.width; x++) {
             let comps = 3;
             let x_o = Math.floor(x * size / img.width);
             let y_o = Math.floor(y * size / img.height);
-            for(let i = 0; i < comps; i++) {
-                imgOut[y_o * size + x_o] += img.data[(y * img.width + x) * (comps+1) + i] / 0xFF;
+            for (let i = 0; i < comps; i++) {
+                imgOut[y_o * size + x_o] += img.data[(y * img.width + x) * (comps + 1) + i] / 0xFF;
                 counts[y_o * size + x_o] += 1;
             }
         }
     }
-    for(let i = 0; i < size ** 2; i++) {
+    for (let i = 0; i < size ** 2; i++) {
         imgOut[i] /= counts[i];
     }
     return imgOut;
@@ -284,8 +284,8 @@ function logImg(img: Array<number>) {
     let size = 32;
     let layer: Layer = new Layer(new Vec2(size, size));
     let imgData: ImageData = layer.getContext().getImageData(0, 0, size, size);
-    for(let i: number = 0; i < size * size; i ++) {
-        for(let j: number = 0; j < 3; j ++) {
+    for (let i: number = 0; i < size * size; i++) {
+        for (let j: number = 0; j < 3; j++) {
             imgData.data[i * 4 + j] = Math.floor(img[i] * 0xFF);
         }
         imgData.data[i * 4 + 3] = 0xFF;

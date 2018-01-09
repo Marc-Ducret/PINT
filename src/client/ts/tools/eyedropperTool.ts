@@ -10,48 +10,61 @@ import {Vec2} from "../vec2";
 export class EyedropperTool extends Tool {
     private img: ImageData;
 
-    constructor () {
+    constructor() {
         super("EyedropperTool", "Select color from the canvas", ""/*TODO shortcut*/);
-        this.addSetting({name: "strokeColor", descName: "Stroke color", inputType: InputType.Color, defaultValue: "#000000"});
-        this.addSetting({name: "fillColor", descName: "Fill color", inputType: InputType.Color, defaultValue: "#000000"});
-        this.addSetting({name: "colorSetting", descName: "Color to select", inputType: InputType.Select, defaultValue: "strokeColor",
+        this.addSetting({
+            name: "strokeColor",
+            descName: "Stroke color",
+            inputType: InputType.Color,
+            defaultValue: "#000000"
+        });
+        this.addSetting({
+            name: "fillColor",
+            descName: "Fill color",
+            inputType: InputType.Color,
+            defaultValue: "#000000"
+        });
+        this.addSetting({
+            name: "colorSetting", descName: "Color to select", inputType: InputType.Select, defaultValue: "strokeColor",
             options: [{name: "strokeColor", desc: "Stroke color"},
-                {name: "fillColor", desc: "Fill color"}]});
+                {name: "fillColor", desc: "Fill color"}]
+        });
     }
 
-    reset () {}
+    reset() {
+    }
 
-    startUse (img: ImageData, pos: Vec2) {
+    startUse(img: ImageData, pos: Vec2) {
         this.img = img;
         this.continueUse(pos);
     }
 
-    continueUse (pos: Vec2) {
+    continueUse(pos: Vec2) {
         let img = this.img;
-        let intToRGB = function(i: number){
+        let intToRGB = function (i: number) {
             let c = (i & 0x00FFFFFF)
                 .toString(16)
                 .toUpperCase();
 
             return "00000".substring(0, 6 - c.length) + c;
         };
-        let colorOf = function(x: number, y: number) {
+        let colorOf = function (x: number, y: number) {
             x = Math.floor(x);
             y = Math.floor(y);
             let i = img.width * y + x;
-            let col = img.data[i * 4    ] << 16;
-            col +=    img.data[i * 4 + 1] <<  8;
-            col +=    img.data[i * 4 + 2] <<  0;
+            let col = img.data[i * 4] << 16;
+            col += img.data[i * 4 + 1] << 8;
+            col += img.data[i * 4 + 2] << 0;
             return '#' + intToRGB(col);
         };
         let color = colorOf(pos.x, pos.y);
         this.setSetting(this.getSetting("colorSetting"), color);
-        if(this.icon != null) {
-            this.icon.setAttribute("style", "color: "+color);
+        if (this.icon != null) {
+            this.icon.setAttribute("style", "color: " + color);
         }
     }
 
-    endUse (pos: Vec2) {
+    endUse(pos: Vec2) {
         this.continueUse(pos);
         this.icon.removeAttribute("style");
     }

@@ -22,21 +22,27 @@ export class FillTool extends Tool {
      */
     constructor() {
         super("FillTool", "Fill", "f");
-        this.addSetting({name: "fillColor", descName: "Fill color", inputType: InputType.Color, defaultValue: "#000000"});
+        this.addSetting({
+            name: "fillColor",
+            descName: "Fill color",
+            inputType: InputType.Color,
+            defaultValue: "#000000"
+        });
         this.addSetting({
             name: "fillAlpha",
             descName: "Fill transparency",
             inputType: InputType.Range,
             defaultValue: 100,
             options: [
-                {name:"maxValue", desc: "100"},
-                {name:"minValue", desc: "0"}
-                ]});
+                {name: "maxValue", desc: "100"},
+                {name: "minValue", desc: "0"}
+            ]
+        });
         this.addSetting({name: "threshold", descName: "Threshold", inputType: InputType.Number, defaultValue: 0});
         this.addSetting({name: "project_selection", descName: "", inputType: InputType.Special, defaultValue: 0});
     }
 
-    reset () {
+    reset() {
         this.newImage = null;
     }
 
@@ -45,7 +51,7 @@ export class FillTool extends Tool {
      * @param {ImageData} img Content of the drawing canvas.
      * @param {Vec2} pos Click position
      */
-    startUse (img: ImageData, pos: Vec2) {
+    startUse(img: ImageData, pos: Vec2) {
         this.reset();
 
         this.data = {
@@ -55,15 +61,17 @@ export class FillTool extends Tool {
         };
     }
 
-    continueUse (pos: Vec2) {}
+    continueUse(pos: Vec2) {
+    }
 
-    endUse (pos: Vec2) {}
+    endUse(pos: Vec2) {
+    }
 
     drawPreview(layer: Layer) {
         if (this.newImage == null) {
             let selection = this.getSetting("project_selection");
 
-            let width:number = this.data.width;
+            let width: number = this.data.width;
             let height: number = this.data.height;
             let color_hex: string = this.getSetting("fillColor");
             let color_alpha: number = this.getSetting("fillAlpha");
@@ -81,20 +89,20 @@ export class FillTool extends Tool {
 
             let nfilled = 0;
 
-            for (let x=0; x<width; x++) {
-                for (let y=0; y<height; y++) {
-                    if (pixels[y*width+x] > 0 && selection.isSelected(new Vec2(x, y))) {
+            for (let x = 0; x < width; x++) {
+                for (let y = 0; y < height; y++) {
+                    if (pixels[y * width + x] > 0 && selection.isSelected(new Vec2(x, y))) {
                         let alpha = selection.getSelectionIntensity(new Vec2(x, y));
                         nfilled += 1;
-                        this.newImage.data[4*(y*width+x)    ] = color.r;// R
-                        this.newImage.data[4*(y*width+x) + 1] = color.g;// G
-                        this.newImage.data[4*(y*width+x) + 2] = color.b;// B
-                        this.newImage.data[4*(y*width+x) + 3] = alpha*color_alpha/100;// A
+                        this.newImage.data[4 * (y * width + x)] = color.r;// R
+                        this.newImage.data[4 * (y * width + x) + 1] = color.g;// G
+                        this.newImage.data[4 * (y * width + x) + 2] = color.b;// B
+                        this.newImage.data[4 * (y * width + x) + 3] = alpha * color_alpha / 100;// A
                     }
                 }
             }
 
-            console.log("Fill tool: nfilled = "+nfilled);
+            console.log("Fill tool: nfilled = " + nfilled);
         }
         layer.getContext().putImageData(this.newImage, 0, 0);
     }

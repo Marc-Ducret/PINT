@@ -7,8 +7,8 @@ import {Vec2} from "../vec2";
  * @returns {ImageData}
  */
 export function mask(selection: Uint8ClampedArray, img: ImageData) {
-    selection.forEach(function(value: number, index: number) {
-        img.data[4*index+3] = value*img.data[4*index+3]/255;
+    selection.forEach(function (value: number, index: number) {
+        img.data[4 * index + 3] = value * img.data[4 * index + 3] / 255;
     });
     return img;
 }
@@ -33,11 +33,11 @@ export function isSelected(selection: Uint8ClampedArray, x: number, y: number, w
  * @param {number} h Image height.
  * @returns {Array<Vec2>}
  */
-export function computeBorder(selection: Uint8ClampedArray, w: number, h: number) : Array<Vec2> {
+export function computeBorder(selection: Uint8ClampedArray, w: number, h: number): Array<Vec2> {
     let border: Array<Vec2> = [];
     for (let y = 0; y < h; y++) {
         for (let x = 0; x < w; x++) {
-            if(inBorder(x, y, selection, w, h)) {
+            if (inBorder(x, y, selection, w, h)) {
                 border.push(new Vec2(x, y));
             }
         }
@@ -56,8 +56,8 @@ export function computeBorder(selection: Uint8ClampedArray, w: number, h: number
  */
 export function inBorder(x: number, y: number, selection: Uint8ClampedArray, w: number, h: number) {
     return (isSelected(selection, x, y, w, h)
-            && (!isSelected(selection, x-1, y, w, h)
-                ||  !isSelected(selection, x, y-1, w, h)
-                ||  !isSelected(selection, x+1, y, w, h)
-                ||  !isSelected(selection, x, y+1, w, h)));
+        && (!isSelected(selection, x - 1, y, w, h)
+            || !isSelected(selection, x, y - 1, w, h)
+            || !isSelected(selection, x + 1, y, w, h)
+            || !isSelected(selection, x, y + 1, w, h)));
 }

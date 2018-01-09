@@ -35,15 +35,13 @@ export class LocalLink extends ActionLink {
         } else if (action.type == ActionType.Redo) { // History redo
             let action_packet = this.history.redo();
             if (action_packet != null) {
-                this.project.applyAction(action_packet.data, this.project.currentSelection,false)
+                this.project.applyAction(action_packet.data, this.project.currentSelection, false)
                     .then(null);
             }
         } else {
-            if (action.type != ActionType.ToolPreview) // Action that generates history
-            {
+            if (action.type != ActionType.ToolPreview) {// Action that generates history
                 this.project.applyAction(action, this.project.currentSelection, true)
                     .then(undo_action => {
-
                         this.history.register_action({
                             sender: "localhost",
                             data: action,

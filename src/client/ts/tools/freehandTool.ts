@@ -18,30 +18,37 @@ export class FreehandTool extends Tool {
     constructor() {
         super("FreehandTool", "Pencil", "p");
 
-        this.addSetting({name: "strokeColor", descName: "Stroke color", inputType: InputType.Color, defaultValue: "#000000"});
+        this.addSetting({
+            name: "strokeColor",
+            descName: "Stroke color",
+            inputType: InputType.Color,
+            defaultValue: "#000000"
+        });
         this.addSetting({
             name: "strokeAlpha",
             descName: "Stroke transparency",
             inputType: InputType.Range,
             defaultValue: 100,
             options: [
-                {name:"maxValue", desc: "100"},
-                {name:"minValue", desc: "0"}
-            ]});
+                {name: "maxValue", desc: "100"},
+                {name: "minValue", desc: "0"}
+            ]
+        });
         this.addSetting({name: "lineWidth", descName: "Stroke width", inputType: InputType.Number, defaultValue: "5"});
     }
 
     /**
      * Reset tool data.
      */
-    reset () {}
+    reset() {
+    }
 
     /**
      * Starting from a reset state, ignore parameters and add the first mouse position to position table.
      * @param {ImageData} img Ignored.
      * @param {Vec2} pos Mouse position.
      */
-    startUse (img: ImageData, pos: Vec2) {
+    startUse(img: ImageData, pos: Vec2) {
         this.data = {
             positions: [],
         };
@@ -54,7 +61,7 @@ export class FreehandTool extends Tool {
      * @param {Vec2} pos Mouse position
      * @returns {any} null means redraw according to the preview canvas.
      */
-    endUse (pos: Vec2) {
+    endUse(pos: Vec2) {
         this.continueUse(pos);
     }
 
@@ -62,11 +69,10 @@ export class FreehandTool extends Tool {
      * If given position is not too close from the last position, aggregate position into the position table.
      * @param {Vec2} pos Mouse position
      */
-    continueUse (pos: Vec2) {
+    continueUse(pos: Vec2) {
         let n_elem = this.data.positions.length;
-        if(n_elem == 0
-            || pos.distance(this.data.positions[n_elem - 1]) > 0)
-        {
+        if (n_elem == 0
+            || pos.distance(this.data.positions[n_elem - 1]) > 0) {
             this.data.positions.push(pos);
         }
     }
@@ -85,12 +91,12 @@ export class FreehandTool extends Tool {
         context.lineJoin = "round";
 
         if (this.data.positions.length > 0) {
-            context.fillRect(this.data.positions[0].x-0.5,this.data.positions[0].y-0.5,1,1);
+            context.fillRect(this.data.positions[0].x - 0.5, this.data.positions[0].y - 0.5, 1, 1);
         }
         context.beginPath();
         for (let i = 0; i < this.data.positions.length; i++) {
             let pos = this.data.positions[i];
-            if(i === 0) {
+            if (i === 0) {
                 context.moveTo(pos.x + 0.5, pos.y + 0.5);
             } else {
                 context.lineTo(pos.x + 0.5, pos.y + 0.5);

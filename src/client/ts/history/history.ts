@@ -46,7 +46,7 @@ export class PintHistory {
     redo(): ActionNetworkPacket {
         if (this.history_position < this.history_array.length) { // Check if there's something to redo.
             this.history_position += 1;
-            let hist_entry = this.history_array[this.history_position-1];
+            let hist_entry = this.history_array[this.history_position - 1];
 
             return {
                 sender: hist_entry.sender,
@@ -66,9 +66,9 @@ export class PintHistory {
         this.history_position += 1;
         this.history_array.length = this.history_position - 1;
         this.history_array.push({
-           sender: data.sender,
-           redo: data.data,
-           undo: undo_action,
+            sender: data.sender,
+            redo: data.data,
+            undo: undo_action,
         });
     }
 }

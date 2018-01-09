@@ -5,12 +5,12 @@ export class Vec2 {
     x: number;
     y: number;
 
-    constructor (x_: number, y_: number) {
+    constructor(x_: number, y_: number) {
         this.x = x_;
         this.y = y_;
     }
 
-    floor () : Vec2 {
+    floor(): Vec2 {
         return new Vec2(Math.floor(this.x), Math.floor(this.y));
     }
 
@@ -19,8 +19,8 @@ export class Vec2 {
      * @param {Vec2} other Another point.
      * @returns {number}
      */
-    distance (other: Vec2) {
-        return Math.sqrt((other.x - this.x)**2 + (other.y - this.y)**2);
+    distance(other: Vec2) {
+        return Math.sqrt((other.x - this.x) ** 2 + (other.y - this.y) ** 2);
     }
 
     /**
@@ -30,12 +30,12 @@ export class Vec2 {
      * @param {boolean} not_in_place If true, creates a new vector. If false, made in place.
      * @returns {Vec2}
      */
-    divide (value: number, not_in_place: boolean) {
+    divide(value: number, not_in_place: boolean) {
         if (not_in_place) {
-            return new Vec2(this.x/value, this.y/value);
+            return new Vec2(this.x / value, this.y / value);
         } else {
-            this.x = this.x/value;
-            this.y = this.y/value;
+            this.x = this.x / value;
+            this.y = this.y / value;
 
             return this;
         }
@@ -47,7 +47,7 @@ export class Vec2 {
      * @param {boolean} not_in_place If true, creates a new vector. If false, made in place.
      * @returns {Vec2}
      */
-    subtract (other: Vec2, not_in_place: boolean) {
+    subtract(other: Vec2, not_in_place: boolean) {
         if (not_in_place) {
             return new Vec2(this.x - other.x, this.y - other.y);
         } else {
@@ -64,7 +64,7 @@ export class Vec2 {
      * @param {boolean} not_in_place If true, creates a new vector. If false, made in place.
      * @returns {Vec2}
      */
-    add (other: Vec2, not_in_place: boolean) {
+    add(other: Vec2, not_in_place: boolean) {
         if (not_in_place) {
             return new Vec2(this.x + other.x, this.y + other.y);
         } else {

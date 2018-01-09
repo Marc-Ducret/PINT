@@ -2,7 +2,7 @@
  * This function gives the answer.
  * @returns {number} The answer
  */
-export function giveMeTheAnswer() : number {
+export function giveMeTheAnswer(): number {
     return 42;
 }
 
@@ -11,6 +11,6 @@ export function giveMeTheAnswer() : number {
  * @param {number} a The base number.
  * @returns {number} The new number.
  */
-export function randomModification(a: number) : number {
+export function randomModification(a: number): number {
     return Math.random() + a - 0.5;
 }

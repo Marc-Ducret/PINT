@@ -14,13 +14,14 @@ export class AutoSelectTool extends Tool {
     /**
      * Instantiates the Tool with AutoSelectTool name.
      */
-    constructor () {
+    constructor() {
         super("AutoSelectTool", "Magic wand", "w");
         this.addSetting({name: "wand_threshold", descName: "Threshold", inputType: InputType.Number, defaultValue: 50});
         this.addSetting({name: "project_selection", descName: "", inputType: InputType.Special, defaultValue: 0});
     }
 
-    reset() {}
+    reset() {
+    }
 
     /**
      * On click, computes the connex component and update selection.
@@ -31,9 +32,11 @@ export class AutoSelectTool extends Tool {
         this.data = colorSelect(img, new Vec2(Math.floor(pos.x), Math.floor(pos.y)), this.getSetting("wand_threshold")).buffer;
     }
 
-    endUse (pos: Vec2) {};
+    endUse(pos: Vec2) {
+    };
 
-    continueUse (pos: Vec2) {};
+    continueUse(pos: Vec2) {
+    };
 
     drawPreview(layer: Layer) {
         let selection = this.getSetting("project_selection");

@@ -1,11 +1,10 @@
-
 import {ActionInterface} from "../tools/actionInterface";
 
 /**
  * Interface that `Project` uses to send the actions that it wants to do.
  */
 export abstract class ActionLink {
-    constructor () {
+    constructor() {
     }
 
     /**

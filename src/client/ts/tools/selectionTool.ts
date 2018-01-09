@@ -26,7 +26,8 @@ export class SelectionTool extends Tool {
         this.addSetting({name: "project_selection", descName: "", inputType: InputType.Special, defaultValue: 0});
     }
 
-    reset () {}
+    reset() {
+    }
 
     startUse(img: ImageData, pos: Vec2) {
         this.data = {
@@ -98,7 +99,7 @@ export class SelectionTool extends Tool {
             case "square":
                 for (let y = Math.min(firstCorner.y, lastCorner.y); y <= Math.max(firstCorner.y, lastCorner.y); y++) {
                     for (let x = Math.min(firstCorner.x, lastCorner.x); x <= Math.max(firstCorner.x, lastCorner.x); x++) {
-                        if(x >= 0 && y >= 0 && x < width && y < height) {
+                        if (x >= 0 && y >= 0 && x < width && y < height) {
                             selection[x + y * width] = 0xFF;
                         }
                     }
@@ -108,11 +109,11 @@ export class SelectionTool extends Tool {
                 let radius = Math.ceil(firstCorner.distance(lastCorner));
                 for (let y = Math.floor(firstCorner.y - radius) - 2; y <= firstCorner.y + radius + 2; y++) {
                     for (let x = Math.floor(firstCorner.x - radius) - 2; x <= firstCorner.x + radius + 2; x++) {
-                        if(x >= 0 && x < width && y >= 0 && y < height) {
-                            let d = (x - firstCorner.x - .5) ** 2 + (y - firstCorner.y  - .5) ** 2;
-                            if(d <= radius ** 2) {
+                        if (x >= 0 && x < width && y >= 0 && y < height) {
+                            let d = (x - firstCorner.x - .5) ** 2 + (y - firstCorner.y - .5) ** 2;
+                            if (d <= radius ** 2) {
                                 selection[x + y * width] = 0xFF;
-                            } else if(d <= (radius + 1) ** 2) {
+                            } else if (d <= (radius + 1) ** 2) {
                                 selection[x + y * width] = Math.floor(0x100 * (radius + 1 - Math.sqrt(d)));
                             }
                         }

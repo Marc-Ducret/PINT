@@ -8,7 +8,7 @@ import {Vec2} from "../vec2";
  * Draw a linear gradient of two colors.
  */
 export class GradientTool extends Tool {
-    constructor () {
+    constructor() {
         super("GradientTool", "Gradient", "g");
         // define the two colors of the gradient:
         this.addSetting({name: "color1", descName: "from", inputType: InputType.Color, defaultValue: "#000000"});
@@ -20,14 +20,16 @@ export class GradientTool extends Tool {
             inputType: InputType.Range,
             defaultValue: 100,
             options: [
-                {name:"maxValue", desc: "100"},
-                {name:"minValue", desc: "0"}
-            ]});
+                {name: "maxValue", desc: "100"},
+                {name: "minValue", desc: "0"}
+            ]
+        });
     }
 
-    reset () {}
+    reset() {
+    }
 
-    startUse (img: ImageData, pos: Vec2) {
+    startUse(img: ImageData, pos: Vec2) {
         this.data = {
             firstCorner: pos,
             lastCorner: pos,
@@ -36,11 +38,11 @@ export class GradientTool extends Tool {
         };
     }
 
-    continueUse (pos: Vec2) {
+    continueUse(pos: Vec2) {
         this.data.lastCorner = pos;
     }
 
-    endUse (pos: Vec2) {
+    endUse(pos: Vec2) {
         this.continueUse(pos);
     }
 
@@ -49,7 +51,7 @@ export class GradientTool extends Tool {
         context.globalAlpha = this.getSetting('transparencyAlpha') / 100;
 
         let gradient = context.createLinearGradient(this.data.firstCorner.x, this.data.firstCorner.y,
-                                                this.data.lastCorner.x, this.data.lastCorner.y);
+            this.data.lastCorner.x, this.data.lastCorner.y);
         gradient.addColorStop(0, this.getSetting('color1'));
         gradient.addColorStop(1, this.getSetting('color2'));
         context.fillStyle = gradient;

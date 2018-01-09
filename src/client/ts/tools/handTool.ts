@@ -17,7 +17,8 @@ export class HandTool extends Tool {
     /**
      * Reset tool data.
      */
-    reset () {}
+    reset() {
+    }
 
     /**
      * Save positions as global coordinates.

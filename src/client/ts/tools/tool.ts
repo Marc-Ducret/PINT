@@ -2,7 +2,7 @@ import {SettingRequest, SettingsRequester} from "../tool_settings/settingsReques
 import {Vec2} from "../vec2";
 import {HistoryEntry} from "../history/historyEntry";
 import {Layer} from "../ui/layer";
-import {ActionInterface, ActionType} from "./actionInterface";
+import {ActionInterface} from "./actionInterface";
 
 /**
  * Abstraction of a tool.
@@ -149,7 +149,7 @@ export abstract class Tool {
      * Update tool internal state.
      * @param data Internal state
      */
-    updateData (data: any) {
+    updateData(data: any) {
         this.data = data;
     }
 

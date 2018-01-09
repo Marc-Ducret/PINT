@@ -17,11 +17,13 @@
 
     </div>
 
-    <a href="#" data-activates="top-nav" class="button-collapse-left fixed-low-left btn-floating btn-huge hide-on-large-only">
+    <a href="#" data-activates="top-nav"
+       class="button-collapse-left fixed-low-left btn-floating btn-huge hide-on-large-only">
         <i class="material-icons huge">menu</i>
     </a>
 
-    <a href="#" data-activates="right_pane" class="button-collapse-right fixed-low-right btn-floating btn-huge hide-on-large-only">
+    <a href="#" data-activates="right_pane"
+       class="button-collapse-right fixed-low-right btn-floating btn-huge hide-on-large-only">
         <i class="material-icons huge">build</i>
     </a>
 
@@ -49,34 +51,34 @@
 </div>
 
 <script type="text/javascript">
-var require = {
-    baseUrl: '.',
+    var require = {
+        baseUrl: '.',
 
-    paths: {
-        //main libraries
-        'materialize.global': 'materialize/global',
-        'materialize.sideNav': 'materialize/sideNav',
-        'hammerjs': 'materialize/hammer.min',
-        'jquery-hammerjs': 'materialize/jquery.hammer',
-        'velocity': 'materialize/velocity.min',
-        jquery: 'jquery',
-        'socket.io-client': 'socket.io/socket.io.js'
-    },
-    shim: {
-        'materialize.global': {
-            deps: ['jquery', 'hammerjs', 'jquery-hammerjs', 'velocity']
+        paths: {
+            //main libraries
+            'materialize.global': 'materialize/global',
+            'materialize.sideNav': 'materialize/sideNav',
+            'hammerjs': 'materialize/hammer.min',
+            'jquery-hammerjs': 'materialize/jquery.hammer',
+            'velocity': 'materialize/velocity.min',
+            jquery: 'jquery',
+            'socket.io-client': 'socket.io/socket.io.js'
         },
-        'materialize.sideNav': {
-            deps: ['materialize.global']
-        },
-        'velocity': {
-            deps: ['jquery']
-        },
-        jquery: {
-            exports: '$'
+        shim: {
+            'materialize.global': {
+                deps: ['jquery', 'hammerjs', 'jquery-hammerjs', 'velocity']
+            },
+            'materialize.sideNav': {
+                deps: ['materialize.global']
+            },
+            'velocity': {
+                deps: ['jquery']
+            },
+            jquery: {
+                exports: '$'
+            }
         }
-    }
-};
+    };
 </script>
 <script type="text/javascript" src="require.js" data-main="main.js"></script>
 

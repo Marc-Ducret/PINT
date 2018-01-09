@@ -1,4 +1,3 @@
-
 import {ShapeTool} from "./shapeTool";
 import {AutoSelectTool} from "./autoselectTool";
 import {FillTool} from "./fillTool";
@@ -17,9 +16,9 @@ import {EraserTool} from "./eraserTool";
  * Basically a hashmap interface.
  */
 export class ToolRegistry {
-    registry: {[name: string]: Tool} = {};
+    registry: { [name: string]: Tool } = {};
 
-    constructor () {
+    constructor() {
         this.registerTool(new ShapeTool());
         this.registerTool(new AutoSelectTool());
         this.registerTool(new FillTool());
@@ -49,8 +48,8 @@ export class ToolRegistry {
      * @return the found tool
      */
     getToolByName(name: string) {
-        if(this.registry[name] === undefined)
-            throw "No such tool "+name;
+        if (this.registry[name] === undefined)
+            throw "No such tool " + name;
         return this.registry[name];
     }
 }

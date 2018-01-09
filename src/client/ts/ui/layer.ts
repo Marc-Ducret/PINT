@@ -14,7 +14,7 @@ export class Layer {
     layerInfo: LayerInfo;
     editMenuOpened: boolean;
 
-    constructor (dimensions: Vec2) {
+    constructor(dimensions: Vec2) {
         this.canvasElement = $("<canvas></canvas>") as JQuery<HTMLCanvasElement>;
         this.context = this.canvasElement[0].getContext('2d');
 
@@ -31,7 +31,7 @@ export class Layer {
      * Get HTML canvas element.
      * @returns {HTMLCanvasElement}
      */
-    getHTMLElement () {
+    getHTMLElement() {
         return this.canvasElement[0];
     };
 
@@ -47,7 +47,7 @@ export class Layer {
      * Reset layer to full transparency.
      */
     reset() {
-        this.context.clearRect(0,0,this.width,this.height);
+        this.context.clearRect(0, 0, this.width, this.height);
     };
 
     /**
@@ -56,14 +56,14 @@ export class Layer {
     fill() {
         this.context.fillStyle = "#ffffff";
         this.context.strokeStyle = "#ffffff";
-        this.context.fillRect(0,0,this.width,this.height);
+        this.context.fillRect(0, 0, this.width, this.height);
     };
 
     /**
      * Get layer width.
      * @returns {number}
      */
-    getWidth() : number {
+    getWidth(): number {
         return this.width;
     }
 
@@ -71,7 +71,7 @@ export class Layer {
      * Get layer height.
      * @returns {number}
      */
-    getHeight() : number {
+    getHeight(): number {
         return this.height;
     }
 
@@ -94,9 +94,9 @@ export class Layer {
      */
     drawDataUrl(data: string, x: number, y: number): Promise<any> {
         return new Promise(resolve => {
-            if(typeof process === 'object' && process + '' === '[object process]'){
+            if (typeof process === 'object' && process + '' === '[object process]') {
                 // is node
-                const { Image } = require('canvas');
+                const {Image} = require('canvas');
 
                 let img = new Image();
                 img.src = data;
@@ -104,12 +104,12 @@ export class Layer {
                 this.getContext().drawImage(img, x, y);
                 resolve();
             }
-            else{
+            else {
                 // not node
                 let imgtag = document.createElement("img");
                 console.log("load");
 
-                imgtag.addEventListener("load", function() {
+                imgtag.addEventListener("load", function () {
                     this.getContext().drawImage(imgtag, x, y);
                     console.log("loaded");
                     resolve();
@@ -179,7 +179,7 @@ export class LayerInfo {
     }
 
     getFilter(): string {
-        if(this.blur) {
+        if (this.blur) {
             return "blur(10px)";
         } else {
             return "none";

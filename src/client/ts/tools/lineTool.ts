@@ -8,35 +8,42 @@ import {Vec2} from "../vec2";
  * Draw a line tool.
  */
 export class LineTool extends Tool {
-    constructor () {
+    constructor() {
         super("LineTool", "Line", "l");
-        this.addSetting({name: "strokeColor", descName: "Stroke color", inputType: InputType.Color, defaultValue: "#000000"});
+        this.addSetting({
+            name: "strokeColor",
+            descName: "Stroke color",
+            inputType: InputType.Color,
+            defaultValue: "#000000"
+        });
         this.addSetting({
             name: "strokeAlpha",
             descName: "Stroke transparency",
             inputType: InputType.Range,
             defaultValue: 100,
             options: [
-                {name:"maxValue", desc: "100"},
-                {name:"minValue", desc: "0"}
-            ]});
+                {name: "maxValue", desc: "100"},
+                {name: "minValue", desc: "0"}
+            ]
+        });
         this.addSetting({name: "lineWidth", descName: "Line width", inputType: InputType.Number, defaultValue: "5"});
     }
 
-    reset () {}
+    reset() {
+    }
 
-    startUse (img: ImageData, pos: Vec2) {
+    startUse(img: ImageData, pos: Vec2) {
         this.data = {
             firstCorner: pos,
             lastCorner: pos,
         };
     }
 
-    continueUse (pos: Vec2) {
+    continueUse(pos: Vec2) {
         this.data.lastCorner = pos;
     }
 
-    endUse (pos: Vec2) {
+    endUse(pos: Vec2) {
         this.continueUse(pos);
     }
 
@@ -46,7 +53,7 @@ export class LineTool extends Tool {
         context.strokeStyle = this.getSetting('strokeColor');
         context.lineWidth = this.getSetting('lineWidth');
         context.beginPath();
-        context.moveTo(this.data.firstCorner.x + 0.5, this.data.firstCorner.y  + 0.5);
+        context.moveTo(this.data.firstCorner.x + 0.5, this.data.firstCorner.y + 0.5);
         context.lineTo(this.data.lastCorner.x + 0.5, this.data.lastCorner.y + 0.5);
         context.stroke();
         context.globalAlpha = 1;

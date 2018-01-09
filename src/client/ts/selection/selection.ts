@@ -31,18 +31,18 @@ export interface SerializedPixelSelectionHandler {
  * @returns {PixelSelectionHandler}
  * @constructor
  */
-export function PixelSelectionHandlerFromSerialized (serialized: SerializedPixelSelectionHandler): PixelSelectionHandler {
+export function PixelSelectionHandlerFromSerialized(serialized: SerializedPixelSelectionHandler): PixelSelectionHandler {
     let w = serialized.width;
     let h = serialized.height;
     let obj: PixelSelectionHandler = new PixelSelectionHandler(w, h);
 
     let img = new Image;
-    img.onload = function(){
+    img.onload = function () {
         obj.getMask().reset();
         obj.getMask().getContext().drawImage(img, 0, 0);
         let imgdata = obj.getMask().getContext().getImageData(0, 0, w, h);
         obj.values.forEach((val, i) => {
-            obj.values[i] = imgdata[4*i];
+            obj.values[i] = imgdata[4 * i];
         });
     }.bind(this);
     img.src = serialized.dataUrl;
@@ -66,9 +66,11 @@ export class PixelSelectionHandler {
      * @returns {SerializedPixelSelectionHandler}
      */
     serialize(): SerializedPixelSelectionHandler {
-        return {dataUrl: this.mask.getHTMLElement().toDataURL(),
-                width: this.width,
-                height: this.height};
+        return {
+            dataUrl: this.mask.getHTMLElement().toDataURL(),
+            width: this.width,
+            height: this.height
+        };
     }
 
     constructor(w: number, h: number) {

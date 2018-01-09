@@ -15,7 +15,7 @@ export function drawSelection(img: ImageData, border: Array<Vec2>, w: number, h:
     for (let i in border) {
         const x = border[i].x;
         const y = border[i].y;
-        if(((x + y + offset) / pattern) % 2 < 1) {
+        if (((x + y + offset) / pattern) % 2 < 1) {
             img.data[(x + y * w) * 4] = 0xFF;
             img.data[(x + y * w) * 4 + 1] = 0xFF;
             img.data[(x + y * w) * 4 + 2] = 0xFF;

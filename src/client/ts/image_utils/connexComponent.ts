@@ -20,34 +20,34 @@ export function colorSelect(img: ImageData, pos: Vec2, threshold: number): Uint8
     let w = img.width;
     let h = img.height;
     let toVisit: Array<Vec2> = [pos];
-    let selection = new Uint8ClampedArray(w*h);
+    let selection = new Uint8ClampedArray(w * h);
 
     /**
      * Contains the exploration status of pixels. (0 is not explored, 1 is pending, 2 is done.)
      * @type {Uint8ClampedArray}
      */
-    let explored = new Uint8ClampedArray(w*h);
-    explored[flatten(pos,w)] = 1;
+    let explored = new Uint8ClampedArray(w * h);
+    explored[flatten(pos, w)] = 1;
 
     /**
      * Returns the integer corresponding to the pixel color of a flattened position.
      * @param {number} i The flattened position.
      * @returns {number}
      */
-    let color = function(i: number): number {
-        return  (img.data[i * 4 + 3] << 24)
-            +   (img.data[i * 4 + 2] << 16)
-            +   (img.data[i * 4 + 1] << 8)
-            +   (img.data[i * 4    ] << 0);
+    let color = function (i: number): number {
+        return (img.data[i * 4 + 3] << 24)
+            + (img.data[i * 4 + 2] << 16)
+            + (img.data[i * 4 + 1] << 8)
+            + (img.data[i * 4] << 0);
     };
 
     /**
      * Add a position in the stack only if it has not be seen yet.
      * @param {Vec2} p Position to add.
      */
-    let addNeighbour = function(p: Vec2) {
-        if(explored[flatten(p,w)] === 0 && p.x >= 0 && p.x < w && p.y >= 0 && p.y < h) {
-            explored[flatten(p,w)] = 1;
+    let addNeighbour = function (p: Vec2) {
+        if (explored[flatten(p, w)] === 0 && p.x >= 0 && p.x < w && p.y >= 0 && p.y < h) {
+            explored[flatten(p, w)] = 1;
             toVisit.push(p);
         }
     };
@@ -59,9 +59,9 @@ export function colorSelect(img: ImageData, pos: Vec2, threshold: number): Uint8
      * @param {number} i The flattened position.
      * @returns {number}
      */
-    let dist = function(i: number): number {
+    let dist = function (i: number): number {
         let s = 0;
-        for(let j = 0; j < 3; j++) {
+        for (let j = 0; j < 3; j++) {
             s += Math.abs(img.data[i * 4 + j] - img.data[indexToMatch * 4 + j]);
         }
         return s;
@@ -70,12 +70,12 @@ export function colorSelect(img: ImageData, pos: Vec2, threshold: number): Uint8
     /**
      * Depth first search to gather pixels of the connected component.
      */
-    while(toVisit.length > 0) {
+    while (toVisit.length > 0) {
         let p: Vec2 = toVisit.pop();
-        let i = flatten(p,w);
+        let i = flatten(p, w);
 
-        if(explored[i] === 1) {
-            if(dist(i) / 3 <= threshold) { // Here we can adjust the precision (might not need to be the exact same color)
+        if (explored[i] === 1) {
+            if (dist(i) / 3 <= threshold) { // Here we can adjust the precision (might not need to be the exact same color)
                 selection[i] = 0xFF;
                 explored[i] = 2;
                 addNeighbour(new Vec2(p.x + 1, p.y));

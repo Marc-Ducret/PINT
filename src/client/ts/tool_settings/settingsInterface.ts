@@ -10,13 +10,13 @@ import {Project} from "../docState";
  */
 export class SettingsInterface {
     private container: JQuery<HTMLElement>;
-    private savedSettings: {[name: string] : number} = {};
+    private savedSettings: { [name: string]: number } = {};
 
     /**
      * Constructor. Does nothing much.
      * @param {JQuery<HTMLElement>} container Root container in which UI elements will reside.
      */
-    constructor (container: JQuery<HTMLElement>) {
+    constructor(container: JQuery<HTMLElement>) {
         this.container = container;
     }
 
@@ -51,10 +51,10 @@ export class SettingsInterface {
                 return null;
         }
 
-        input.attr("type",type_string);
-        input.attr("value",defaultValue);
-        input.attr("id",id);
-        input.attr("name",id);
+        input.attr("type", type_string);
+        input.attr("value", defaultValue);
+        input.attr("id", id);
+        input.attr("name", id);
         input.css("color", "#FFFFFF");
         input.css("font-size", "25px");
 
@@ -84,9 +84,9 @@ export class SettingsInterface {
     private static createSelectElement(options: Array<Option>, id: string, defaultValue: any) {
         let input = $("<select>");
 
-        input.attr("value",defaultValue);
-        input.attr("id",id);
-        input.attr("name",id);
+        input.attr("value", defaultValue);
+        input.attr("id", id);
+        input.attr("name", id);
 
         for (let opt of options) {
             let option = $("<option>");
@@ -105,7 +105,7 @@ export class SettingsInterface {
      * @param {Tool} tool
      * @param project
      */
-    public setupToolSettings (tool : Tool, project: Project) {
+    public setupToolSettings(tool: Tool, project: Project) {
         this.container.empty();
         const self = this;
         for (let request of tool.settingsGetRequests()) {
@@ -113,12 +113,16 @@ export class SettingsInterface {
                 let name = request.name;
                 if (name === "project_selection") {
                     /// A tool can request to update the selection setting.
-                    tool.settingsSetGetter("project_selection", (function () {return this.currentSelection}).bind(project));
+                    tool.settingsSetGetter("project_selection", (function () {
+                        return this.currentSelection
+                    }).bind(project));
                 } else if (name === "user_interface") {
-                    tool.settingsSetGetter("user_interface", (function () {return this.getUI()}).bind(project));
+                    tool.settingsSetGetter("user_interface", (function () {
+                        return this.getUI()
+                    }).bind(project));
                 }
             } else if (request.inputType == InputType.Hidden) { // The tool requests a variable that should not be shown but it remains shared between tools.
-                let getter_setter_function = function(name: string, value_to_set: any) {
+                let getter_setter_function = function (name: string, value_to_set: any) {
                     if (value_to_set !== null) {// use as a setter
                         this.savedSettings[name] = value_to_set;
                     } else { // use as a getter
@@ -140,7 +144,7 @@ export class SettingsInterface {
                 Create label element.
                  */
                 let label: JQuery<Node> = $("<label></label>");
-                label.attr("for",name);
+                label.attr("for", name);
                 label.html(desc);
 
                 if (request.inputType == InputType.Range) {
@@ -174,17 +178,17 @@ export class SettingsInterface {
                 Bind value change to SettingsRequester.
                  */
                 self.savedSettings[request.name] = request.defaultValue;
-                input.on("input",(function(name) {
+                input.on("input", (function (name) {
                     self.savedSettings[name] = this.val();
                 }).bind(input, request.name));
 
                 if (request.inputType == InputType.Range) {
-                    input.on("input",(function() {
+                    input.on("input", (function () {
                         label.html(desc + " : " + this.val());
                     }).bind(input));
                 }
 
-                let getter_setter_function = function(name: string, input_node, value_to_set: any) {
+                let getter_setter_function = function (name: string, input_node, value_to_set: any) {
                     if (value_to_set !== null) {// use as a setter
                         this.savedSettings[name] = value_to_set;
                         input_node.val(value_to_set);

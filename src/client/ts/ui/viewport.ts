@@ -1,7 +1,6 @@
 import {Layer} from "./layer";
 import {Vec2} from "../vec2";
 import {PixelSelectionHandler} from "../selection/selection";
-import {inBorder} from "../selection/selectionUtils";
 
 /**
  * Handler of the final step of rendering.
@@ -22,12 +21,11 @@ export class Viewport {
     private pixelSelection: Array<PixelSelectionHandler>;
 
 
-
     /**
      * Constructs the viewport handler. Should be unique.
      * @param {JQuery<HTMLCanvasElement>} canvas Viewport canvas on which the rendering will be done.
      */
-    constructor (canvas: JQuery<HTMLCanvasElement>, fallbackDisplay: HTMLImageElement) {
+    constructor(canvas: JQuery<HTMLCanvasElement>, fallbackDisplay: HTMLImageElement) {
         this.canvas = canvas[0];
         this.context = this.canvas.getContext('2d');
         this.layerDimensions = new Vec2(0, 0);
@@ -41,12 +39,12 @@ export class Viewport {
     /**
      * Reacts on the window resize event updates internal values.
      */
-    viewportDimensionsChanged () {
+    viewportDimensionsChanged() {
         this.canvas.width = this.canvas.scrollWidth;
         this.canvas.height = this.canvas.scrollHeight;
         this.viewportDimensions = new Vec2(this.canvas.width, this.canvas.height);
 
-        window.requestAnimationFrame(function() {
+        window.requestAnimationFrame(function () {
             this.renderLayers(this.layerList, this.previewLayer, this.previewIndex, this.pixelSelection);
         }.bind(this));
     };
@@ -55,7 +53,7 @@ export class Viewport {
      * Returns the scale of the rendering.
      * @returns {number} Local-pixel to real-pixel ratio.
      */
-    getScale () : number {
+    getScale(): number {
         return this.currentScale;
     }
 
@@ -63,7 +61,7 @@ export class Viewport {
      * Sets the scale of the rendering.
      * @param {number} scale Local-pixel to real-pixel ratio.
      */
-    setScale (scale: number) {
+    setScale(scale: number) {
         this.currentScale = scale;
     }
 
@@ -71,7 +69,7 @@ export class Viewport {
      * Set the translation of the rendering, relative to the center of the viewport.
      * @param {Vec2} translation Translation vector, in local scale.
      */
-    setTranslation (translation: Vec2) {
+    setTranslation(translation: Vec2) {
         this.currentTranslation = translation;
     }
 
@@ -108,10 +106,10 @@ export class Viewport {
         /*
          * Draw a logo at the center of the picture.
          */
-        let scale = this.viewportDimensions.x/(2*this.fallbackDisplay.width);
+        let scale = this.viewportDimensions.x / (2 * this.fallbackDisplay.width);
         this.context.scale(scale, scale);
         this.context.globalAlpha = 0.2;
-        this.context.drawImage(this.fallbackDisplay,this.fallbackDisplay.width/2,(this.viewportDimensions.y/scale/2 - (this.fallbackDisplay.height/scale/2)));
+        this.context.drawImage(this.fallbackDisplay, this.fallbackDisplay.width / 2, (this.viewportDimensions.y / scale / 2 - (this.fallbackDisplay.height / scale / 2)));
 
         this.context.scale(1, 1);
         this.context.globalAlpha = 1;
@@ -124,11 +122,11 @@ export class Viewport {
          * Compute appropriate scale and translation.
          */
         let translation = this.viewportDimensions
-            .divide(2,true)
+            .divide(2, true)
             .subtract(
                 this.layerDimensions
-                    .divide(2/this.currentScale,true)
-                ,true);
+                    .divide(2 / this.currentScale, true)
+                , true);
 
         let crop_dimensions = this.viewportDimensions.divide(this.currentScale, true);
         let translation_base = translation.divide(this.currentScale, true);
@@ -136,13 +134,13 @@ export class Viewport {
         /*
          * Render layers.
          */
-        for (let i=0; i < this.layerList.length; i++) {
+        for (let i = 0; i < this.layerList.length; i++) {
             let layer = this.layerList[i];
             (<any> this.context).filter = layer.layerInfo.getFilter();
             this.context.drawImage( // Draw normal layer
                 layer.getHTMLElement(),
-                -this.currentTranslation.x-translation_base.x,
-                -this.currentTranslation.y-translation_base.y,
+                -this.currentTranslation.x - translation_base.x,
+                -this.currentTranslation.y - translation_base.y,
                 crop_dimensions.x,
                 crop_dimensions.y,
                 0,
@@ -152,8 +150,8 @@ export class Viewport {
             if (i == this.previewIndex) { // Preview layer drawn on top
                 this.context.drawImage(
                     this.previewLayer.getHTMLElement(),
-                    -this.currentTranslation.x-translation_base.x,
-                    -this.currentTranslation.y-translation_base.y,
+                    -this.currentTranslation.x - translation_base.x,
+                    -this.currentTranslation.y - translation_base.y,
                     crop_dimensions.x,
                     crop_dimensions.y,
                     0,
@@ -184,30 +182,29 @@ export class Viewport {
         const period = 500;
         const offset = (Date.now() % period) * pattern * 2 / period;
 
-        const pixels_per_pixels = 1+this.currentScale;
+        const pixels_per_pixels = 1 + this.currentScale;
         for (let i in border) {
             const x = border[i].x;
             const y = border[i].y;
 
-            const real_pos = this.localToGlobalPosition(new Vec2(x+0.5, y+0.5));
+            const real_pos = this.localToGlobalPosition(new Vec2(x + 0.5, y + 0.5));
             const x_real = Math.floor(real_pos.x);
             const y_real = Math.floor(real_pos.y);
 
             if (x_real > -pixels_per_pixels
                 && x_real < this.viewportDimensions.x + pixels_per_pixels
                 && y_real > -pixels_per_pixels
-                && y_real < this.viewportDimensions.y + pixels_per_pixels)
-            {
+                && y_real < this.viewportDimensions.y + pixels_per_pixels) {
                 for (let d of [[0, 1], [0, -1], [1, 0], [-1, 0]]) {
                     let dx = d[0];
                     let dy = d[1];
 
-                    if (values[x+dx + (y+dy)*this.layerDimensions.x] == 0) {
-                        for (let i = 0; i <= pixels_per_pixels; i += 1){
+                    if (values[x + dx + (y + dy) * this.layerDimensions.x] == 0) {
+                        for (let i = 0; i <= pixels_per_pixels; i += 1) {
                             if (dx == 0) {
-                                this.putSelectionPixel(x_real - pixels_per_pixels/2 + i, y_real + dy*pixels_per_pixels/2, offset);
+                                this.putSelectionPixel(x_real - pixels_per_pixels / 2 + i, y_real + dy * pixels_per_pixels / 2, offset);
                             } else {
-                                this.putSelectionPixel(x_real + dx*pixels_per_pixels/2, y_real - pixels_per_pixels/2 + i, offset);
+                                this.putSelectionPixel(x_real + dx * pixels_per_pixels / 2, y_real - pixels_per_pixels / 2 + i, offset);
                             }
                         }
                     }
@@ -226,7 +223,7 @@ export class Viewport {
         const pattern = 10;
 
         this.context.lineWidth = 0;
-        if(((x + y + offset) / pattern) % 2 < 1) {
+        if (((x + y + offset) / pattern) % 2 < 1) {
             this.context.fillStyle = "#ffffffff";
         } else {
             this.context.fillStyle = "#000000ff";
@@ -237,12 +234,12 @@ export class Viewport {
     /**
      * Reset drawing canvas.
      */
-    resetCanvas () {
+    resetCanvas() {
         this.context.globalAlpha = 1;
         this.context.globalCompositeOperation = "source-over";
         this.context.fillStyle = "#202020";
         this.context.strokeStyle = "#202020";
-        this.context.fillRect(0,0,this.canvas.width,this.canvas.height);
+        this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
     };
 
     /**
@@ -250,13 +247,13 @@ export class Viewport {
      * @param {Vec2} position
      * @returns {Vec2}
      */
-    globalToLocalPosition (position: Vec2) {
+    globalToLocalPosition(position: Vec2) {
         let translation = this.viewportDimensions
-            .divide(2,true)
+            .divide(2, true)
             .subtract(
                 this.layerDimensions
-                    .divide(2/this.currentScale,true)
-                ,true);
+                    .divide(2 / this.currentScale, true)
+                , true);
         return position.subtract(translation, true)
             .divide(this.currentScale, true)
             .subtract(this.currentTranslation, true);
@@ -267,16 +264,16 @@ export class Viewport {
      * @param {Vec2} position
      * @returns {Vec2}
      */
-    localToGlobalPosition (position: Vec2) {
+    localToGlobalPosition(position: Vec2) {
         let translation = this.viewportDimensions
-            .divide(2,true)
+            .divide(2, true)
             .subtract(
                 this.layerDimensions
-                    .divide(2/this.currentScale,true)
-                ,true);
+                    .divide(2 / this.currentScale, true)
+                , true);
 
-        return position.add(this.currentTranslation,true)
-            .divide(1/this.currentScale, true)
+        return position.add(this.currentTranslation, true)
+            .divide(1 / this.currentScale, true)
             .add(translation, true);
     }
 
@@ -295,11 +292,11 @@ export class Viewport {
         let layer_height = layer.getHeight();
 
 
-        let begin_x = -Math.min(0, viewport_local_width/2 - layer_width/2 + this.currentTranslation.x);
-        let begin_y = -Math.min(0, viewport_local_height/2 - layer_height/2 + this.currentTranslation.y);
+        let begin_x = -Math.min(0, viewport_local_width / 2 - layer_width / 2 + this.currentTranslation.x);
+        let begin_y = -Math.min(0, viewport_local_height / 2 - layer_height / 2 + this.currentTranslation.y);
 
-        let end_x = Math.min(layer_width, layer_width/2 + viewport_local_width/2 - this.currentTranslation.x);
-        let end_y = Math.min(layer_height, layer_height/2 + viewport_local_height/2 - this.currentTranslation.y);
+        let end_x = Math.min(layer_width, layer_width / 2 + viewport_local_width / 2 - this.currentTranslation.x);
+        let end_y = Math.min(layer_height, layer_height / 2 + viewport_local_height / 2 - this.currentTranslation.y);
 
         let size_x = Math.min(end_x - begin_x, layer.getWidth() - begin_x);
         let size_y = Math.min(end_y - begin_y, layer.getHeight() - begin_y);

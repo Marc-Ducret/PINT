@@ -79,20 +79,21 @@ export interface SettingRequest {
  */
 export class SettingsRequester {
     private requests: Array<SettingRequest> = [];
-    private data: {[name: string] : (update: any) => any} = {};
+    private data: { [name: string]: (update: any) => any } = {};
     private cbson: boolean = true;
 
     /**
      * Does nothing as the requested parameters will be populated later on.
      */
-    constructor () {}
+    constructor() {
+    }
 
     /**
      * Add a new parameter to the request set.
      *
      * @param {SettingRequest} req Object representing a tool parameter.
      */
-    add (req: SettingRequest) {
+    add(req: SettingRequest) {
         if (req.inputType == InputType.Special) {
             // Settings can be sent over network if it does not request user_interface.
             if (req.name === "user_interface") {
@@ -111,7 +112,7 @@ export class SettingsRequester {
      * @param {string} name Parameter name.
      * @param {() => any} handle Getter, called on ```get```. Can have a parameter that is the value to set.
      */
-    setGetter (name: string, handle: (update: any) => any) {
+    setGetter(name: string, handle: (update: any) => any) {
         this.data[name] = handle;
     }
 
@@ -120,9 +121,9 @@ export class SettingsRequester {
      * @param {string} name Parameter name.
      * @returns {any}
      */
-    get (name: string) {
+    get(name: string) {
         if (this.data[name] === undefined) {
-            console.log("Parameter '"+name+"' has not been requested.");
+            console.log("Parameter '" + name + "' has not been requested.");
         } else {
             return this.data[name](null);
         }
@@ -133,9 +134,9 @@ export class SettingsRequester {
      * @param {string} name Parameter to update.
      * @param value New value.
      */
-    set (name: string, value: any) {
+    set(name: string, value: any) {
         if (this.data[name] === undefined) {
-            console.log("Parameter '"+name+"' has not been requested.");
+            console.log("Parameter '" + name + "' has not been requested.");
         } else {
             this.data[name](value);
         }
@@ -161,7 +162,7 @@ export class SettingsRequester {
      * Export parameters in a dictionary that can be sent over network.
      * @returns {{[p: string]: any}}
      */
-    exportParameters(): {[name: string]: any} {
+    exportParameters(): { [name: string]: any } {
         let data = {};
         for (let req of this.requests) {
             if (req.inputType !== InputType.Special) {
@@ -181,15 +182,21 @@ export class SettingsRequester {
     importParameters(settings: { [p: string]: any }, selectionHandler: PixelSelectionHandler, ui: UIController) {
         for (let req of this.requests) {
             if (req.inputType !== InputType.Special) {
-                this.data[req.name] = (function () {return this}).bind(settings[req.name]);
+                this.data[req.name] = (function () {
+                    return this
+                }).bind(settings[req.name]);
             } else if (req.name == "project_selection") {
-                this.data[req.name] = (function () {return this}).bind(selectionHandler);
+                this.data[req.name] = (function () {
+                    return this
+                }).bind(selectionHandler);
             } else if (req.name === "user_interface") {
                 if (ui == null) {
                     console.warn("Requested UI on server side.");
                     return;
                 }
-                this.data[req.name] = (function () {return this}).bind(ui);
+                this.data[req.name] = (function () {
+                    return this
+                }).bind(ui);
             }
         }
     }

@@ -14,10 +14,26 @@ export class PasteTool extends Tool {
     constructor() {
         super("PasteTool", "Paste", "v");
 
-        this.addSetting({name: "project_clipboard", descName: "Clipboard", inputType: InputType.Hidden, defaultValue: ""});
-        this.addSetting({name: "project_clipboard_x", descName: "Clipboard X", inputType: InputType.Hidden, defaultValue: 0});
-        this.addSetting({name: "project_clipboard_y", descName: "Clipboard Y", inputType: InputType.Hidden, defaultValue: 0});
-        this.addSetting({name: "mode", descName: "Composition mode", inputType: InputType.Select, defaultValue: "source-over",
+        this.addSetting({
+            name: "project_clipboard",
+            descName: "Clipboard",
+            inputType: InputType.Hidden,
+            defaultValue: ""
+        });
+        this.addSetting({
+            name: "project_clipboard_x",
+            descName: "Clipboard X",
+            inputType: InputType.Hidden,
+            defaultValue: 0
+        });
+        this.addSetting({
+            name: "project_clipboard_y",
+            descName: "Clipboard Y",
+            inputType: InputType.Hidden,
+            defaultValue: 0
+        });
+        this.addSetting({
+            name: "mode", descName: "Composition mode", inputType: InputType.Select, defaultValue: "source-over",
             options: [
                 {name: "source-over", desc: "Source over"},
                 {name: "source-in", desc: "Source in"},
@@ -47,7 +63,7 @@ export class PasteTool extends Tool {
         });
     }
 
-    reset () {
+    reset() {
         this.ready = false;
     }
 
@@ -56,14 +72,16 @@ export class PasteTool extends Tool {
 
     }
 
-    continueUse(pos: Vec2) {}
+    continueUse(pos: Vec2) {
+    }
 
     endUse(pos: Vec2) {
         this.data = pos;
 
     }
 
-    drawPreview(layer: Layer) {};
+    drawPreview(layer: Layer) {
+    };
 
     async applyTool(layer: Layer, generate_undo: boolean): Promise<ActionInterface> {
         if (this.getSetting("project_clipboard") == "") {

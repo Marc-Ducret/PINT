@@ -5,7 +5,7 @@ import {SettingsInterface} from "../tool_settings/settingsInterface";
 import {Viewport} from "./viewport";
 import {ToolRegistry} from "../tools/toolregistry";
 import {Vec2} from "../vec2";
-import {MenuState, MenuController, setup_menu} from "./menu";
+import {MenuController, MenuState, setup_menu} from "./menu";
 import * as io from 'socket.io-client';
 import {highlight_layer, LayerMenuController, setup_layer_menu} from "./layermenu"
 import {KeyboardManager} from "./keyboardManager";
@@ -45,16 +45,16 @@ export class UIController {
     /**
      * Build the user interface and bind events.
      */
-    constructor (){
+    constructor() {
         /*
          * VIEWPORT
          */
         let fallbackImage = document.createElement("img");
         this.viewport = new Viewport(<JQuery<HTMLCanvasElement>> $("#viewport"), fallbackImage);
-        fallbackImage.addEventListener("load", function() {
+        fallbackImage.addEventListener("load", function () {
             this.viewport.viewportDimensionsChanged();
         }.bind(this));
-        fallbackImage.src= "assets/"+(1+Math.floor(Math.random()*10))+".png";
+        fallbackImage.src = "assets/" + (1 + Math.floor(Math.random() * 10)) + ".png";
 
         /*
          * TOOLS AND SETTINGS
@@ -76,7 +76,7 @@ export class UIController {
          * NETWORK INDICATOR
          */
         let indicator = $(".indicator");
-        let on_failed = function() {
+        let on_failed = function () {
             console.log("Socket disconnected");
             this.is_online = false;
             if (this.menu_controller.displayedCategory !== MenuState.Working) {
@@ -88,7 +88,7 @@ export class UIController {
         }.bind(this);
 
 
-        let on_connection_pending = function() {
+        let on_connection_pending = function () {
             console.log("Socket connection pending");
             this.is_online = false;
             if (this.menu_controller.displayedCategory !== MenuState.Working) {
@@ -99,8 +99,8 @@ export class UIController {
             indicator.removeClass("red");
         }.bind(this);
 
-        let on_connected = function() {
-            console.log("Socket connected with id "+this.socket.id);
+        let on_connected = function () {
+            console.log("Socket connected with id " + this.socket.id);
             this.is_online = true;
             if (this.menu_controller.displayedCategory !== MenuState.Working) {
                 this.menu_controller.updateStatus(this.hasProjectOpen(), this.isOnline());
@@ -132,20 +132,20 @@ export class UIController {
          * KEYBOARD SHORTCUTS
          */
         this.keyboard_manager = new KeyboardManager(this);
-        this.keyboard_manager.registerBinding("Ctrl-a", function() {
-           if (this.project != null) {
+        this.keyboard_manager.registerBinding("Ctrl-a", function () {
+            if (this.project != null) {
                 this.project.applyAction({
                     type: ActionType.ToolApply,
                     toolName: "SelectionTool",
                     actionData: {
                         firstCorner: {x: 0, y: 0},
-                        lastCorner:this.project.dimensions,
+                        lastCorner: this.project.dimensions,
                         width: this.project.dimensions.x,
                         height: this.project.dimensions.y
                     },
                     toolSettings: {shape: "square"}
                 }, this.project.currentSelection);
-           }
+            }
         }.bind(this));
 
         /*
@@ -170,7 +170,7 @@ export class UIController {
      * Update project name according to input.
      * @param {string} new_title
      */
-    filenameUpdate (new_title: string) {
+    filenameUpdate(new_title: string) {
         if (this.project != null) {
             this.project.name = new_title;
         }
@@ -183,7 +183,7 @@ export class UIController {
      * @param {Vec2} dimensions Drawing dimension if the workspace doesn't exist.
      * @param {string} image_data Image to load.
      */
-    loadServerHosted (name: string, dimensions: Vec2, image_data: string) {
+    loadServerHosted(name: string, dimensions: Vec2, image_data: string) {
         this.socket.emit('join', {"name": name, "dimensions": dimensions, "image_data": image_data});
     }
 
@@ -191,7 +191,7 @@ export class UIController {
      * Setup local version of the project according to server data.
      * @param data
      */
-    loadServerHostedCallback (data: {dimensions: Vec2, data: Array<string>, infos: Array<Object>}) {
+    loadServerHostedCallback(data: { dimensions: Vec2, data: Array<string>, infos: Array<Object> }) {
         this.newProject(data.dimensions);
         this.project.enableNetwork(this.socket);
         for (let i = 0; i < data.data.length; i++) {
@@ -200,9 +200,9 @@ export class UIController {
             }
             this.project.layerList[i].layerInfo.copyFrom(<LayerInfo> data.infos[i]);
             let img = new Image;
-            img.onload = function(){
+            img.onload = function () {
                 this.project.layerList[i].getContext().globalCompositeOperation = "copy";
-                this.project.layerList[i].getContext().drawImage(img,0,0);
+                this.project.layerList[i].getContext().drawImage(img, 0, 0);
                 this.project.layerList[i].getContext().globalCompositeOperation = "source-over";
                 this.project.redraw = true;
             }.bind(this);
@@ -223,13 +223,13 @@ export class UIController {
         input.setAttribute("style", "display:none");
         let self = this;
 
-        input.addEventListener("change", function(event: any) {
+        input.addEventListener("change", function (event: any) {
             let selectedFile: File = event.target.files[0];
             let reader = new FileReader();
             let imgtag = document.createElement("img");
-            reader.onload = function(event) {
+            reader.onload = function (event) {
                 imgtag.src = reader.result;
-                imgtag.addEventListener("load", function() {
+                imgtag.addEventListener("load", function () {
                     if ($("#share_online_checkbox").is(":checked")) {
                         self.menu_controller.switchCategory(MenuState.Working);
                         self.redraw = true;
@@ -253,7 +253,7 @@ export class UIController {
      * Create a new project.
      * @param {Vec2} dimensions Project dimensions.
      */
-    newProject (dimensions: Vec2) {
+    newProject(dimensions: Vec2) {
         this.menu_controller.switchCategory(MenuState.Working);
         this.redraw = true;
 
@@ -283,7 +283,7 @@ export class UIController {
     /**
      * Add a layer to the project at the end.
      */
-    addLayer () {
+    addLayer() {
         // add a layer to the current project:
         if (this.project != null) {
             this.project.addLayer();
@@ -294,7 +294,7 @@ export class UIController {
      * Select a layer to the project (in ending position).
      * @param {number} i Index of the selected layer.
      */
-    selectLayer (i: number) {
+    selectLayer(i: number) {
         // select layer i in current project:
         this.project.selectLayer(i);
 
@@ -306,7 +306,7 @@ export class UIController {
      * Delete layer of index i
      * @param {number} i Index of the layer to delete
      */
-    deleteLayer (i: number) {
+    deleteLayer(i: number) {
         // delete layer i of current project
         if (this.project != null) {
             this.project.deleteLayer(i);
@@ -317,14 +317,14 @@ export class UIController {
      * Update project's tool if a project is open.
      * @param {Tool} tool
      */
-    setTool (tool: Tool) {
+    setTool(tool: Tool) {
         if (this.project != null) {
             this.project.changeTool(tool);
             this.settingsUI.setupToolSettings(tool, this.project);
 
             $("#toolbox-container").children().removeClass("hovered");
             let toolbox: Element = document.getElementById("toolbox-container");
-            for (let i=0; i<toolbox.children.length; i++) {
+            for (let i = 0; i < toolbox.children.length; i++) {
                 let child = toolbox.children[i];
                 if (child.getAttribute("data-tool") == tool.getName()) {
                     child.className += " hovered";
@@ -341,21 +341,21 @@ export class UIController {
      * @this UIController
      * @memberOf UIController
      */
-    onToolboxClicked (event: Event) {
+    onToolboxClicked(event: Event) {
 
         let toolname = (<Element> event.target).getAttribute("data-tool");
-        if(toolname !== null) {
+        if (toolname !== null) {
             let tool = this.toolRegistry.getToolByName(toolname);
-            if(tool !== null) {
+            if (tool !== null) {
                 tool.icon = <HTMLElement> event.target;
                 this.setTool(tool);
                 (<Element> event.target).className += " hovered";
             } else {
-                console.warn("No such tool "+toolname);
+                console.warn("No such tool " + toolname);
             }
         } else {
             let func = (<Element> event.target).getAttribute("data-function");
-            if(func !== null) {
+            if (func !== null) {
                 let elem = event.target;
                 eval(func);
             } else {
@@ -379,9 +379,9 @@ export class UIController {
      * Triggered when one of the toolbox element is hovered.
      * @param {Event} event
      */
-    onToolboxHovered (event: Event) {
+    onToolboxHovered(event: Event) {
         let toolname = (<Element> event.target).getAttribute("data-tool");
-        if(toolname !== null) {
+        if (toolname !== null) {
             let tool = this.toolRegistry.getToolByName(toolname);
             UIController.displayName(tool.getDesc());
         } else {
@@ -394,7 +394,7 @@ export class UIController {
      * Triggered when one of the toolbox element is not hovered annymore.
      * @param {Event} event
      */
-    onToolboxHoverLeft (event: Event) {
+    onToolboxHoverLeft(event: Event) {
         if (this.project == null) {
             UIController.displayName("");
             return;
@@ -415,7 +415,7 @@ export class UIController {
      * @this UIController
      * @memberOf UIController
      */
-    onMouseDown (event: MouseEvent) {
+    onMouseDown(event: MouseEvent) {
         this.lastPosition = this.viewport.globalToLocalPosition(new Vec2(event.offsetX, event.offsetY));
         this.mouseMoving = true;
 
@@ -430,7 +430,7 @@ export class UIController {
      * @param event Event object (see JQuery documentation).
      * @this UIController
      */
-    onMouseUp (event: MouseEvent) {
+    onMouseUp(event: MouseEvent) {
         this.lastPosition = this.viewport.globalToLocalPosition(new Vec2(event.offsetX, event.offsetY));
         this.mouseMoving = false;
         if (this.project != null) {
@@ -445,7 +445,7 @@ export class UIController {
      * @memberOf UIController
      * @this UIController
      */
-    onMouseMove (event: MouseEvent) {
+    onMouseMove(event: MouseEvent) {
         this.lastPosition = this.viewport.globalToLocalPosition(new Vec2(event.offsetX, event.offsetY));
         if (this.mouseMoving && this.project != null) {
             this.project.mouseMove(this.lastPosition.floor());
@@ -457,10 +457,10 @@ export class UIController {
      * Event handler triggered on mouse scroll.
      * @param {WheelEvent} event
      */
-    onMouseWheel (event: WheelEvent) {
+    onMouseWheel(event: WheelEvent) {
         // offset from the center.
-        let ofsX = this.viewport.viewportDimensions.x/2 - event.offsetX;
-        let ofsY = this.viewport.viewportDimensions.y/2 - event.offsetY;
+        let ofsX = this.viewport.viewportDimensions.x / 2 - event.offsetX;
+        let ofsY = this.viewport.viewportDimensions.y / 2 - event.offsetY;
 
         let zoom_scale = 1;
         if (event.deltaMode == 1) {
@@ -468,11 +468,11 @@ export class UIController {
         }
 
         let oldScale = this.viewport.getScale();
-        this.zoom(event.deltaY*zoom_scale);
+        this.zoom(event.deltaY * zoom_scale);
         let newScale = this.viewport.getScale();
 
-        let deltaX = -ofsX*(oldScale-newScale)/oldScale;
-        let deltaY = -ofsY*(oldScale-newScale)/oldScale;
+        let deltaX = -ofsX * (oldScale - newScale) / oldScale;
+        let deltaY = -ofsY * (oldScale - newScale) / oldScale;
         this.translate(new Vec2(deltaX, deltaY));
     };
 
@@ -480,8 +480,8 @@ export class UIController {
      * Multiply the scale by 1.001^value.
      * @param {number} value
      */
-    zoom (value: number) {
-        this.viewport.setScale(this.viewport.getScale()*Math.pow(1.001, value));
+    zoom(value: number) {
+        this.viewport.setScale(this.viewport.getScale() * Math.pow(1.001, value));
         this.redraw = true;
     }
 
@@ -489,8 +489,8 @@ export class UIController {
      * Translate picture by the given translation.
      * @param {Vec2} translation Translation in layer scale.
      */
-    translate (translation: Vec2) {
-        let realTranslation = this.viewport.getTranslation().add(translation.divide(this.viewport.getScale(),true), true);
+    translate(translation: Vec2) {
+        let realTranslation = this.viewport.getTranslation().add(translation.divide(this.viewport.getScale(), true), true);
         this.viewport.setTranslation(realTranslation);
         this.redraw = true;
     }
@@ -502,7 +502,7 @@ export class UIController {
      * @this UIController
      * @memberOf UIController
      */
-    onStep (timestamp: number) {
+    onStep(timestamp: number) {
         if (this.project != null) { // if there is an open project
             if (this.project.renderSelection()) { // if something is selected (can be drawn)
                 this.redraw = true;
@@ -517,7 +517,7 @@ export class UIController {
             if (this.project != null) {
                 this.viewport.renderLayers(this.project.layerList, this.project.previewLayer, this.project.layerList.indexOf(this.project.currentLayer), [this.project.currentSelection]);
             } else {
-                this.viewport.renderLayers([], null, 0,[]);
+                this.viewport.renderLayers([], null, 0, []);
             }
 
         }
@@ -532,7 +532,7 @@ export class UIController {
      * @this UIController
      * @memberOf UIController
      */
-    onWindowResize (newSize: Vec2) {
+    onWindowResize(newSize: Vec2) {
         let offset = $("#viewport").offset();
         $("#viewport").height(newSize.y - offset.top);
         this.viewport.viewportDimensionsChanged();
@@ -542,7 +542,7 @@ export class UIController {
      * Given the UI DOM elements as an input, bind events to the controller.
      * @TODO : add layer_container argument wherever bindEvents is called
      */
-    bindEvents (/*layer_container, */toolbox_container, viewport, newproject_button, newproject_width, newproject_height) {
+    bindEvents(/*layer_container, */toolbox_container, viewport, newproject_button, newproject_width, newproject_height) {
         toolbox_container.children().click(this.onToolboxClicked.bind(this));
         toolbox_container.children().hover(this.onToolboxHovered.bind(this),
             this.onToolboxHoverLeft.bind(this));
@@ -557,16 +557,16 @@ export class UIController {
         document.getElementById("viewport").addEventListener('touchend', onTouch);
         document.getElementById("viewport").addEventListener('touchcancel', onTouch);
         document.getElementById("viewport").addEventListener('touchleave', onTouch);
-        newproject_button.click(function() {
+        newproject_button.click(function () {
             this.newProject(new Vec2(<number> newproject_width.val(), <number> newproject_height.val()));
         }.bind(this));
 
-        $(window).on('resize', (function(e) {
+        $(window).on('resize', (function (e) {
             this.onWindowResize(new Vec2($(window).width(), $(window).height()));
         }).bind(this));
 
         this.onWindowResize(new Vec2($(window).width(), $(window).height()));
-        document.body.addEventListener('touchmove', function(event) {
+        document.body.addEventListener('touchmove', function (event) {
             event.preventDefault();
         }, false);
 
