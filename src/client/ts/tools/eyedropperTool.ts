@@ -36,8 +36,8 @@ export class EyedropperTool extends Tool {
             return "00000".substring(0, 6 - c.length) + c;
         };
         let colorOf = function(x: number, y: number) {
-            let x = Math.floor(x);
-            let y = Math.floor(y);
+            x = Math.floor(x);
+            y = Math.floor(y);
             let i = img.width * y + x;
             let col = img.data[i * 4    ] << 16;
             col +=    img.data[i * 4 + 1] <<  8;
