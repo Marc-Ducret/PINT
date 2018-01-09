@@ -76,15 +76,18 @@ export function setup_layer_menu(controller: UIController, base_element: HTMLEle
         let edit_button = $("<span/>");
         edit_button.click(function () {
             if(edit_menu.contents().length > 0) {
+                layer.editMenuOpened = false;
                 edit_menu.empty();
                 edit_menu.removeAttr("style");
             } else {
+                layer.editMenuOpened = true;
                 edit_menu.css("background-color", "#555555");
                 edit_menu.css("border-radius", "20px");
                 edit_menu.css("padding", "20px");
 
                 let name_field = $("<div class='input-field inline'/>");
-                let name_input = $("<input id='layerName' placeholder='Layer Name' type='text' class='validate'>");
+                let name_input = $("<input id='layerName' type='text' class='validate'>");
+                name_input.attr("placeholder", layer.layerInfo.name)
                 name_input.blur(function() {
                    let name = (<HTMLInputElement> name_input.get(0)).value;
                    layer.layerInfo.name = name;
@@ -98,13 +101,13 @@ export function setup_layer_menu(controller: UIController, base_element: HTMLEle
                 blur_button.mouseout(function () { $(this).css("background-color", "transparent") });
                 blur_button.css("border-radius", "10px");
                 blur_button.css("padding", "10px");
-                blur_button.text("blur_on");
+                blur_button.text(layer.layerInfo.blur ? "blur_off" : "blur_on");
                 blur_button.click(function() {
                    if(blur_button.get(0).textContent == "blur_on") {
-                       layer.layerInfo.filter = "blur(10px)";
+                       layer.layerInfo.blur = true;
                        blur_button.text("blur_off");
                    } else {
-                       layer.layerInfo.filter = "none";
+                       layer.layerInfo.blur = false;
                        blur_button.text("blur_on");
                    }
                    layer.applyLayerInfo();
@@ -112,6 +115,9 @@ export function setup_layer_menu(controller: UIController, base_element: HTMLEle
                 blur_button.appendTo(edit_menu);
             }
         });
+        if(layer.editMenuOpened) {
+            edit_button.click();
+        }
         edit_button.mouseover(function () { $(this).css("background-color", "#333333") });
         edit_button.mouseout(function () { $(this).css("background-color", "transparent") });
         edit_button.attr("style", "color:#888888; cursor:pointer; border-radius: 10px;"

@@ -12,6 +12,7 @@ export class Layer {
     width: number;
     height: number;
     layerInfo: LayerInfo;
+    editMenuOpened: boolean;
 
     constructor (dimensions: Vec2) {
         this.canvasElement = $("<canvas></canvas>") as JQuery<HTMLCanvasElement>;
@@ -23,6 +24,7 @@ export class Layer {
         this.height = dimensions.y;
 
         this.layerInfo = new LayerInfo();
+        this.editMenuOpened = false;
     }
 
     /**
@@ -162,15 +164,6 @@ export class Layer {
     applyLayerInfo() {
         // this.filter(this.layerInfo.filter); TODO rm?
     }
-
-    /**
-     * Apply the filters f to the context
-     * @param {string} f
-     */
-    filter(f: string) {
-        console.log("apply filter", f);
-        (<any> this.context).filter = f;
-    }
 }
 
 /**
@@ -178,10 +171,18 @@ export class Layer {
  */
 export class LayerInfo {
     public name: string;
-    public filter: string;
+    public blur: boolean;
 
     constructor() {
         this.name = "Layer";
-        this.filter = "none";
+        this.blur = false;
+    }
+
+    getFilter(): string {
+        if(this.blur) {
+            return "blur(10px)";
+        } else {
+            return "none";
+        }
     }
 }
