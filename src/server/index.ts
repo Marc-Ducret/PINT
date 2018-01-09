@@ -135,8 +135,21 @@ io.on("connection", function (socket: SocketIO.Socket) {
         }
 
         let name = client_project[socket.id];
+        if (name == undefined || name == null) {
+            console.warn("Project name not found. User might not be in a project.");
+            return;
+        }
+
+        if (projects[name] == undefined || projects[name] == null) {
+            console.error("Project manager "+name+" not found.");
+            return;
+        }
 
         let history = histories[name];
+        if (history == undefined || history == null) {
+            console.error("History manager not found for project "+name);
+            return;
+        }
 
         if (data.data.type != ActionType.ToolPreview) {
             console.log("On project: "+name);
