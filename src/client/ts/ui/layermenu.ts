@@ -1,5 +1,7 @@
 import {UIController} from "./ui";
 import {ActionType} from "../tools/actionInterface";
+import {Layer} from "./layer";
+import {Vec2} from "../vec2";
 
 /**
  * Layer manager menu
@@ -146,8 +148,13 @@ export function setup_layer_menu(controller: UIController, base_element: HTMLEle
                 });
 
                 if(i > 0) {
-                    addButton("call_merge", function (button) {
+                    addButton("call_merge", async function (button) {
                         let content = layer.getHTMLElement().toDataURL();
+                        let tmp_layer = new Layer(new Vec2(layer.getWidth(), layer.getHeight()));
+                        (<any> tmp_layer.context).filter = layer.layerInfo.getFilter();
+
+                        await tmp_layer.drawDataUrl(content, 0, 0);
+                        content = tmp_layer.getHTMLElement().toDataURL();
                         controller.project.link.sendAction({
                             type: ActionType.ToolApply,
                             toolName: "PasteTool",
@@ -158,7 +165,7 @@ export function setup_layer_menu(controller: UIController, base_element: HTMLEle
                                 layer: i - 1,
                                 mode: "source-over"
                             },
-                            actionData: {x: 0, y: 0, filter: layer.layerInfo.getFilter()},
+                            actionData: {x: 0, y: 0},
                         });
                         controller.project.deleteLayer(i);
                     });
