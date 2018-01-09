@@ -35,7 +35,7 @@ export class Project {
     redraw: boolean; // UIcontroller check this.redraw to now if it has to update the drawing
     history: PintHistory;
     toolRegistry: ToolRegistry;
-    private link: ActionLink;
+    link: ActionLink;
     private usingTool: boolean;
 
     /**

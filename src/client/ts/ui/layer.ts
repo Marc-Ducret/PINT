@@ -31,7 +31,7 @@ export class Layer {
      * Get HTML canvas element.
      * @returns {HTMLCanvasElement}
      */
-    getHTMLElement() {
+    getHTMLElement(): HTMLCanvasElement {
         return this.canvasElement[0];
     };
 

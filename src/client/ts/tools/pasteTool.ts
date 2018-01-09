@@ -93,7 +93,9 @@ export class PasteTool extends Tool {
         if (this.getSetting("mode") == "copy") {
             layer.reset();
         }
-
+        if (this.data.filter != undefined) {
+            (<any> layer.getContext()).filter = this.data.filter;
+        }
         await layer.drawDataUrl(
             this.getSetting("project_clipboard"),
             this.data.x - this.getSetting("project_clipboard_x"),

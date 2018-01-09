@@ -1,4 +1,5 @@
 import {UIController} from "./ui";
+import {ActionType} from "../tools/actionInterface";
 
 /**
  * Layer manager menu
@@ -143,7 +144,24 @@ export function setup_layer_menu(controller: UIController, base_element: HTMLEle
                         controller.project.updateLayerInfo(layer, info);
                     }
                 });
+
                 if(i > 0) {
+                    addButton("call_merge", function (button) {
+                        let content = layer.getHTMLElement().toDataURL();
+                        controller.project.link.sendAction({
+                            type: ActionType.ToolApply,
+                            toolName: "PasteTool",
+                            toolSettings: {
+                                project_clipboard: content,
+                                project_clipboard_x: 0,
+                                project_clipboard_y: 0,
+                                layer: i - 1,
+                                mode: "source-over"
+                            },
+                            actionData: {x: 0, y: 0, filter: layer.layerInfo.getFilter()},
+                        });
+                        controller.project.deleteLayer(i);
+                    });
                     addButton("arrow_upward", function(button) {
                         controller.project.exchangeLayers(i, i-1);
                     });
