@@ -11,6 +11,7 @@ export class Layer {
     context: CanvasRenderingContext2D;
     width: number;
     height: number;
+    layerInfo: LayerInfo;
 
     constructor (dimensions: Vec2) {
         this.canvasElement = $("<canvas></canvas>") as JQuery<HTMLCanvasElement>;
@@ -20,6 +21,8 @@ export class Layer {
         this.canvasElement[0].height = dimensions.y;
         this.width = dimensions.x;
         this.height = dimensions.y;
+
+        this.layerInfo = new LayerInfo();
     }
 
     /**
@@ -153,4 +156,32 @@ export class Layer {
         return this.getHTMLElement().toDataURL() === blank.toDataURL();
     }
 
+    /**
+     * Update the layer according the properties specified in layerInfo
+     */
+    applyLayerInfo() {
+        // this.filter(this.layerInfo.filter); TODO rm?
+    }
+
+    /**
+     * Apply the filters f to the context
+     * @param {string} f
+     */
+    filter(f: string) {
+        console.log("apply filter", f);
+        (<any> this.context).filter = f;
+    }
+}
+
+/**
+ * A LayerInfo object sums-up the alterable properties of a Layer
+ */
+export class LayerInfo {
+    public name: string;
+    public filter: string;
+
+    constructor() {
+        this.name = "Layer";
+        this.filter = "none";
+    }
 }

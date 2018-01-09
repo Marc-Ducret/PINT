@@ -43,6 +43,7 @@ export function setup_layer_menu(controller: UIController, base_element: HTMLEle
     let layer_list = controller.project.getLayerList();
     let l = layer_list.length;
     for (let i=0 ; i<l ; i++) { // add layers representations to HTML horizontal bar
+        let layer = layer_list[i];
         let div = $("<div/>");
         let p = $("<p/>");
 
@@ -61,6 +62,15 @@ export function setup_layer_menu(controller: UIController, base_element: HTMLEle
         del_button.text("close");
         del_button.appendTo(p);
 
+        // layer element:
+        let layer_elem = $("<span/>");
+        layer_elem.attr("id", "layer"+i.toString());
+        layer_elem.attr("style", "color:white; cursor:pointer; border-radius: 10px;"
+            +"padding-left: 10px; padding-right: 10px; padding-top: 2px; padding-bottom: 2px;"
+            +"padding-radius: 10px;");
+        layer_elem.text(layer.layerInfo.name);
+        layer_elem.click(function() { controller.selectLayer(i); } );
+
         let edit_menu = $("<div/>");
 
         let edit_button = $("<span/>");
@@ -74,12 +84,14 @@ export function setup_layer_menu(controller: UIController, base_element: HTMLEle
                 edit_menu.css("padding", "20px");
 
                 let name_field = $("<div class='input-field inline'/>");
-                $("<input id='layerName' placeholder='Layer Name' type='text' class='validate'>").appendTo(name_field);
+                let name_input = $("<input id='layerName' placeholder='Layer Name' type='text' class='validate'>");
+                name_input.blur(function() {
+                   let name = (<HTMLInputElement> name_input.get(0)).value;
+                   layer.layerInfo.name = name;
+                   layer_elem.get(0).textContent = name;
+                });
+                name_input.appendTo(name_field);
                 name_field.appendTo(edit_menu);
-                // <div class="input-field inline">
-                // <input id="email" type="email" class="validate">
-                //     <label for="email" data-error="wrong" data-success="right">Email</label>
-                // </div>
                 let blur_button = $("<span/>");
                 blur_button.addClass("medium material-icons");
                 blur_button.mouseover(function () { $(this).css("background-color", "#333333") });
@@ -87,6 +99,16 @@ export function setup_layer_menu(controller: UIController, base_element: HTMLEle
                 blur_button.css("border-radius", "10px");
                 blur_button.css("padding", "10px");
                 blur_button.text("blur_on");
+                blur_button.click(function() {
+                   if(blur_button.get(0).textContent == "blur_on") {
+                       layer.layerInfo.filter = "blur(10px)";
+                       blur_button.text("blur_off");
+                   } else {
+                       layer.layerInfo.filter = "none";
+                       blur_button.text("blur_on");
+                   }
+                   layer.applyLayerInfo();
+                });
                 blur_button.appendTo(edit_menu);
             }
         });
@@ -102,15 +124,7 @@ export function setup_layer_menu(controller: UIController, base_element: HTMLEle
         edit_button.text("mode_edit");
         edit_button.appendTo(p);
 
-        // layer element:
-        let span = $("<span/>");
-        span.attr("id", "layer"+i.toString());
-        span.attr("style", "color:white; cursor:pointer; border-radius: 10px;"
-            +"padding-left: 10px; padding-right: 10px; padding-top: 2px; padding-bottom: 2px;"
-            +"padding-radius: 10px;");
-        span.text("layer " + i.toString());
-        span.click(function() { controller.selectLayer(i); } );
-        span.appendTo(p);
+        layer_elem.appendTo(p);
 
         p.appendTo(div);
         edit_menu.appendTo(div);

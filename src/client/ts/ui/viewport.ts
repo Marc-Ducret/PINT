@@ -137,8 +137,10 @@ export class Viewport {
          * Render layers.
          */
         for (let i=0; i < this.layerList.length; i++) {
+            let layer = this.layerList[i];
+            (<any> this.context).filter = layer.layerInfo.filter;
             this.context.drawImage( // Draw normal layer
-                this.layerList[i].getHTMLElement(),
+                layer.getHTMLElement(),
                 -this.currentTranslation.x-translation_base.x,
                 -this.currentTranslation.y-translation_base.y,
                 crop_dimensions.x,
