@@ -48,19 +48,59 @@ export function setup_layer_menu(controller: UIController, base_element: HTMLEle
 
         // create delete layer button element:
         let del_button = $("<span/>");
-        del_button.text("delete");
         del_button.click(function () { controller.deleteLayer(i); });
         del_button.mouseover(function () { $(this).css("background-color", "#333333") });
         del_button.mouseout(function () { $(this).css("background-color", "transparent") });
         del_button.attr("style", "color:#888888; cursor:pointer; border-radius: 10px;"
             +"padding-left: 2px; padding-right: 2px; padding-top: 2px; padding-bottom: 2px;"
-            +"padding-radius: 10px;");
+            +"padding-radius: 10px; font-size: 15px");
         // set help text displayed when mouseover:
         del_button.attr("title", "click to delete this layer");
         // to display the del_button as an icon:
         del_button.addClass("medium material-icons");
         del_button.text("close");
         del_button.appendTo(p);
+
+        let edit_menu = $("<div/>");
+
+        let edit_button = $("<span/>");
+        edit_button.click(function () {
+            if(edit_menu.contents().length > 0) {
+                edit_menu.empty();
+                edit_menu.removeAttr("style");
+            } else {
+                edit_menu.css("background-color", "#555555");
+                edit_menu.css("border-radius", "20px");
+                edit_menu.css("padding", "20px");
+
+                let name_field = $("<div class='input-field inline'/>");
+                $("<input id='layerName' placeholder='Layer Name' type='text' class='validate'>").appendTo(name_field);
+                name_field.appendTo(edit_menu);
+                // <div class="input-field inline">
+                // <input id="email" type="email" class="validate">
+                //     <label for="email" data-error="wrong" data-success="right">Email</label>
+                // </div>
+                let blur_button = $("<span/>");
+                blur_button.addClass("medium material-icons");
+                blur_button.mouseover(function () { $(this).css("background-color", "#333333") });
+                blur_button.mouseout(function () { $(this).css("background-color", "transparent") });
+                blur_button.css("border-radius", "10px");
+                blur_button.css("padding", "10px");
+                blur_button.text("blur_on");
+                blur_button.appendTo(edit_menu);
+            }
+        });
+        edit_button.mouseover(function () { $(this).css("background-color", "#333333") });
+        edit_button.mouseout(function () { $(this).css("background-color", "transparent") });
+        edit_button.attr("style", "color:#888888; cursor:pointer; border-radius: 10px;"
+            +"padding-left: 2px; padding-right: 2px; padding-top: 2px; padding-bottom: 2px;"
+            +"padding-radius: 10px; font-size: 15px");
+        // set help text displayed when mouseover:
+        edit_button.attr("title", "click to toggle edit menu");
+        // to display the del_button as an icon:
+        edit_button.addClass("medium material-icons");
+        edit_button.text("mode_edit");
+        edit_button.appendTo(p);
 
         // layer element:
         let span = $("<span/>");
@@ -73,16 +113,16 @@ export function setup_layer_menu(controller: UIController, base_element: HTMLEle
         span.appendTo(p);
 
         p.appendTo(div);
+        edit_menu.appendTo(div);
         // convert div in a HTML element:
         let HTMLdiv : HTMLElement = <HTMLElement> div.get(0);
         layer_menu_controller.addElement(HTMLdiv);
-        }
+    }
 
     // display the add_button
-    let button = $("<button/>");
+    let button = $("<a class='waves-effect waves-light btn'/>");
     button.attr("id", "add_layer_button");
-    button.attr("type", "button");
-    button.attr("style", "color:#777777;");
+    button.css("margin-top", "15px");
     button.text("Add a layer");
     // convert button in a HTML element:
     let HTMLbutton : HTMLElement = <HTMLElement> button.get(0);

@@ -374,7 +374,7 @@ export class Project {
             l.reset(); // set added layer transparent
             // add the newly created Layer to layerList, just before position indexed by n_last_layer+1:
             this.layerList.splice(action.actionData.position, 0, l);
-            this.currentLayer = l; //????
+            this.currentLayer = l;
 
             if (action.actionData.content != "") {
                 await l.drawDataUrl(action.actionData.content, 0, 0);
