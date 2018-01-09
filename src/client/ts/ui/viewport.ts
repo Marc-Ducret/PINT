@@ -138,7 +138,7 @@ export class Viewport {
          */
         for (let i=0; i < this.layerList.length; i++) {
             let layer = this.layerList[i];
-            (<any> this.context).filter = layer.layerInfo.filter;
+            (<any> this.context).filter = layer.layerInfo.getFilter();
             this.context.drawImage( // Draw normal layer
                 layer.getHTMLElement(),
                 -this.currentTranslation.x-translation_base.x,
@@ -169,6 +169,7 @@ export class Viewport {
          * Render selection.
          */
         if (this.pixelSelection.length > 0) {
+            (<any> this.context).filter = "none";
             this.renderBorder(this.pixelSelection[0].getBorder(), this.pixelSelection[0].getValues());
         }
     };
