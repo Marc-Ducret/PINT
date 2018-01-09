@@ -7,7 +7,6 @@ import {Vec2} from "../vec2";
 
 import {InputType} from "../tool_settings/settingsRequester";
 import {colorSelect} from "../image_utils/connexComponent";
-import {Project} from "../docState";
 import {ActionInterface, ActionType} from "./actionInterface";
 import {Layer} from "../ui/layer";
 
@@ -45,7 +44,6 @@ export class FillTool extends Tool {
      * On click, computes the connex component containing the click position and fill it with the parameter color.
      * @param {ImageData} img Content of the drawing canvas.
      * @param {Vec2} pos Click position
-     * @param {Project} project Document state
      */
     startUse (img: ImageData, pos: Vec2) {
         this.reset();

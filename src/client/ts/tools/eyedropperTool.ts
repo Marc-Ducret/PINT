@@ -1,6 +1,6 @@
 import {Tool} from "./tool";
 import {InputType} from "../tool_settings/settingsRequester";
-import {ActionInterface, ActionType} from "./actionInterface";
+import {ActionInterface} from "./actionInterface";
 import {Layer} from "../ui/layer";
 import {Vec2} from "../vec2";
 
@@ -29,22 +29,22 @@ export class EyedropperTool extends Tool {
     continueUse (pos: Vec2) {
         let img = this.img;
         let intToRGB = function(i: number){
-            var c = (i & 0x00FFFFFF)
+            let c = (i & 0x00FFFFFF)
                 .toString(16)
                 .toUpperCase();
 
             return "00000".substring(0, 6 - c.length) + c;
         };
         let colorOf = function(x: number, y: number) {
-            x = Math.floor(x);
-            y = Math.floor(y);
+            let x = Math.floor(x);
+            let y = Math.floor(y);
             let i = img.width * y + x;
-            let col = img.data[i * 4 + 0] << 16;
+            let col = img.data[i * 4    ] << 16;
             col +=    img.data[i * 4 + 1] <<  8;
             col +=    img.data[i * 4 + 2] <<  0;
             return '#' + intToRGB(col);
         };
-        var color = colorOf(pos.x, pos.y);
+        let color = colorOf(pos.x, pos.y);
         this.setSetting(this.getSetting("colorSetting"), color);
         if(this.icon != null) {
             this.icon.setAttribute("style", "color: "+color);

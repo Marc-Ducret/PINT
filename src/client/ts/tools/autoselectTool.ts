@@ -1,6 +1,5 @@
 import {Tool} from "./tool";
 import {Vec2} from "../vec2";
-import {Project} from "../docState";
 import {colorSelect} from "../image_utils/connexComponent";
 import {InputType} from "../tool_settings/settingsRequester";
 import {ActionInterface, ActionType} from "./actionInterface";
@@ -27,7 +26,6 @@ export class AutoSelectTool extends Tool {
      * On click, computes the connex component and update selection.
      * @param {ImageData} img Content of the drawing canvas.
      * @param {Vec2} pos Click position
-     * @param {Project} project Document state
      */
     startUse(img: ImageData, pos: Vec2) {
         this.data = colorSelect(img, new Vec2(Math.floor(pos.x), Math.floor(pos.y)), this.getSetting("wand_threshold")).buffer;

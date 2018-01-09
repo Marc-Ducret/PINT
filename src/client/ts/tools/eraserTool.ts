@@ -4,7 +4,6 @@
 import {Tool} from "./tool";
 import {Vec2} from "../vec2";
 import {InputType} from "../tool_settings/settingsRequester";
-import {Project} from "../docState";
 import {Layer} from "../ui/layer";
 import {ActionInterface, ActionType} from "./actionInterface";
 
@@ -42,7 +41,6 @@ export class EraserTool extends Tool {
      * Starting from a reset state, ignore parameters and add the first mouse position to position table.
      * @param {ImageData} img Ignored.
      * @param {Vec2} pos Mouse position.
-     * @param {Project} project Ignored.
      */
     startUse(img: ImageData, pos: Vec2) {
         this.data = {

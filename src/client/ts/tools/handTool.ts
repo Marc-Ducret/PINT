@@ -1,9 +1,8 @@
 import {Tool} from "./tool";
 import {Vec2} from "../vec2";
-import {Project} from "../docState";
 import {InputType} from "../tool_settings/settingsRequester";
 import {Layer} from "../ui/layer";
-import {ActionInterface, ActionType} from "./actionInterface";
+import {ActionInterface} from "./actionInterface";
 
 /**
  * Hand tool, allows the user to translate the canvas in the viewport.
@@ -24,7 +23,6 @@ export class HandTool extends Tool {
      * Save positions as global coordinates.
      * @param {ImageData} img Ignored
      * @param {Vec2} pos Starting position in local coordinates.
-     * @param {Project} project Saved in order to compute global coordinates.
      */
     startUse(img: ImageData, pos: Vec2) {
         let data = {
