@@ -60,7 +60,6 @@ export class Project {
         this.previewLayer = new Layer(this.dimensions);
         this.currentLayer = new Layer(this.dimensions);
         this.workingLayer = new Layer(this.dimensions);
-        this.workingLayer.getContext().globalCompositeOperation = "copy";
 
         this.layerList = [this.currentLayer]; // The renderer draw layers in order + preview layer position specified by renderPreviewPosition.
         this.renderPreviewPosition = -1; // -1 is at the end.
@@ -299,6 +298,7 @@ export class Project {
                 // The tool can see what is in the layer on application.
                 let draw_layer = action.toolSettings["layer"];
                 this.previewLayer.getContext().drawImage(this.layerList[draw_layer].getHTMLElement(), 0, 0);
+                this.workingLayer.reset();
                 this.workingLayer.getContext().drawImage(this.layerList[draw_layer].getHTMLElement(), 0, 0);
 
                 this.renderPreviewPosition = draw_layer;
@@ -487,7 +487,12 @@ export class Project {
      * for the user
      */
     saveProject () {
-        let content = this.currentLayer.getHTMLElement()
+        this.workingLayer.reset();
+        for (let i=0; i<this.layerList.length; i++) {
+            this.workingLayer.getContext().drawImage(this.layerList[i].getHTMLElement(), 0, 0);
+        }
+
+        let content = this.workingLayer.getHTMLElement()
             .toDataURL("image/png")
             .replace("image/png","image/octet-stream");
         let fake_link = document.createElement('a');
