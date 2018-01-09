@@ -3,7 +3,7 @@
  *@brief Project class representing a project. (controller)
  */
 
-import {Layer} from "./ui/layer";
+import {Layer, LayerInfo} from "./ui/layer";
 import {Tool} from "./tools/tool";
 import {Vec2} from "./vec2";
 import {PixelSelectionHandler} from "./selection/selection";
@@ -217,7 +217,6 @@ export class Project {
      * @returns {Promise<ActionInterface>}
      */
     async applyAction (action: ActionInterface, selectionHandler: PixelSelectionHandler, generateHistory: boolean): Promise<ActionInterface> {
-
         if (action.type == ActionType.ToolApply) {
             /*
              * GET TOOL AND SET TOOL STATE.
@@ -359,7 +358,6 @@ export class Project {
                 highlight_layer(this.ui, indexNewCurrentLayer);
             }
 
-
             return {
                 toolName: "AddLayer",
                 actionData: {
@@ -389,6 +387,26 @@ export class Project {
                 toolName: "DeleteLayer",
                 actionData: action.actionData.position,
                 type: ActionType.DeleteLayer,
+                toolSettings: {}
+            };
+        } else if (action.type == ActionType.UpdateLayerInfo) {
+            console.log("UPDATE RECV", action.actionData.content);
+
+            let prevInfo = this.layerList[action.actionData.position].layerInfo;
+            this.layerList[action.actionData.position].layerInfo = new LayerInfo();
+            this.layerList[action.actionData.position].layerInfo.copyFrom(action.actionData.content);
+            if (this.ui != null) {
+                this.ui.layer_menu_controller = setup_layer_menu(this.ui, document.getElementById("layerManager_container"));
+                highlight_layer(this.ui, this.layerList.indexOf(this.currentLayer));
+            }
+
+            return {
+                toolName: "UpdateLayerInfo",
+                actionData: {
+                    position: action.actionData.position,
+                    content: prevInfo,
+                },
+                type: ActionType.UpdateLayerInfo,
                 toolSettings: {}
             };
         }
@@ -456,6 +474,19 @@ export class Project {
         };
         this.link.sendAction(action);
     };
+
+    updateLayerInfo(layer: Layer, layerInfo: LayerInfo) {
+        let action = {
+            toolName: "UpdateLayerInfo",
+            actionData: {
+                position: this.layerList.indexOf(layer),
+                content: layerInfo,
+            },
+            type: ActionType.UpdateLayerInfo,
+            toolSettings: {}
+        };
+        this.link.sendAction(action);
+    }
 
     /**
      * Switch two Layers

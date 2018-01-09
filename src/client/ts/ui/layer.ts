@@ -185,4 +185,15 @@ export class LayerInfo {
             return "none";
         }
     }
+
+    clone(): LayerInfo {
+        let layerInfo = new LayerInfo();
+        layerInfo.copyFrom(this);
+        return layerInfo;
+    }
+
+    copyFrom(layerInfo: LayerInfo) {
+        this.name = layerInfo.name;
+        this.blur = layerInfo.blur;
+    }
 }

@@ -60,4 +60,8 @@ export enum ActionType {
      * Apply tool action.
      */
     ToolApply,
+    /**
+     * Update Layer info action
+     */
+    UpdateLayerInfo,
 }
