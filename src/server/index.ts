@@ -129,7 +129,9 @@ io.on("connection", function (socket: SocketIO.Socket) {
     socket.on("action", function (data: ActionNetworkPacket) {
         if (data.sender !== socket.id) {
           console.warn("Some guy is trying to fuck everything up.");
-          socket.disconnect();
+          console.warn("Socket:" + socket.id);
+          console.warn("Sender:" + data.sender);
+          return;
         }
 
         let name = client_project[socket.id];
