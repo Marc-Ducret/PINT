@@ -47,9 +47,20 @@ export class ToolRegistry {
      * @param{string} name the name of the tool
      * @return the found tool
      */
-    getToolByName(name: string) {
+    getToolByName(name: string): Tool {
         if (this.registry[name] === undefined)
             throw "No such tool " + name;
         return this.registry[name];
+    }
+
+    /**
+     * @returns {Array<Tool>} An array containing all tools
+     */
+    getTools(): Array<Tool> {
+        let tools = [];
+        for (name in this.registry) {
+            tools.push(this.registry[name]);
+        }
+        return tools;
     }
 }
