@@ -23,6 +23,12 @@ deploy:
     local_dir: build
     on:
       repo: VengeurK/PINT
+  - provider: pages
+    branch: master
+    skip_cleanup: true
+    github_token: $GITHUB_TOKEN
+    local_dir: build/client/
+    on:
       branch: master
 before_install:
 - export CHROME_BIN=chromium-browser

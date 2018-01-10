@@ -141,13 +141,22 @@ module.exports = function(grunt) {
                 }
             }
         },
-        /**
-         * Documentation generator.
-         */
         exec: {
+            /**
+             * Documentation generator.
+             */
             make_doc: {
-                command: 'node_modules/typedoc/bin/typedoc --mode file --module amd --out doc/ src/ts/'
+                command: 'node_modules/typedoc/bin/typedoc --mode file --module amd --target ES6 --excludeExternals --exclude \"**/lib/convnet/*.ts\" --out doc/ src/client/ts/'
             },
+            /**
+             * Documentation generator.
+             */
+            make_build_doc: {
+                command: 'node_modules/typedoc/bin/typedoc --mode file --module amd --target ES6 --excludeExternals --exclude \"**/lib/convnet/*.ts\" --out build/client/doc/ src/client/ts/'
+            },
+            /**
+             * Standalone app generator.
+             */
             electron_package: {
                 command: 'electron-packager build/client/ --electron-version=1.7.10'
             }
@@ -217,6 +226,19 @@ module.exports = function(grunt) {
         'copy:electron_package',
         'touch:fake_socketio',
         'exec:eletron_package']);
+
+
+    grunt.registerTask('client', [
+        'ts:client_standalone',
+        'ts:convnet',
+        'copy:materialize',
+        'copy:mat',
+        'copy:img',
+        'copy:jquery_dev',
+        'copy:requirejs',
+        'concat:css_dev',
+        'copy:html',
+        'touch:fake_socketio']);
 
 
     // Default task: dev build of the server with source maps
