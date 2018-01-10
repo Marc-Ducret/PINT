@@ -37,13 +37,16 @@ Project setup:
 * ``npm install``
 
 ### Build
-* Dev standalone client build: ``grunt dev-client``
-* Dev server build: ``grunt dev-server``
-* Release client build: ``grunt dev-client``
-* Release server build: ``grunt dev-server``
+* Standalone client build: ``grunt standalone-client``
+* Server build: ``grunt server``
 
 ### Run and test
+#### Server
 * Start server: ```npm start```
+#### Client
+* A folder named ```pint-<arch>``` should have been created after build. 
+Launching ```pint-<arch>/pint``` should launch the app.
+#### Misc
 * Documentation: ``grunt doc``
 * Tests: ``npm test``
 * Clean: ``grunt clean``
