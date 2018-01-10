@@ -148,6 +148,18 @@ export function setup_layer_menu(controller: UIController, base_element: HTMLEle
                     }
                 }, "Shadow");
 
+                addButton(layer.layerInfo.show ? "visibility" : "visibility_off", function (button) {
+                    if (button.get(0).textContent == "visibility") {
+                        let info = layer.layerInfo.clone();
+                        info.show = false;
+                        controller.project.updateLayerInfo(layer, info);
+                    } else {
+                        let info = layer.layerInfo.clone();
+                        info.show = true;
+                        controller.project.updateLayerInfo(layer, info);
+                    }
+                }, "Show");
+
                 if(i > 0) {
                     addButton("call_merge", async function (button) {
                         let content = layer.getHTMLElement().toDataURL();

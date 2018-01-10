@@ -166,21 +166,28 @@ export class LayerInfo {
     public name: string;
     public blur: boolean;
     public shadow: boolean;
+    public show: boolean;
 
     constructor() {
         this.name = "Layer";
         this.blur = false;
         this.shadow = false;
+        this.show = true;
     }
 
     getFilter(): string {
-        if (this.blur || this.shadow) {
+        if (this.blur || this.shadow || !this.show) {
             let s = "";
             if (this.blur) {
                 s += "blur(5px) ";
             }
+
             if (this.shadow) {
                 s += "drop-shadow(5px 5px 5px #000000) ";
+            }
+
+            if (!this.show) {
+                s += "opacity(0) ";
             }
             return s;
         } else {
@@ -198,6 +205,7 @@ export class LayerInfo {
         this.name = layerInfo.name;
         this.blur = layerInfo.blur;
         this.shadow = layerInfo.shadow;
+        this.show = layerInfo.show;
     }
 
     data(): Object {
@@ -205,6 +213,7 @@ export class LayerInfo {
             name: this.name,
             blur: this.blur,
             shadow: this.shadow,
+            show: this.show,
         };
     }
 }
