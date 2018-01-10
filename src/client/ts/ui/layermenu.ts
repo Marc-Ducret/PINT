@@ -107,7 +107,7 @@ export function setup_layer_menu(controller: UIController, base_element: HTMLEle
                 });
                 name_input.appendTo(name_field);
                 name_field.appendTo(edit_menu);
-                let addButton = function(text, onclick) {
+                let addButton = function(text, onclick, title) {
                     let button = $("<span/>");
                     button.addClass("medium material-icons");
                     button.mouseover(function () {
@@ -118,6 +118,7 @@ export function setup_layer_menu(controller: UIController, base_element: HTMLEle
                     });
                     button.css("border-radius", "10px");
                     button.css("padding", "10px");
+                    button.attr("title", title);
                     button.text(text);
                     button.click(function() {
                         onclick(button);
@@ -134,7 +135,7 @@ export function setup_layer_menu(controller: UIController, base_element: HTMLEle
                         info.blur = false;
                         controller.project.updateLayerInfo(layer, info);
                     }
-                });
+                }, "Blur");
                 addButton(layer.layerInfo.shadow ? "layers_clear" : "layers", function (button) {
                     if (button.get(0).textContent == "layers") {
                         let info = layer.layerInfo.clone();
@@ -145,7 +146,7 @@ export function setup_layer_menu(controller: UIController, base_element: HTMLEle
                         info.shadow = false;
                         controller.project.updateLayerInfo(layer, info);
                     }
-                });
+                }, "Shadow");
 
                 if(i > 0) {
                     addButton("call_merge", async function (button) {
@@ -168,15 +169,15 @@ export function setup_layer_menu(controller: UIController, base_element: HTMLEle
                             actionData: {x: 0, y: 0},
                         });
                         controller.project.deleteLayer(i);
-                    });
+                    }, "Merge");
                     addButton("arrow_upward", function(button) {
                         controller.project.exchangeLayers(i, i-1);
-                    });
+                    }, "Go up");
                 }
                 if(i < controller.project.layerList.length-1) {
                     addButton("arrow_downward", function(button) {
                         controller.project.exchangeLayers(i, i+1);
-                    });
+                    }, "Go down");
                 }
             }
         });
