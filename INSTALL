@@ -1,0 +1,12 @@
+### INSTALLING PINT ###
+
+npm install -g grunt-cli
+npm install
+
+# For server:
+grunt server
+npm start
+
+# For client:
+grunt standalone-client
+pint-<arch>/pint
