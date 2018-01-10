@@ -24,7 +24,7 @@ Moreover it can either be built as:
 ## Development 
 
 PINT is written in [Typescript](https://www.typescriptlang.org/) 2.5.3. 
-The source code is available [here](https://vengeurk.github.io/PINT/doc).
+The source code documentation is available [here](https://vengeurk.github.io/PINT/doc).
 You can find [hints](https://github.com/VengeurK/PINT/blob/master/CONTRIBUTING.md) to understand the structure of the project.
 ### Installation 
 Requirements:
