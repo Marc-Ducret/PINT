@@ -1,6 +1,6 @@
 {
   "name": "pint",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "PINT is a drawing software",
   "main": "index.js",
   "scripts": {
@@ -26,6 +26,7 @@
     "@types/socket.io-client": "^1.4.32",
     "amd-loader": "0.0.8",
     "canvas": "^1.6.9",
+    "electron-packager": "^10.1.1",
     "express": "^4.16.2",
     "grunt": "~1.0.1",
     "grunt-cleanempty": "^1.0.4",

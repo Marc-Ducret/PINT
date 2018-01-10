@@ -158,7 +158,7 @@ module.exports = function(grunt) {
              * Standalone app generator.
              */
             electron_package: {
-                command: 'electron-packager build/client/ --electron-version=1.7.10'
+                command: 'node_modules/electron-packager/cli.js build/client/ --electron-version=1.7.10'
             }
         },
         /**
@@ -225,7 +225,7 @@ module.exports = function(grunt) {
         'copy:electron',
         'copy:electron_package',
         'touch:fake_socketio',
-        'exec:eletron_package']);
+        'exec:electron_package']);
 
 
     grunt.registerTask('client', [
