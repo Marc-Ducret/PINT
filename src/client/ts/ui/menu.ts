@@ -480,9 +480,9 @@ function create_function_icon(function_call: string, description: string, icon: 
  * @returns {HTMLElement}
  */
 function scheduleUpdates(elem: HTMLElement, update: (elem: HTMLElement) => void): HTMLElement {
-   setInterval(function() {
+   /*setInterval(function() {
         update(elem);
-    }, 500);
+    }, 500);*/
     return elem;
 }
 
