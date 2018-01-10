@@ -43,7 +43,7 @@ export class ToolRegistry {
 
     /**
      * Retrieve a tool in the registry
-     * @throws{No such tool} if there is no such tool
+     * @throws{'No such tool'} if there is no such tool
      * @param{string} name the name of the tool
      * @return the found tool
      */
@@ -58,7 +58,7 @@ export class ToolRegistry {
      */
     getTools(): Array<Tool> {
         let tools = [];
-        for (name in this.registry) {
+        for (let name in this.registry) {
             tools.push(this.registry[name]);
         }
         return tools;
