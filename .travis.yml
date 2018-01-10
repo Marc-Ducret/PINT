@@ -12,8 +12,9 @@ addons:
     - g++-4.8
     - libgif-dev
 script:
-- grunt release
+- grunt client
 - npm test
+- grunt builddoc
 deploy:
   - provider: heroku
     api_key:

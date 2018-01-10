@@ -256,5 +256,7 @@ module.exports = function(grunt) {
 
     // Generate documentation.
     grunt.registerTask('doc',['exec:make_doc']);
+    grunt.registerTask('builddoc',['exec:make_build_doc'])
+
     // Tests executed with npm test
 };
