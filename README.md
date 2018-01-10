@@ -1,13 +1,31 @@
 
-# PINT [![Build Status](https://travis-ci.org/VengeurK/PINT.svg?branch=master)](https://travis-ci.org/VengeurK/PINT)
-
+# PINT 
 PINT is a revolutionary painting Web-app rocking on JavaScript and HTML5 canvas.
 
-The latest builds are available:
-* [master](https://vengeurk.github.io/PINT/).
-* [server](https://pintjs.herokuapp.com/).
+The latest build is available on [Heroku](https://pintjs.herokuapp.com/).
 
-## Installation 
+## Features
+
+PINT is an open source alternative to the Glorious Microsoft Paint. 
+Most standard features are therefore available:
+* Line and shape drawing
+* Selection, copy and paste
+* Pen drawing
+* Fill tool
+* Transparency channel
+* Layers with composition settings
+* Import/export image
+
+Moreover it can either be built as:
+ * a standalone client-side app.
+ * a server hosting multiple drawings and that features online collaboration.
+
+## Development 
+
+PINT is written in [Typescript](https://www.typescriptlang.org/) 2.5.3. 
+The source code is available [here](https://vengeurk.github.io/PINT/doc).
+You can find [hints](https://github.com/VengeurK/PINT/blob/master/CONTRIBUTING.md) to understand the structure of the project.
+### Installation 
 Requirements:
 * a keyboard
 * a computer
@@ -17,9 +35,13 @@ Project setup:
 * ``npm install -g grunt-cli`` (might need to be as root)
 * ``npm install``
 
-Build commands:
-* Dev build: ``grunt``
-* Release build: ``grunt release``
+### Build
+* Dev standalone client build: ``grunt dev-client``
+* Dev server build: ``grunt dev-server``
+* Release client build: ``grunt dev-client``
+* Release server build: ``grunt dev-server``
+
+### Run and test
 * Start server: ```npm start```
 * Documentation: ``grunt doc``
 * Tests: ``npm test``
