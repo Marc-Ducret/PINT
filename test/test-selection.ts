@@ -85,13 +85,13 @@ describe('Shape selection', function () {
                 return new Vec2(Math.floor(Math.random() * w), Math.floor(Math.random() * h));
             };
 
-            proj.currentSelection.reset();
-
-            tool.startUse(new ImageData(w, h), randPos());
-            tool.endUse(randPos());
-
-            let testShape = function(shape) {
+            let testShape = function (shape) {
                 tool.settingsSetGetter('shape', () => shape);
+
+                proj.currentSelection.reset();
+
+                tool.startUse(new ImageData(w, h), randPos());
+                tool.endUse(randPos());
 
                 let row = new Uint8ClampedArray(w);
                 for(let y = 0; y < h; y++) {
