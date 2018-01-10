@@ -1,9 +1,23 @@
 module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON("package.json"),
+        /**
+         * Typescript compilation.
+         */
         ts: {
-            dev: {
-                src: ['src/**/*.ts'],
+            server: {
+                src: ['src/**/**.ts'],
+                dest: 'build/',
+                options: {
+                    target: 'es6',
+                    module: 'amd',
+                    moduleResolution: 'node',
+                    rootDir: 'src/',
+                    fast: 'always'
+                }
+            },
+            client_standalone: {
+                src: ['src/client/*.ts'],
                 dest: 'build/',
                 options: {
                     target: 'es6',
@@ -24,6 +38,9 @@ module.exports = function(grunt) {
                 }
             }
         },
+        /**
+         * File concatenation.
+         */
         concat: {
             css_dev: {
                 src: ["node_modules/materialize-css/dist/css/materialize.css",
@@ -40,6 +57,9 @@ module.exports = function(grunt) {
                 dest: "build/server/main.js"
             }
         },
+        /**
+         * Minify HTML
+         */
         htmlmin: {
             main: {
                 options: {
@@ -51,39 +71,18 @@ module.exports = function(grunt) {
                 }
             }
         },
+        /**
+         * Minify CSS
+         */
         cssmin: {
             main: {
                 src: "build/client/main.css",
                 dest: "build/client/main.css"
             }
         },
-        jasmine: {
-            main: {
-                src: ["build/client/main.js", "node_modules/jquery/dist/jquery.min.js", "node_modules/jasmine-jquery/lib/jasmine-jquery.js"],
-                options: {
-                    specs: "test/*.js"
-                }
-            }
-        },
-        clean: {
-            main: ["build/**/*", ".tscache"]
-        },
-        cleanempty: {
-            options: {
-                folders: true
-            },
-            src: ['build/**']
-        },
-        jsdoc : {
-            dist : {
-                src: ['src/client/ts/*.ts', 'README.md'],
-                options: {
-                    destination : 'doc',
-                    template : "node_modules/ink-docstrap/template",
-                    configure : "node_modules/ink-docstrap/template/jsdoc.conf.json"
-                }
-            }
-        },
+        /**
+         * Copy image content and libraries.
+         */
         copy: {
             jquery_dev: {
                 src: 'node_modules/jquery/dist/jquery.js',
@@ -112,8 +111,23 @@ module.exports = function(grunt) {
                 cwd: 'node_modules/materialize-css/js',
                 src: '*',
                 dest: 'build/client/materialize/',
+            },
+            html: {
+                src: 'src/client/index.html',
+                dest: 'build/client/index.html',
+            },
+            electron: {
+                src: 'src/desktopapp/main.js',
+                dest: 'build/client/index.js',
+            },
+            electron_package: {
+                src: 'package.json',
+                dest: 'build/client/',
             }
         },
+        /**
+         * Minify in one single file.
+         */
         requirejs: {
             release: {
                 options: {
@@ -121,17 +135,49 @@ module.exports = function(grunt) {
                     name: 'main',
                     out: 'build/client/main.js',
                     optimize: 'uglify2',
-                    generateSourceMaps: true,
+                    generateSourceMaps: false,
                     preserveLicenseComments: false,
-                    useSourceUrl: true
+                    useSourceUrl: false
                 }
             }
         },
+        /**
+         * Documentation generator.
+         */
         exec: {
             make_doc: {
                 command: 'node_modules/typedoc/bin/typedoc --mode file --module amd --out doc/ src/ts/'
+            },
+            electron_package: {
+                command: 'electron-packager build/client/ --electron-version=1.7.10'
             }
-        }
+        },
+        /**
+         * Test framework.
+         */
+        jasmine: {
+            main: {
+                src: ["build/client/main.js", "node_modules/jquery/dist/jquery.min.js", "node_modules/jasmine-jquery/lib/jasmine-jquery.js"],
+                options: {
+                    specs: "test/*.js"
+                }
+            }
+        },
+        /**
+         * Clean build.
+         */
+        clean: {
+            main: ["build/**/*", ".tscache"]
+        },
+        cleanempty: {
+            options: {
+                folders: true
+            },
+            src: ['build/**']
+        },
+        touch: {
+            fake_socketio: 'build/client/socket.io/socket.io.js.js'
+        },
     });
 
     grunt.loadNpmTasks('grunt-contrib-concat');
@@ -143,12 +189,50 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-cleanempty');
     grunt.loadNpmTasks('grunt-ts');
     grunt.loadNpmTasks('grunt-exec');
+    grunt.loadNpmTasks('grunt-touch');
 
-    // Default task: dev build with source maps
-    grunt.registerTask('default', ['ts:dev', 'concat:js_server_header', 'ts:convnet', 'copy:materialize', 'copy:mat', 'copy:img', 'copy:jquery_dev', 'copy:requirejs', 'concat:css_dev', 'htmlmin']);
-    // Release task: compress js, html, css, remove source maps.
-    grunt.registerTask('release', ['ts:dev', 'copy:img', 'copy:jquery_release', 'copy:requirejs', 'concat:css', 'htmlmin', 'cssmin', 'clean', 'cleanempty']);
+    grunt.registerTask('server', [
+        'ts:server',
+        'ts:convnet',
+        'copy:materialize',
+        'copy:mat',
+        'copy:img',
+        'copy:jquery_dev',
+        'copy:requirejs',
+        'concat:css_dev',
+        'concat:js_server_header',
+        'copy:html']);
+
+    grunt.registerTask('standalone-client', [
+        'ts:client_standalone',
+        'ts:convnet',
+        'copy:materialize',
+        'copy:mat',
+        'copy:img',
+        'copy:jquery_dev',
+        'copy:requirejs',
+        'concat:css_dev',
+        'copy:html',
+        'copy:electron',
+        'copy:electron_package',
+        'touch:fake_socketio',
+        'exec:eletron_package']);
+
+
+    // Default task: dev build of the server with source maps
+    grunt.registerTask('default', [
+        'ts:server',
+        'ts:convnet',
+        'copy:materialize',
+        'copy:mat',
+        'copy:img',
+        'copy:jquery_dev',
+        'copy:requirejs',
+        'concat:css_dev',
+        'concat:js_server_header',
+        'copy:html']);
+
     // Generate documentation.
     grunt.registerTask('doc',['exec:make_doc']);
     // Tests executed with npm test
-}
+};

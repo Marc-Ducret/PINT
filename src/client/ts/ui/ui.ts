@@ -6,12 +6,14 @@ import {Viewport} from "./viewport";
 import {ToolRegistry} from "../tools/toolregistry";
 import {Vec2} from "../vec2";
 import {MenuController, MenuState, setup_menu} from "./menu";
-import * as io from 'socket.io-client';
 import {highlight_layer, LayerMenuController, setup_layer_menu} from "./layermenu"
 import {KeyboardManager} from "./keyboardManager";
 import {Tool} from "../tools/tool";
 import {ActionType} from "../tools/actionInterface";
 import {Layer, LayerInfo} from "./layer";
+
+import * as io from 'socket.io-client';
+import {unwatchFile} from "fs";
 
 /**
  * @file User interface handler
@@ -114,19 +116,21 @@ export class UIController {
         /*
          * NETWORK EVENTS
          */
-        // On connect, allow load from server.
-        this.socket = io.connect('//');
-        this.socket.on("connect", on_connected);
-        this.socket.on("reconnect", on_connected);
-        this.socket.on("reconnecting", on_connection_pending);
-        this.socket.on("reconnect_error", on_failed);
-        this.socket.on("reconnect_failed", on_failed);
-        this.socket.on("disconnect", on_failed);
-        this.socket.on("connect_error", on_failed);
-        this.socket.on("connect_timeout", on_failed);
-        this.socket.on("error", on_failed);
+        if (io != undefined) {
+            // On connect, allow load from server.
+            this.socket = io.connect('//');
+            this.socket.on("connect", on_connected);
+            this.socket.on("reconnect", on_connected);
+            this.socket.on("reconnecting", on_connection_pending);
+            this.socket.on("reconnect_error", on_failed);
+            this.socket.on("reconnect_failed", on_failed);
+            this.socket.on("disconnect", on_failed);
+            this.socket.on("connect_error", on_failed);
+            this.socket.on("connect_timeout", on_failed);
+            this.socket.on("error", on_failed);
 
-        this.socket.on("joined", this.loadServerHostedCallback.bind(this));
+            this.socket.on("joined", this.loadServerHostedCallback.bind(this));
+        }
 
         /*
          * KEYBOARD SHORTCUTS

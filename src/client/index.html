@@ -49,8 +49,11 @@
 
     </div>
 </div>
+<!-- Insert this line above script imports  -->
+<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
 
 <script type="text/javascript">
+
     var require = {
         baseUrl: '.',
 
@@ -80,6 +83,9 @@
         }
     };
 </script>
+
+<!-- Insert this line after script imports -->
+<script>if (window.module) module = window.module;</script>
 <script type="text/javascript" src="require.js" data-main="main.js"></script>
 
 <script type="text/javascript" src="mat.js"></script>
