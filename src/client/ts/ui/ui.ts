@@ -519,9 +519,9 @@ export class UIController {
 
         if (this.redraw) {
             if (this.project != null) {
-                this.viewport.renderLayers(this.project.layerList, this.project.previewLayer, this.project.layerList.indexOf(this.project.currentLayer), [this.project.currentSelection]);
+                this.viewport.renderLayers(this.project.layerList, this.project.previewLayer, this.project.layerList.indexOf(this.project.currentLayer), this.project.replaceLayer,[this.project.currentSelection]);
             } else {
-                this.viewport.renderLayers([], null, 0, []);
+                this.viewport.renderLayers([], null, 0, false,[]);
             }
 
         }

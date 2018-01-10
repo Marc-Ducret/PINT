@@ -27,6 +27,7 @@ export class Project {
     previewLayer: Layer;
     currentLayer: Layer;
     workingLayer: Layer;
+    replaceLayer: boolean;
 
     layerList: Array<Layer>; // The renderer draw layers in order.
     currentTool: Tool;
@@ -64,6 +65,7 @@ export class Project {
         this.currentTool = null;
         this.ui = ui;
         this.redraw = false;
+        this.replaceLayer = false;
 
 
         /** selection is a table of int between 0 and 255 that represents selected
@@ -219,6 +221,7 @@ export class Project {
     async applyAction(action: ActionInterface, selectionHandler: PixelSelectionHandler, generateHistory: boolean): Promise<ActionInterface> {
         switch (action.type) {
             case ActionType.ToolApply: {
+                this.replaceLayer = false;
                 /*
                  * GET TOOL AND SET TOOL STATE.
                  */
@@ -297,6 +300,10 @@ export class Project {
                     this.previewLayer.getContext().drawImage(this.layerList[draw_layer].getHTMLElement(), 0, 0);
                     this.workingLayer.reset();
                     this.workingLayer.getContext().drawImage(this.layerList[draw_layer].getHTMLElement(), 0, 0);
+
+                    this.replaceLayer = true;
+                } else {
+                    this.replaceLayer = false;
                 }
                 tool.drawPreview(this.previewLayer);
 

@@ -19,6 +19,7 @@ export class Viewport {
     private previewLayer: Layer;
     private previewIndex: number;
     private pixelSelection: Array<PixelSelectionHandler>;
+    private replaceLayer: boolean;
 
 
     /**
@@ -45,7 +46,7 @@ export class Viewport {
         this.viewportDimensions = new Vec2(this.canvas.width, this.canvas.height);
 
         window.requestAnimationFrame(function () {
-            this.renderLayers(this.layerList, this.previewLayer, this.previewIndex, this.pixelSelection);
+            this.renderLayers(this.layerList, this.previewLayer, this.previewIndex, this.replaceLayer, this.pixelSelection);
         }.bind(this));
     };
 
@@ -84,7 +85,7 @@ export class Viewport {
     /**
      * Render layers one by one in order, applying transformations such as zoom and translation.
      */
-    renderLayers(layerList: Array<Layer>, previewLayer: Layer, previewIndex: number, pixelSelection: Array<PixelSelectionHandler>) {
+    renderLayers(layerList: Array<Layer>, previewLayer: Layer, previewIndex: number, replaceLayer: boolean, pixelSelection: Array<PixelSelectionHandler>) {
         /*
          * Save settings.
          */
@@ -92,6 +93,7 @@ export class Viewport {
         this.previewLayer = previewLayer;
         this.previewIndex = previewIndex;
         this.pixelSelection = pixelSelection;
+        this.replaceLayer = replaceLayer;
 
         if (layerList.length > 0) {
             this.layerDimensions.x = layerList[0].getWidth();
@@ -137,16 +139,19 @@ export class Viewport {
         for (let i = 0; i < this.layerList.length; i++) {
             let layer = this.layerList[i];
             (<any> this.context).filter = layer.layerInfo.getFilter();
-            this.context.drawImage( // Draw normal layer
-                layer.getHTMLElement(),
-                -this.currentTranslation.x - translation_base.x,
-                -this.currentTranslation.y - translation_base.y,
-                crop_dimensions.x,
-                crop_dimensions.y,
-                0,
-                0,
-                this.viewportDimensions.x,
-                this.viewportDimensions.y);
+            if ((!replaceLayer) || (i != this.previewIndex)) {
+                this.context.drawImage( // Draw normal layer
+                    layer.getHTMLElement(),
+                    -this.currentTranslation.x - translation_base.x,
+                    -this.currentTranslation.y - translation_base.y,
+                    crop_dimensions.x,
+                    crop_dimensions.y,
+                    0,
+                    0,
+                    this.viewportDimensions.x,
+                    this.viewportDimensions.y);
+            }
+
             if (i == this.previewIndex) { // Preview layer drawn on top
                 this.context.drawImage(
                     this.previewLayer.getHTMLElement(),
