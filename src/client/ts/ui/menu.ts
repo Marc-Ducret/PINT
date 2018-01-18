@@ -33,7 +33,7 @@ export enum MenuState {
  * Menu interface controller
  */
 export class MenuController {
-    elements: any = eval("new Map()");
+    elements: Map<MenuState, Array<HTMLElement>> = new Map();
     displayedCategory: MenuState = MenuState.NoProjectOffline;
     menu_container: HTMLElement;
 
