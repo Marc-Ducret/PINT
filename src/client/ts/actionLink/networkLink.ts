@@ -102,6 +102,11 @@ export class NetworkLink extends ActionLink {
         }
 
         // Action forward.
+        if (action.sender == this.socket.id) {
+            this.project.setPreviewLayer("localhost");
+        } else {
+            this.project.setPreviewLayer(action.sender);
+        }
         this.project.applyAction(action.data, this.selectionHandlers[action.sender], false);
     }
 

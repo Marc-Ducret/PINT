@@ -24,7 +24,8 @@ import {highlight_layer, setup_layer_menu} from "./ui/layermenu";
 export class Project {
     name: string;
     dimensions: Vec2;
-    previewLayer: Layer;
+    previewLayers: Map<string, Layer>;
+    currentPreviewLayer: Layer;
     currentLayer: Layer;
     workingLayer: Layer;
     replaceLayer: boolean;
@@ -56,7 +57,7 @@ export class Project {
             this.dimensions = dimensions;
         }
 
-        this.previewLayer = new Layer(this.dimensions);
+        this.previewLayers = new Map();
         this.currentLayer = new Layer(this.dimensions);
         this.workingLayer = new Layer(this.dimensions);
 
@@ -143,6 +144,7 @@ export class Project {
 
             action.toolSettings["layer"] = this.layerList.indexOf(this.currentLayer); // Encapsulate layer information.
 
+            this.setPreviewLayer("localhost");
             this.applyAction(action, this.currentSelection, false);
 
             if (this.currentTool.getSettings().canBeSentOverNetwork() === true) {
@@ -233,7 +235,7 @@ export class Project {
                 /*
                  * RESET
                  */
-                this.previewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
+                this.currentPreviewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
 
                 let draw_layer = action.toolSettings["layer"];
                 console.log("Action on layer: " + draw_layer);
@@ -245,14 +247,14 @@ export class Project {
                     }
 
                     if (tool.readahead) { // The tool can see what is in the layer on application.
-                        this.previewLayer.getContext().drawImage(this.layerList[draw_layer].getHTMLElement(), 0, 0);
+                        this.currentPreviewLayer.getContext().drawImage(this.layerList[draw_layer].getHTMLElement(), 0, 0);
                         this.layerList[draw_layer].applyInvMask(selectionHandler);
                     }
 
                     /*
                      * Apply tool and generate undo if needed.
                      */
-                    let undo = await tool.applyTool(this.previewLayer, generateHistory);
+                    let undo = await tool.applyTool(this.currentPreviewLayer, generateHistory);
                     if (undo != null && undo.type == ActionType.ToolApplyHistory) {
 
                         undo.type = ActionType.ToolApply;
@@ -268,16 +270,16 @@ export class Project {
                     }
 
 
-                    this.previewLayer.applyMask(selectionHandler);
-                    this.layerList[draw_layer].getContext().drawImage(this.previewLayer.getHTMLElement(), 0, 0);
+                    this.currentPreviewLayer.applyMask(selectionHandler);
+                    this.layerList[draw_layer].getContext().drawImage(this.currentPreviewLayer.getHTMLElement(), 0, 0);
 
-                    this.previewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
+                    this.currentPreviewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
                     this.redraw = true;
                     return undo;
                 } else { /// Or not.
                     let undo = await tool.applyTool(this.layerList[draw_layer], generateHistory);
 
-                    this.previewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
+                    this.currentPreviewLayer.getContext().clearRect(0, 0, this.dimensions.x, this.dimensions.y);
                     this.redraw = true;
                     return undo;
                 }
@@ -293,11 +295,11 @@ export class Project {
                 tool.getSettings().importParameters(action.toolSettings, selectionHandler, this.getUI());
                 tool.updateData(action.actionData);
 
-                this.previewLayer.reset();
+                this.currentPreviewLayer.reset();
                 if (tool.readahead) {
                     // The tool can see what is in the layer on application.
                     let draw_layer = action.toolSettings["layer"];
-                    this.previewLayer.getContext().drawImage(this.layerList[draw_layer].getHTMLElement(), 0, 0);
+                    this.currentPreviewLayer.getContext().drawImage(this.layerList[draw_layer].getHTMLElement(), 0, 0);
                     this.workingLayer.reset();
                     this.workingLayer.getContext().drawImage(this.layerList[draw_layer].getHTMLElement(), 0, 0);
 
@@ -305,14 +307,14 @@ export class Project {
                 } else {
                     this.replaceLayer = false;
                 }
-                tool.drawPreview(this.previewLayer);
+                tool.drawPreview(this.currentPreviewLayer);
 
                 if (!tool.overrideSelectionMask) {
                     // Optimized masking according to what is displayed.
-                    this.ui.viewport.applyMask(this.previewLayer, selectionHandler);
+                    this.ui.viewport.applyMask(this.currentPreviewLayer, selectionHandler);
                     this.ui.viewport.applyInvMask(this.workingLayer, selectionHandler);
 
-                    this.previewLayer.getContext().drawImage(this.workingLayer.getHTMLElement(), 0, 0);
+                    this.currentPreviewLayer.getContext().drawImage(this.workingLayer.getHTMLElement(), 0, 0);
                 }
 
                 this.redraw = true;
@@ -458,7 +460,7 @@ export class Project {
     };
 
     /**
-     * Add a Layer in the layerList, just before the previewLayer and the selectionLayer
+     * Add a Layer in the layerList, just before the currentPreviewLayer and the selectionLayer
      */
     addLayer() {
         let action = {
@@ -561,5 +563,18 @@ export class Project {
             color = "#cc3058";
         }
         elem.setAttribute("style", "color: " + color);
+    }
+
+    /**
+     * Update current preview layer to specified id.
+     * @param {string} sender
+     */
+    setPreviewLayer(sender: string) {
+        if (this.previewLayers.get(sender) == undefined) {
+            this.previewLayers.set(sender, new Layer(this.dimensions));
+            console.log("Created a new layer for " + sender);
+        }
+
+        this.currentPreviewLayer = this.previewLayers.get(sender);
     }
 }

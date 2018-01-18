@@ -16,7 +16,7 @@ export class Viewport {
 
     fallbackDisplay: HTMLImageElement;
     private layerList: Array<Layer>;
-    private previewLayer: Layer;
+    private previewLayers: IterableIterator<Layer>;
     private previewIndex: number;
     private pixelSelection: Array<PixelSelectionHandler>;
     private replaceLayer: boolean;
@@ -46,7 +46,7 @@ export class Viewport {
         this.viewportDimensions = new Vec2(this.canvas.width, this.canvas.height);
 
         window.requestAnimationFrame(function () {
-            this.renderLayers(this.layerList, this.previewLayer, this.previewIndex, this.replaceLayer, this.pixelSelection);
+            this.renderLayers(this.layerList, this.previewLayers, this.previewIndex, this.replaceLayer, this.pixelSelection);
         }.bind(this));
     };
 
@@ -85,12 +85,12 @@ export class Viewport {
     /**
      * Render layers one by one in order, applying transformations such as zoom and translation.
      */
-    renderLayers(layerList: Array<Layer>, previewLayer: Layer, previewIndex: number, replaceLayer: boolean, pixelSelection: Array<PixelSelectionHandler>) {
+    renderLayers(layerList: Array<Layer>, previewLayers: IterableIterator<Layer>, previewIndex: number, replaceLayer: boolean, pixelSelection: Array<PixelSelectionHandler>) {
         /*
          * Save settings.
          */
         this.layerList = layerList;
-        this.previewLayer = previewLayer;
+        this.previewLayers = previewLayers;
         this.previewIndex = previewIndex;
         this.pixelSelection = pixelSelection;
         this.replaceLayer = replaceLayer;
@@ -152,17 +152,20 @@ export class Viewport {
                     this.viewportDimensions.y);
             }
 
-            if (i == this.previewIndex) { // Preview layer drawn on top
-                this.context.drawImage(
-                    this.previewLayer.getHTMLElement(),
-                    -this.currentTranslation.x - translation_base.x,
-                    -this.currentTranslation.y - translation_base.y,
-                    crop_dimensions.x,
-                    crop_dimensions.y,
-                    0,
-                    0,
-                    this.viewportDimensions.x,
-                    this.viewportDimensions.y);
+            if (i == this.previewIndex) { // Preview layers drawn on top
+                for (let previewLayer of this.previewLayers) {
+                    this.context.drawImage(
+                        previewLayer.getHTMLElement(),
+                        -this.currentTranslation.x - translation_base.x,
+                        -this.currentTranslation.y - translation_base.y,
+                        crop_dimensions.x,
+                        crop_dimensions.y,
+                        0,
+                        0,
+                        this.viewportDimensions.x,
+                        this.viewportDimensions.y);
+
+                }
             }
         }
 

@@ -18,6 +18,7 @@ export class LocalLink extends ActionLink {
         super();
         this.project = project;
         this.history = new PintHistory(project);
+        this.project.setPreviewLayer("localhost");
     }
 
     /**
