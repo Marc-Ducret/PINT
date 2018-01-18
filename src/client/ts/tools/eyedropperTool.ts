@@ -66,7 +66,9 @@ export class EyedropperTool extends Tool {
 
     endUse(pos: Vec2) {
         this.continueUse(pos);
-        this.icon.removeAttribute("style");
+        if (this.icon != null) {
+            this.icon.removeAttribute("style");
+        }
     }
 
     drawPreview(layer: Layer) {
