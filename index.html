@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>PINT</title>
+
+    <link rel="stylesheet" type="text/css" href="main.css?__inline">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,400" rel="stylesheet">
+</head>
+<body>
+<div>
+    <!-- MENU BAR -->
+    <div class="row z-depth-3 side-nav" id="top-nav">
+
+    </div>
+
+    <a href="#" data-activates="top-nav"
+       class="button-collapse-left fixed-low-left btn-floating btn-huge hide-on-large-only">
+        <i class="material-icons huge">menu</i>
+    </a>
+
+    <a href="#" data-activates="right_pane"
+       class="button-collapse-right fixed-low-right btn-floating btn-huge hide-on-large-only">
+        <i class="material-icons huge">build</i>
+    </a>
+
+
+    <div class="row z-depth-3">
+
+        <!-- horizontal bar to display the layer Manager : -->
+        <div class="col l2 hide-on-med-and-down" id="left_pane">
+            <h2 id="name_layer_container"></h2>
+            <div id="layerManager_container"></div>
+        </div>
+
+        <!-- area of the pinted canvas : -->
+        <div class="col l8 m12 s12" id="viewport-container">
+            <canvas id="viewport"></canvas>
+        </div>
+
+        <!-- vertical bar to display tool settings : -->
+        <div class="col l2 side-nav fixed" id="right_pane" style="padding: 10px">
+            <h2 id="name_container"></h2>
+            <div id="toolsettings_container"></div>
+        </div>
+
+    </div>
+</div>
+<!-- Insert this line above script imports  -->
+<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+
+<script type="text/javascript">
+
+    var require = {
+        baseUrl: '.',
+
+        paths: {
+            //main libraries
+            'materialize.global': 'materialize/global',
+            'materialize.sideNav': 'materialize/sideNav',
+            'hammerjs': 'materialize/hammer.min',
+            'jquery-hammerjs': 'materialize/jquery.hammer',
+            'velocity': 'materialize/velocity.min',
+            jquery: 'jquery',
+            'socket.io-client': 'socket.io/socket.io.js'
+        },
+        shim: {
+            'materialize.global': {
+                deps: ['jquery', 'hammerjs', 'jquery-hammerjs', 'velocity']
+            },
+            'materialize.sideNav': {
+                deps: ['materialize.global']
+            },
+            'velocity': {
+                deps: ['jquery']
+            },
+            jquery: {
+                exports: '$'
+            }
+        }
+    };
+</script>
+
+<!-- Insert this line after script imports -->
+<script>if (window.module) module = window.module;</script>
+<script type="text/javascript" src="require.js" data-main="main.js"></script>
+
+<script type="text/javascript" src="mat.js"></script>
+</body>
+</html>
