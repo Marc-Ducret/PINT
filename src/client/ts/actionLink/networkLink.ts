@@ -31,6 +31,14 @@ export interface HelloNetworkPacket {
      */
     sender: string,
     /**
+     * User name
+     */
+    name: string,
+    /**
+     * User color
+     */
+    color: string,
+    /**
      * Serialized instance of sender's PixelSelectionHandler.
      */
     serializedSelection: SerializedPixelSelectionHandler,
@@ -43,6 +51,8 @@ export class NetworkLink extends ActionLink {
     private socket: SocketIOClient.Socket;
     private project: Project;
     private me: string;
+    private names: Map<string, string>;
+    private colors: Map<string, string>;
 
     private selectionHandlers: { [id: string]: PixelSelectionHandler };
 
@@ -59,6 +69,9 @@ export class NetworkLink extends ActionLink {
 
         // Save socket id.
         this.me = this.socket.id;
+
+        this.names = new Map();
+        this.colors = new Map();
 
         // Prepare selection handlers
         this.selectionHandlers = {};
@@ -108,6 +121,19 @@ export class NetworkLink extends ActionLink {
             this.project.setPreviewLayer(action.sender);
         }
         this.project.applyAction(action.data, this.selectionHandlers[action.sender], false);
+        if (action.sender != this.socket.id) {
+            this.project.applyAction({
+                type: ActionType.DrawUser,
+                toolName: "Draw user",
+                actionData: {
+                    x: action.data.toolSettings["mouse_x"],
+                    y: action.data.toolSettings["mouse_y"],
+                    name: this.names.get(action.sender),
+                    color: this.colors.get(action.sender),
+                },
+                toolSettings: {},
+            }, this.selectionHandlers[action.sender], false);
+        }
     }
 
     /**
@@ -118,5 +144,7 @@ export class NetworkLink extends ActionLink {
         console.log("I've got the selection data of " + packet.sender);
         console.log(packet);
         this.selectionHandlers[packet.sender] = PixelSelectionHandlerFromSerialized(packet.serializedSelection);
+        this.names.set(packet.sender, packet.name);
+        this.colors.set(packet.sender, packet.color);
     }
 }

@@ -31,14 +31,28 @@ let selectionHandlers: { [uid: string]: PixelSelectionHandler } = {};
 let histories: { [pid: string]: PintHistory } = {};
 let client_project: { [uid: string]: string } = {};
 
+let names: Map<string, string> = new Map();
+let colors: Map<string, string> = new Map();
+
 interface JoinPacket {
     name: string;
     dimensions: { x: number, y: number };
     image_data: string;
 }
 
+let Moniker: any = require("moniker");
+let name_generator: any = Moniker.generator([Moniker.adjective, Moniker.noun]);
+
+let color_generator = require('randomcolor');
+
 io.on("connection", function (socket: SocketIO.Socket) {
-    console.log(socket.id + " connected.");
+    let name = name_generator.choose();
+
+    console.log(socket.id + " connected. His name is "+name);
+
+    names.set(socket.id, name);
+    colors.set(socket.id, color_generator());
+
     socket.on("join", function (packet: JoinPacket) {
         /**
          * Project creation.
@@ -56,12 +70,14 @@ io.on("connection", function (socket: SocketIO.Socket) {
         /**
          * Client synchronization to drawing
          */
-        console.log(socket.id + " joining drawing `" + packet.name + "`");
+        console.log(names.get(socket.id) + " joining drawing `" + packet.name + "`");
 
         let data = {
             dimensions: projects[packet.name].dimensions,
             data: [],
             infos: [],
+            name: names.get(socket.id),
+            color: colors.get(socket.id),
         };
 
         // Send all layers
@@ -79,6 +95,8 @@ io.on("connection", function (socket: SocketIO.Socket) {
             let hello: HelloNetworkPacket = {
                 sender: id,
                 serializedSelection: selectionHandlers[id].serialize(),
+                name: names.get(id),
+                color: colors.get(id),
             };
             socket.emit("hello", hello);
         }
@@ -89,6 +107,8 @@ io.on("connection", function (socket: SocketIO.Socket) {
         let hello: HelloNetworkPacket = {
             sender: socket.id,
             serializedSelection: selectionHandlers[socket.id].serialize(),
+            name: names.get(socket.id),
+            color: colors.get(socket.id),
         };
 
         for (let id in clients[packet.name]) {
@@ -156,7 +176,7 @@ io.on("connection", function (socket: SocketIO.Socket) {
 
         if (data.data.type != ActionType.ToolPreview) {
             console.log("On project: " + name);
-            console.log("Action by " + data.sender + " with tool " + data.data.toolName);
+            console.log("Action by " + names.get(data.sender) + " with tool " + data.data.toolName);
         }
 
         if (data.data.type == ActionType.Undo) {

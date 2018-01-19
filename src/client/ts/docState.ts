@@ -143,6 +143,9 @@ export class Project {
             };
 
             action.toolSettings["layer"] = this.layerList.indexOf(this.currentLayer); // Encapsulate layer information.
+            action.toolSettings["mouse_x"] = vect.x;
+            action.toolSettings["mouse_y"] = vect.y;
+
 
             this.setPreviewLayer("localhost");
             this.applyAction(action, this.currentSelection, false);
@@ -427,7 +430,7 @@ export class Project {
             }
 
             case ActionType.ExchangeLayers: {
-                var temp = this.layerList[action.actionData.positionA];
+                let temp = this.layerList[action.actionData.positionA];
                 this.layerList[action.actionData.positionA] = this.layerList[action.actionData.positionB];
                 this.layerList[action.actionData.positionB] = temp;
                 if (this.ui != null) {
@@ -436,6 +439,22 @@ export class Project {
                 }
 
                 return action;
+            }
+
+            case ActionType.DrawUser: {
+                let ctx = this.currentPreviewLayer.getContext();
+                let data = action.actionData;
+
+                ctx.beginPath();
+                ctx.moveTo(data.x, data.y);
+                ctx.lineTo(data.x-10, data.y-15);
+                ctx.lineTo(data.x+10, data.y-15);
+                ctx.closePath();
+                ctx.fillStyle = data.color;
+                ctx.fill();
+
+                ctx.font = "20px Arial";
+                ctx.fillText(data.name,data.x - 5,data.y - 17);
             }
         }
     }

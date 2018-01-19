@@ -25,6 +25,10 @@ export interface ActionInterface {
  */
 export enum ActionType {
     /**
+     * Draw user pointer.
+     */
+    DrawUser,
+    /**
      * Add a layer.
      */
     AddLayer,

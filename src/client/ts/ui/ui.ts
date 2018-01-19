@@ -195,7 +195,8 @@ export class UIController {
      * Setup local version of the project according to server data.
      * @param data
      */
-    loadServerHostedCallback(data: { dimensions: Vec2, data: Array<string>, infos: Array<Object> }) {
+    loadServerHostedCallback(data: { dimensions: Vec2, data: Array<string>, infos: Array<Object>, name: string, color: string }) {
+        console.log("My name is "+data.name);
         this.newProject(data.dimensions);
         this.project.enableNetwork(this.socket);
         for (let i = 0; i < data.data.length; i++) {
